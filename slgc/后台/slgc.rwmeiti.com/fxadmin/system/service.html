@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+
+<style>
+.layui-table-cell {
+  height: auto;
+  white-space: normal;
+  word-break: break-all;
+  overflow: hidden;
+}
+  .tips { background-color: #f3f5f7; border-color: #42b983; padding: 1rem 1.5rem; border-left-width: .5rem; border-left-style: solid; margin-bottom: 2rem; line-height: 38px; min-height: 38px}
+  .tips span{ color: orangered;font-weight: bold;margin: 0 5px;}
+</style>
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;" target="iframe">系统管理</a>
+        <a><cite>客服管理</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+         <div class="tips">
+            <p>联系方式请分别保留一个或多个电话和qq <span></span></p>
+        </div>
+        <form class="layui-form">
+          <div class="layui-row layui-col-space20">
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs6 layui-col-md-offset10 layui-col-sm-offset10">
+              <button type="button" class="layui-btn layui-btn-normal btn-primary layui-btn-fluid" id="add">
+                <span>添加客服</span>
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="layui-row">
+          <table class="layui-hide" id="table-media-list" lay-filter="roleTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <div id="roleModal" style="display: none; padding:20px 20px 0 0 !important;">
+      <form class="layui-form" action="" lay-filter="roleModal">
+        <div class="layui-form-item">
+          <label class="layui-form-label">客服类型</label>
+          <div class="layui-input-block">
+            <input type="radio" name="type" value="2" title="QQ" lay-filter="type" data-name="qq">
+            <input type="radio" name="type" value="1" title="微信" checked lay-filter="type" data-name="wx">
+            <input type="radio" name="type" value="3" title="电话" lay-filter="type" data-name="phone">
+            <input type="radio" name="type" value="4" title="邮箱" lay-filter="type" data-name="email">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">显示位置</label>
+          <div class="layui-input-block">
+            <input type="radio" name="position" value="1" title="网站" checked>
+            <input type="radio" name="position" value="2" title="发稿平台">
+            <input type="radio" name="position" value="3" title="网站+发稿平台">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">客服账号</label>
+          <div class="layui-input-block">
+            <input type="text" name="value" lay-verify="required" class="layui-input" autocomplete="off">
+          </div>
+        </div>
+        <input type="hidden" name="id"  id="id" value="">
+        <button style="display: none;" id="submit" class="layui-btn" lay-submit lay-filter="submit">提交</button>
+        <button type="reset" id="reset" style="display: none" class="layui-btn btn-success">重置</button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+
+<script>
+  layui.use(['element', 'layer', 'table', 'form'], function () {
+    var table = layui.table;
+    var form = layui.form;
+    var layer = layui.layer;
+
+    var dataTable = table.render({
+      elem: '#table-media-list',
+      url: '',
+       url: '/fxadmin/system/service.html',
+      method: 'POST',
+      cols: [[
+        { field: 'value', align: 'center', title: '客服账号', minWidth: 120 },
+        { field: 'type', align: 'center', title: '类型', minWidth: 120, templet: '#typeTpl' },
+        { field: 'position', align: 'center', title: '展示位置', minWidth: 120, templet: '#posTpl' },
+        { field: 'tool', align: 'center', fixed:'right', templet: '#tool', width:180, title: '操作' }
+      ]],
+      page: false
+    });
+
+    $("#add").on('click', function () {
+      edit();
+    });
+
+    table.on('tool(roleTable)', function (obj) {
+      var data = obj.data;
+      switch (obj.event) {
+        case 'edit':
+          edit(obj)
+          break;
+        case 'del':
+          del(obj);
+          break;
+      }
+    });
+
+    function edit(obj) {
+      if (obj) {
+        form.val("roleModal", obj.data);
+      } else {
+        $("#rest").trigger('click');
+        $("#id").val("");
+      }
+      var index = layer.open({
+        type: 1,
+        title: obj ? '编辑客服信息' : '添加客服信息',
+        content: $('#roleModal'),
+        maxWidth:'80%',
+        btn:[ obj ? '提交' : '添加','取消'],
+        yes: function (index) {
+          $("#submit").trigger('click');
+        }
+      });
+    }
+
+    function del(obj) {
+      $.post('/fxadmin/system/delkefu.html',{id:obj.data.id} , function (res) {
+        if (res.code === 200) {
+          layer.msg('删除成功', { icon: 5 });
+          obj.del();
+        } else {
+          layer.msg(res.msg, { icon: 6 });
+        }
+      });
+    }
+
+    form.on('submit(submit)',function(data){
+      var params=data.field;
+         var type_str=$("input[name='type']:checked").data("name");
+          params.type_str=type_str;
+
+      $.post('/fxadmin/system/addkefu.html', params, function (res) {
+        if(res.code === 200){
+          layer.msg('操作成功', {icon:6});
+          setTimeout(function(){
+            window.location.href = '/fxadmin/system/service.html';
+          },1000)
+        } else {
+          layer.msg(res.msg, {icon:5})
+        }
+      });
+      return false;
+    });
+
+  });
+
+</script>
+
+<script type="text/html" id="tool">
+  <a class="tag-primary btn-primary" lay-event="edit">编辑</a>
+  <a class="tag-danger btn-danger" lay-event="del">删除</a>
+</script>
+
+<script type="text/html" id="typeTpl">
+  {{#  if(d.type == 1){ }}
+  <span class="tag-success">微信</span>
+  {{#  } else if(d.type == 2){ }}
+  <span class="tag-primary">QQ</span>
+  {{#  } else if(d.type == 3){ }}
+  <span class="tag-default">电话</span>
+  {{#  } else if(d.type == 4){ }}
+  <span class="tag-default">邮箱</span>
+  {{#  } }}
+
+</script>
+
+<script type="text/html" id="posTpl">
+  {{#  if(d.position == 1){ }}
+  <span class="tag-success">网站</span>
+  {{#  } else if(d.position == 2){ }}
+  <span class="tag-primary">发稿平台</span>
+  {{#  } else if(d.position == 3){ }}
+  <span class="tag-default">网站+发稿平台</span>
+  {{#  } }}
+</script>

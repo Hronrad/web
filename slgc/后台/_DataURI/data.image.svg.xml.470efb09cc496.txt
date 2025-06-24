@@ -1,0 +1,3 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1.26 9.6A6.97 6.97 0 018 4c3.2 0 6.06 2.33 6.74 5.6a.5.5 0 00.98-.2A7.97 7.97 0 008 3 7.97 7.97 0 00.28 9.4a.5.5 0 00.98.2z" fill="WindowText"/><path d="M8 6a3.5 3.5 0 100 7 3.5 3.5 0 000-7zM5.5 9.5a2.5 2.5 0 115 0 2.5 2.5 0 01-5 0z" fill="WindowText"/>
+</svg>

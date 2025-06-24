@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<style>
+  .layui-table-cell {
+    height: auto;
+    white-space: normal;
+    word-break: break-all;
+    overflow: hidden;
+  }
+  .msgContent{
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 500px;
+  }
+</style>
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">系统管理</a>
+        <a><cite>公告管理</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form">
+          <div class="layui-row layui-col-space20">
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs6 layui-col-md-offset10 layui-col-sm-offset10">
+              <a type="button" href="/fxadmin/notice/noticeedit.html"
+                 class="layui-btn layui-btn-normal btn-primary layui-btn-fluid" id="add">
+                <span>添加公告</span>
+              </a>
+            </div>
+          </div>
+        </form>
+        <div class="layui-row">
+          <table class="layui-hide" id="table-media-list" lay-filter="roleTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+
+<script>
+  layui.use(['element', 'layer', 'table', 'upload', 'form'], function () {
+    var table = layui.table;
+    var form = layui.form;
+    var layer = layui.layer;
+    var upload = layui.upload;
+
+    var dataTable = table.render({
+      elem: '#table-media-list',
+      url: '/fxadmin/notice/index.html',
+      method: 'POST',
+      cols: [[
+        { field: 'title', align: 'center', title: '标题', minWidth: 150, event: "detail",templet:'#titleTpl' },
+        { field: 'show_type', align: 'center', title: '特殊展示区域', minWidth: 150, templet:'#typeTpl' },
+        { field: 'add_time', align: 'center', title: '编辑时间', minWidth: 150, event: "detail" },
+        { field: 'tool', align: 'center', templet: '#tool', minWidth: 150, title: '操作' }
+      ]],
+      page: false
+    });
+
+    table.on('tool(roleTable)', function (obj) {
+      var data = obj.data;
+      switch (obj.event) {
+        case 'edit':
+          window.location.href = "/fxadmin/notice/noticeedit.html?id=" + data.id;
+          break;
+        case 'detail':
+          detail(data)
+          break;
+        case 'del':
+          del(obj);
+          break;
+      }
+    });
+
+    function detail(data) {
+      layer.open({
+        type: 1,
+        title: '详情',
+        shadeClose: true,
+        area: ['350px'],
+        content: "<div class='msgContent'>"+data.content+"</div>"
+      });
+    }
+
+    function del(obj) {
+      $.post('/fxadmin/notice/delnotice.html', { id: obj.data.id }, function (res) {
+        if (res.code === 200) {
+          layer.msg('删除成功', { icon: 5 });
+          obj.del();
+        } else {
+          layer.msg(res.msg, { icon: 6 });
+        }
+      });
+    }
+  });
+</script>
+<script type="text/html" id="titleTpl">
+  <a herf="javascript:;">{{d.title}}</a>
+</script>
+<script type="text/html" id="typeTpl">
+  {{# if( d.show_type === 1 ){ }}
+    <span class="tag-success">首页发稿必读</span>
+  {{# }else if( d.show_type === 2 ){ }}
+  <span class="tag-primary">首页弹窗</span>
+  {{# }else{ }}
+  <span class="tag-default">无</span>
+  {{# } }}
+</script>
+
+<script type="text/html" id="tool">
+  <a class="tag-primary btn-primary" lay-event="edit">编辑</a>
+  <a class="tag-danger btn-danger" lay-event="del">删除</a>
+</script>

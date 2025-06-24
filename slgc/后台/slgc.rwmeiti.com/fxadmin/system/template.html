@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/iconfont.css" />
+<style>
+  .tips {
+    background-color: #f3f5f7;
+    border-color: #42b983;
+    padding: 1rem 1.5rem;
+    border-left-width: .5rem;
+    border-left-style: solid;
+    margin-bottom: 2rem;
+    line-height: 1.5rem;
+  }
+</style>
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">系统管理</a>
+        <a><cite>设置</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <div class="layui-row">
+          <div class="tips">
+            <p>模板设置管理模板导航栏 banner图等内容 此处仅展示当前所用模板配置项</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form" id="tplForm">
+          <div class="layui-row layui-col-space20">
+            <div class="layui-col-md2 layui-col-sm3 layui-col-xs12">
+              <button style="display: none;" id="search" lay-submit lay-filter="search">提交</button>
+            </div>
+          </div>
+        </form>
+        <div class="layui-row">
+          <table class="layui-hide" id="table-media-list" lay-filter="tplTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="edittpl" style="display: none; padding: 20px;">
+  <form class="layui-form" action="" lay-filter="tplModal">
+    <div class="layui-form-item">
+      <label class="layui-form-label">模板名称</label>
+      <div class="layui-input-block">
+        <input type="text" id="template" name="template" lay-verify="required" placeholder="请输入模板名称" autocomplete="off" class="layui-input" readonly>
+        <input type="text" id="id" name="id" style="display: none;" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item pwd">
+      <label class="layui-form-label">配置类型</label>
+      <div class="layui-input-block">
+        <input type="text" name="name" id="name" placeholder="请输入配置类型" autocomplete="off" class="layui-input" readonly>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">配置值</label>
+      <div class="layui-input-block">
+        <input type="text" name="option_value" id="option_value" placeholder="请输入名称" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">是否显示</label>
+      <div class="layui-input-block">
+        <input type="radio" name="is_show" value="0" title="否" checked>
+        <input type="radio" name="is_show" value="1" title="是">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">图片上传</label>
+      <div class="layui-input-inline">
+        <div class="layui-upload-drag" id="picimg" data-url="">
+          <img id="uploadImg" src="" style='width: 60px;height: 60px;'/>
+        </div>
+      </div>
+      <input type="hidden" name="icon" id="icon"  autocomplete="off" class="layui-input" value="">
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">排序</label>
+      <div class="layui-input-block">
+        <input type="text" name="sort" lay-verify="sort" placeholder="数字越小越靠前" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+      <label class="layui-form-label">说明</label>
+      <div class="layui-input-block">
+        <input type="text" name="adesc" placeholder="请输入说明信息" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <button class="layui-btn" id="submitedit" style="display: none;" lay-submit lay-filter="submitedit">提交</button>
+    <button type="reset" id="resetinput" style="display: none" class="layui-btn btn-success">重置</button>
+  </form>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/JsonExportExcel.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/global.js"></script>
+
+<script>
+  layui.use(['element', 'table', 'layer', 'form','upload'], function () {
+    var table = layui.table;
+    var layer = layui.layer;
+    var form = layui.form;
+    var width = $(document).width();
+    var toolWidth = width <= 768 ? 100 : 500;
+
+    var dataTable = table.render({
+      elem: '#table-media-list',
+      url: '/fxadmin/system/template.html',
+      method: 'POST',
+      toolbar: '#headerTool',
+      defaultToolbar: ['filter'],
+      totalRow: true,
+      cols: [[
+        { field: 'template', align: 'center', title: '模板名称', minWidth: 120,},
+        { field: 'name', align: 'center', title: '板块类型', width: 100 },
+        { field: 'option_value', align: 'center', title: '配置值', minWidth: 110, templet: '#moneyTpl' },
+        { field: 'is_show', align: 'center', title: '是否展示', minWidth: 110, templet: '#is_showTpl' },
+        {field: "sort", title: "排序", width: 80, align: "center"},
+        // {field: "sort", title: "排序", width: 80, align: "center", templet:function(d){
+        //     return editInput('sort',d,'/system/setSort');
+        //   }},
+        { field: 'adesc', align: 'center', title: '说明', minWidth: 130 },
+        { field: 'id', align: 'center',fixed:'right', title: '操作', minWidth: toolWidth ,templet:'#toolTpl'}
+      ]],
+      page: true,
+      limit: 20,
+      done:function(res){
+
+      }
+    });
+
+    table.on('tool(tplTable)', function (obj) {
+      var data = obj.data;
+      console.log(data);
+      if (obj.event === 'edittpl') {
+        form.val("tplModal", data);
+        $("#uploadImg").attr('src',data.icon);
+        layer.open({
+          type: 1,
+          title: '修改配置',
+          content: $('#edittpl'),
+          btn: ['提交', '取消'],
+          yes: function (index) {
+            $("#submitedit").trigger('click');
+          }
+        });
+      }
+    });
+
+    //是否展示在前端
+    form.on('switch(is_show_update)', function(data){
+      // 得到开关的value值，实际是需要修改的ID值。
+      var id = data.value;
+      var status = this.checked ? '1' : '0';
+      $.post("/fxadmin/system/change_show.html",{id:id,status:status},function(res){
+        if(res.code === 200){
+          layer.msg(res.msg,{icon:6});
+        }else{
+          layer.msg(res.msg,{icon:5});
+        }
+      })
+    });
+
+    //修改配置项
+    form.on('submit(submitedit)',function(data){
+      var params = data.field;
+      $.post('/fxadmin/system/save_settings.html',params,function(res){
+        if(res.code === 200){
+          layer.closeAll();
+          layer.msg(res.msg,{icon:6});
+          //reloadTable();
+        }else{
+          layer.msg(res.msg,{icon:5});
+        }
+      })
+      return false;
+    });
+
+    // 指定开关事件
+    form.on('switch(switchTest)', function(data){
+      layer.msg('开关 checked：'+ (this.checked ? '0' : '1'), {
+        offset: '6px'
+      });
+      //layer.tips('温馨提示：', data.othis)
+    });
+
+    //文件上传
+    layui.use('upload', function(){
+      var upload = layui.upload;
+      upload.render({
+        elem: '#picimg', //绑定元素
+        url: "/fxadmin/upload/picupload.html", //上传接口
+        accept: 'file',
+        //exts: 'svg',
+        done: function (res) {
+          if (res.code === 200) {
+            $("#uploadImg").attr('src',res.data.url);
+            $("#icon").val(res.data.url);
+          } else {
+            layer.msg(res.msg, { icon: 2, time: 1000 });
+          }
+        }, error: function () {
+          //请求异常回调
+        }
+      });
+    });
+
+  });
+</script>
+
+<script type="text/html" id="is_showTpl">
+  <input type="checkbox" name="is_show" lay-skin="switch" {{# if( d.is_show === 1 ){ }}checked{{# } }}   lay-text="显示|关闭"  value= {{ d.id}}  lay-filter="is_show_update">
+</script>
+
+<script type="text/html" id="toolTpl">
+  <a class="tag-primary btn-primary" lay-event="edittpl">编辑</a>
+
+</script>
+
+
+
+
+
+

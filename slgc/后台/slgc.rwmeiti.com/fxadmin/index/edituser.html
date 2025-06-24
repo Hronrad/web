@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a><cite>修改个人信息</cite> </a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form">
+          <div class="layui-row">
+            <div class="layui-col-md6 layui-col-sm8 layui-col-xs12">
+              <div class="layui-form-item">
+                <label class="layui-form-label">用户名</label>
+                <div class="layui-input-block">
+                  <input type="text" name="admin" lay-verify="required" autocomplete="off" placeholder="请输入用户名称" class="layui-input" value="fxadmin" disabled>
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">修改密码</label>
+                <div class="layui-input-block">
+                  <input name="password" placeholder="无需修改密码可不填该项" class="layui-input"></input>
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">手机号</label>
+                <div class="layui-input-block">
+                  <input type="number" name="mobile" autocomplete="off" placeholder="请输入手机号" class="layui-input" value="13303790195">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">QQ号</label>
+                <div class="layui-input-block">
+                  <input type="number" name="qq" autocomplete="off" placeholder="请输入QQ号" class="layui-input" value="871001386">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">备注信息</label>
+                <div class="layui-input-block">
+                  <textarea name="remark" placeholder="请输入备注信息" class="layui-textarea"></textarea>
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <div class="layui-input-block">
+                  <button class="layui-btn btn-primary" lay-submit lay-filter="submit">立即提交</button>
+                  <button type="reset" class="layui-btn btn-danger">重置</button>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <input type="hidden" name="id" value="2">
+        </form>
+
+      </div>
+
+    </div>
+        <div class="layui-col-md6"  >
+      <div >
+        <table class="layui-table" lay-size="sm">
+          <thead>
+          <tr>
+            <th class="layui-col-md12 "> <i class="layui-icon layui-icon-username"></i>您在上级平台的账户信息       <div id="getInfo" class="layui-btn layui-btn-xs layui-btn-normal layui-layout-admin">点击更新</div> </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="layui-col-sm4" >账号</td>
+            <td class="layui-col-sm8" > <div id="mjhz_username"></div></td>
+          </tr>
+          <tr>
+            <td class="layui-col-sm4">余额</td>
+            <td class="layui-col-sm8"> <div id="mjhz_money"></div></td>
+          </tr>
+
+          </tbody>
+        </table>
+
+      </div>
+          </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script>
+  $(function(){
+    userInfo(false);
+
+  })
+  $('#getInfo').on('click',function(){
+    userInfo(true);
+
+  })
+  function userInfo(m){
+
+    $.post("/fxadmin/index/finduser.html",{},function(res){
+      if(res.code === 200){
+        $('#mjhz_username').html(res.data.username);
+        $('#mjhz_money').html(res.data.money);
+        if(m)
+          layer.msg('更新成功');
+      } else {
+        if(m){
+          layer.msg(res.msg,{icon:5});
+          layer.close(confirm);
+        }
+
+      }
+    });
+
+  }
+
+  layui.use(['element','form'],function(){
+    var form = layui.form;
+    form.on('submit(submit)',function(data){
+      var hasResetPwd = data.field.password !== '';
+      var confirm = layer.confirm(hasResetPwd ? '检测到您修改了密码，提交成功后需要重新登录本系统，是否确定？' : '确认修改个人信息？', {
+        btn: ['确定','取消']
+      }, function(){
+        $.post("/fxadmin/manager/edit/editCommon/1.html",data.field,function(res){
+          if(res.code === 200){
+            layer.msg(res.msg,{icon:6,time:1500},function(){
+              if(hasResetPwd){
+                top.location.href = "/fxadmin/login/logout.html";
+              }else{
+                layer.close(confirm);
+              }
+            });
+          } else {
+            layer.msg(res.msg,{icon:5});
+            layer.close(confirm);
+          }
+        });
+      });
+      return false;
+    })
+
+
+
+  })
+</script>

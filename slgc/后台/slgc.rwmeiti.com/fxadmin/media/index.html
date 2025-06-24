@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/article.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/iconfont.css" />
+<style>
+      .tabs-left{
+      position: relative;
+    }
+    .tabs .layui-form-radio:nth-child(6)>div {
+      border-radius: 0px 5px 5px 0px;
+    }
+    .tabs-left li:first-child{
+      border-radius: 5px 0px 0px 5px;
+    }
+    .tabs-left li:first-child .layui-form-radio>div{
+      border-radius: 5px 0px 0px 5px !important;
+    }
+    .tabs-left li:last-child{
+      border-radius: 0px 5px 5px 0px;
+    }
+    .tabs-left li:last-child .layui-form-radio>div{
+      border-radius: 0px 5px 5px 0px !important;
+    }
+    .tabs-left li{
+      float: left;
+      position: relative;
+    }
+    .tabs-left img{   
+      position: absolute;
+      right: 0px;
+      top: -5px;
+    }
+    .tabs .layui-form-radio:last-child>div {
+      border-radius: 0 0px 0px 0 !important;
+    }
+    .tabs .layui-form-radio{
+      margin-right: -1px !important;
+    }
+    .tabs .layui-form-radio:nth-child(2)>div {
+        border-radius: 0px 0 0 0px !important;
+    }
+    #price_min,#price_max{
+        width: 70px;
+        height: 34px;
+        border-radius: 5px;
+        border: 1px solid #aaaaaa;
+        text-indent: 8px;
+    }
+    #price_max{
+        margin-right: 10px;
+    }
+    .xian{
+        float: left;
+        line-height: 36px;
+        margin: 0 8px;
+    }
+</style>
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;" target="iframe">媒体管理</a>
+        <a><cite>新闻媒体价格</cite></a>
+      </span>
+    </div>
+    <form class="layui-form" lay-filter="filter" id="filtForm">
+      <div class="layui-col-md12 step2">
+        <div class="card filters">
+                    <div class="layui-form-item">
+            <label class="layui-form-label">地区：</label>
+            <div class="layui-input-block">
+              <input type="radio" name="province" value="" title="全部" checked>
+                            <input type="radio" name="province" value="综合全国" title="综合全国">
+                            <input type="radio" name="province" value="北京" title="北京">
+                            <input type="radio" name="province" value="天津" title="天津">
+                            <input type="radio" name="province" value="上海" title="上海">
+                            <input type="radio" name="province" value="重庆" title="重庆">
+                            <input type="radio" name="province" value="河北" title="河北">
+                            <input type="radio" name="province" value="山西" title="山西">
+                            <input type="radio" name="province" value="辽宁" title="辽宁">
+                            <input type="radio" name="province" value="吉林" title="吉林">
+                            <input type="radio" name="province" value="黑龙江" title="黑龙江">
+                            <input type="radio" name="province" value="江苏" title="江苏">
+                            <input type="radio" name="province" value="浙江" title="浙江">
+                            <input type="radio" name="province" value="安徽" title="安徽">
+                            <input type="radio" name="province" value="福建" title="福建">
+                            <input type="radio" name="province" value="江西" title="江西">
+                            <input type="radio" name="province" value="山东" title="山东">
+                            <input type="radio" name="province" value="河南" title="河南">
+                            <input type="radio" name="province" value="湖北" title="湖北">
+                            <input type="radio" name="province" value="湖南" title="湖南">
+                            <input type="radio" name="province" value="广东" title="广东">
+                            <input type="radio" name="province" value="甘肃" title="甘肃">
+                            <input type="radio" name="province" value="四川" title="四川">
+                            <input type="radio" name="province" value="贵州" title="贵州">
+                            <input type="radio" name="province" value="海南" title="海南">
+                            <input type="radio" name="province" value="云南" title="云南">
+                            <input type="radio" name="province" value="青海" title="青海">
+                            <input type="radio" name="province" value="陕西" title="陕西">
+                            <input type="radio" name="province" value="新疆" title="新疆">
+                            <input type="radio" name="province" value="宁夏" title="宁夏">
+                            <input type="radio" name="province" value="内蒙古" title="内蒙古">
+                            <input type="radio" name="province" value="西藏" title="西藏">
+                            <input type="radio" name="province" value="广西" title="广西">
+                            <input type="radio" name="province" value="港澳台" title="港澳台">
+                          </div>
+          </div>
+                    <div class="layui-form-item">
+            <label class="layui-form-label">频道类型：</label>
+            <div class="layui-input-block">
+              <input type="radio" name="channel_type" value="" title="全部" checked>
+                            <input type="radio" name="channel_type" value="IT科技" title="IT科技">
+                            <input type="radio" name="channel_type" value="生活消费" title="生活消费">
+                            <input type="radio" name="channel_type" value="女性时尚" title="女性时尚">
+                            <input type="radio" name="channel_type" value="娱乐休闲" title="娱乐休闲">
+                            <input type="radio" name="channel_type" value="游戏网站" title="游戏网站">
+                            <input type="radio" name="channel_type" value="汽车网站" title="汽车网站">
+                            <input type="radio" name="channel_type" value="教育培训" title="教育培训">
+                            <input type="radio" name="channel_type" value="酒店旅游" title="酒店旅游">
+                            <input type="radio" name="channel_type" value="健康医疗" title="健康医疗">
+                            <input type="radio" name="channel_type" value="房产家居" title="房产家居">
+                            <input type="radio" name="channel_type" value="财经商业" title="财经商业">
+                            <input type="radio" name="channel_type" value="新闻资讯" title="新闻资讯">
+                            <input type="radio" name="channel_type" value="套餐系列" title="套餐系列">
+                            <input type="radio" name="channel_type" value="最新秒杀" title="最新秒杀">
+                            <input type="radio" name="channel_type" value="特价专区" title="特价专区">
+                            <input type="radio" name="channel_type" value="文化艺术" title="文化艺术">
+                            <input type="radio" name="channel_type" value="体育运动" title="体育运动">
+                            <input type="radio" name="channel_type" value="食品餐饮" title="食品餐饮">
+                            <input type="radio" name="channel_type" value="亲子母婴" title="亲子母婴">
+                            <input type="radio" name="channel_type" value="工业贸易" title="工业贸易">
+                          </div>
+          </div>
+                    <div class="layui-form-item">
+            <label class="layui-form-label">综合门户：</label>
+            <div class="layui-input-block">
+              <input type="radio" name="portal_media" value="" title="全部" checked>
+                            <input type="radio" name="portal_media" value="央视网" title="央视网">
+                            <input type="radio" name="portal_media" value="人民网" title="人民网">
+                            <input type="radio" name="portal_media" value="中华网" title="中华网">
+                            <input type="radio" name="portal_media" value="凤凰网" title="凤凰网">
+                            <input type="radio" name="portal_media" value="网易网" title="网易网">
+                            <input type="radio" name="portal_media" value="腾讯网" title="腾讯网">
+                            <input type="radio" name="portal_media" value="搜狐网" title="搜狐网">
+                            <input type="radio" name="portal_media" value="新浪网" title="新浪网">
+                            <input type="radio" name="portal_media" value="千龙网" title="千龙网">
+                            <input type="radio" name="portal_media" value="新华网" title="新华网">
+                            <input type="radio" name="portal_media" value="中国网" title="中国网">
+                            <input type="radio" name="portal_media" value="慧聪网" title="慧聪网">
+                            <input type="radio" name="portal_media" value="大众网" title="大众网">
+                            <input type="radio" name="portal_media" value="东方网" title="东方网">
+                            <input type="radio" name="portal_media" value="中国日报网" title="中国日报网">
+                            <input type="radio" name="portal_media" value="中国经济网" title="中国经济网">
+                            <input type="radio" name="portal_media" value="中国新闻网" title="中国新闻网">
+                            <input type="radio" name="portal_media" value="中国广播网" title="中国广播网">
+                            <input type="radio" name="portal_media" value="和讯网" title="和讯网">
+                            <input type="radio" name="portal_media" value="北青网" title="北青网">
+                            <input type="radio" name="portal_media" value="光明网" title="光明网">
+                            <input type="radio" name="portal_media" value="环球网" title="环球网">
+                            <input type="radio" name="portal_media" value="国际在线" title="国际在线">
+                            <input type="radio" name="portal_media" value="中国青年网" title="中国青年网">
+                            <input type="radio" name="portal_media" value="垂直媒体" title="垂直媒体">
+                            <input type="radio" name="portal_media" value="其他门户" title="其他门户">
+                            <input type="radio" name="portal_media" value="海外媒体" title="海外媒体">
+                            <input type="radio" name="portal_media" value="zaker号" title="zaker号">
+                            <input type="radio" name="portal_media" value="官方百家号" title="官方百家号">
+                            <input type="radio" name="portal_media" value="荆楚网（湖北日报）" title="荆楚网（湖北日报）">
+                            <input type="radio" name="portal_media" value="人民日报客户端" title="人民日报客户端">
+                          </div>
+          </div>
+                    <div class="layui-form-item">
+            <label class="layui-form-label">新闻源：</label>
+            <div class="layui-input-block">
+              <input type="radio" name="news_resource" value="" title="全部" checked>
+                            <input type="radio" name="news_resource" value="1" title="百度新闻源">
+                            <input type="radio" name="news_resource" value="0" title="非新闻源">
+                          </div>
+          </div>
+                    <div class="layui-form-item">
+            <label class="layui-form-label">入口级别：</label>
+            <div class="layui-input-block">
+              <input type="radio" name="entrance_level" value="" title="全部" checked>
+                            <input type="radio" name="entrance_level" value="0" title="没有入口">
+                            <input type="radio" name="entrance_level" value="1" title="首页入口">
+                            <input type="radio" name="entrance_level" value="2" title="频道入口">
+                            <input type="radio" name="entrance_level" value="3" title="上级入口">
+                          </div>
+          </div>
+                    <div class="layui-form-item">
+            <label class="layui-form-label">特别行业：</label>
+            <div class="layui-input-block">
+              <input type="radio" name="special_industry" value="" title="全部" checked>
+                            <input type="radio" name="special_industry" value="1" title="金融区块链">
+                            <input type="radio" name="special_industry" value="3" title="党政加分">
+                            <input type="radio" name="special_industry" value="4" title="健康">
+                            <input type="radio" name="special_industry" value="5" title="加盟">
+                            <input type="radio" name="special_industry" value="6" title="白名单来源">
+                            <input type="radio" name="special_industry" value="7" title="移动端媒体">
+                            <input type="radio" name="special_industry" value="8" title="需要来源媒体">
+                            <input type="radio" name="special_industry" value="9" title="首页焦点图">
+                            <input type="radio" name="special_industry" value="101" title="官方媒体">
+                            <input type="radio" name="special_industry" value="102" title="官方首发">
+                            <input type="radio" name="special_industry" value="100" title="百科认可媒体">
+                            <input type="radio" name="special_industry" value="103" title="阅读量媒体">
+                          </div>
+          </div>
+                    <div class="layui-form-item">
+            <label class="layui-form-label">链接类型：</label>
+            <div class="layui-input-block">
+              <input type="radio" name="link_type" value="" title="全部" checked>
+                            <input type="radio" name="link_type" value="0" title="不可带网址">
+                            <input type="radio" name="link_type" value="2" title="可带网址">
+                          </div>
+          </div>
+                    <div class="layui-form-item">
+            <label class="layui-form-label">发稿速度：</label>
+            <div class="layui-input-block">
+              <input type="radio" name="publication_time" value="" title="全部" checked>
+                            <input type="radio" name="publication_time" value="1" title="一小时内">
+                            <input type="radio" name="publication_time" value="2" title="二小时内">
+                            <input type="radio" name="publication_time" value="12" title="半天">
+                            <input type="radio" name="publication_time" value="24" title="当天">
+                            <input type="radio" name="publication_time" value="48" title="隔天">
+                            <input type="radio" name="publication_time" value="49" title="2天以上">
+                          </div>
+          </div>
+                    <div class="layui-form-item">
+            <label class="layui-form-label">周末可发：</label>
+            <div class="layui-input-block">
+              <input type="radio" name="weekend_publish" value="" title="全部" checked>
+                            <input type="radio" name="weekend_publish" value="1" title="周末可发">
+                            <input type="radio" name="weekend_publish" value="0" title="周末不可发">
+                          </div>
+          </div>
+                    <div class="layui-form-item">
+            <label class="layui-form-label">收录情况：</label>
+            <div class="layui-input-block">
+              <input type="radio" name="include_condition" value="" title="全部" checked>
+                            <input type="radio" name="include_condition" value="0" title="不包收录">
+                            <input type="radio" name="include_condition" value="1" title="百度包收录">
+                          </div>
+          </div>
+                    <div class="layui-form-item">
+            <label class="layui-form-label">价格分类：</label>
+            <div class="layui-input-block">
+              <input type="radio" name="price" value="" title="全部" checked>
+                            <input type="radio" name="price" value="0@50" title="0~50">
+                            <input type="radio" name="price" value="50@100" title="50~100">
+                            <input type="radio" name="price" value="100@200" title="100~200">
+                            <input type="radio" name="price" value="200@999999" title="200以上">
+                              <div  style="margin-left:50px;display: inline-block">
+                    <div style="float: left">
+                        <input type="text" id="price_min" placeholder="￥" >
+                    </div>
+                    <div class="xian">-</div>
+                    <div style="float: left">
+                        <input type="text" id="price_max" placeholder="￥">
+                    </div>
+                    <input type="radio" name="price" value="init" title="确定">
+                </div>
+
+                            </div>
+          </div>
+                    <div class="layui-form-item">
+            <label class="layui-form-label">排序：</label>
+            <div class="layui-input-block">
+              <input type="radio" name="sort" value="" title="全部" checked>
+                            <input type="radio" name="sort" value="10" title="v0价格升序">
+                            <input type="radio" name="sort" value="11" title="v0价格降序">
+                            <input type="radio" name="sort" value="30" title="电脑权重升序">
+                            <input type="radio" name="sort" value="31" title="电脑权重降序">
+                            <input type="radio" name="sort" value="40" title="移动权重升序">
+                            <input type="radio" name="sort" value="41" title="移动权重降序">
+                          </div>
+          </div>
+                     <div class="layui-form-item">
+            <label class="layui-form-label">可发：</label>
+            <div class="layui-input-block">
+              <input type="radio" name="kefa" value="0" title="全部" checked>
+              <input type="radio" name="kefa" value="1" title="无免责申明">
+              <input type="radio" name="kefa" value="2" title="可带署名">
+              <input type="radio" name="kefa" value="3" title="首发">
+              <input type="radio" name="kefa" value="5" title="时效性3个月以上">
+              <!--<input type="radio" name="kefa" value="4" title="国庆可发">-->
+              <!--<img src="/static/assets/img/icon_new.gif" alt="" class="filters-mark">-->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="layui-col-md12 step2">
+        <div class="card tabs">
+          <div class="layui-row">
+            <div class="tabs-left">
+              <li><input type="radio" name="recommend" value="" title="媒体查找" checked=""></li>
+              <li><input type="radio" name="recommend" value="1" title="今日推荐"></li>
+              <!--<input type="radio" name="recommend" value="2" title="今日新增">-->
+                               <img src="/static/assets/img/icon_new.gif" alt=""></li>
+              <li><input type="radio" name="recommend" value="3" title="在线媒体" data-tip="new">
+              <img src="/static/assets/img/icon_new.gif" alt=""></li>
+                <li><input type="radio" name="recommend" value="5" title="纯积分媒体">
+                    <img src="/static/assets/img/icon_new.gif" alt=""></li>
+            </div>
+            <div class="tabs-input">
+              <input type="text" id="media_name" name="media_name" placeholder="请输入媒体名称" autocomplete="off"
+                     class="layui-input">
+            </div>
+            <div class="tabs-input">
+                  <input type="text" id="remark" name="remark" placeholder="请输入备注" autocomplete="off"
+                         class="layui-input">
+              </div>
+            <div class="tabs-export">
+              <button type="button" class="layui-btn btn-success exportData">
+                <span>导出</span>
+                <span class="iconfont iconicon-test"></span>
+              </button>
+            </div>
+            <button type="button" class="layui-btn btn-success" id="sousuo" style="float: right; margin-left: 10px;">
+                  <span>搜索</span>
+              </button>
+            <button style="display: none;" class="layui-btn" id="submit" lay-submit lay-filter="submit">立即提交</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="layui-col-md12 step2">
+      <div class="card table">
+        <table id="table-media-list" lay-filter="mediaTable"></table>
+      </div>
+    </div>
+    <!-- <div id="qr_view" class="qr_view"></div> -->
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/JsonExportExcel.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/global.js"></script>
+
+<script>
+  layui.use(['element', 'layer', 'table', 'form'], function () {
+    var table = layui.table;
+    var form = layui.form;
+    var layer = layui.layer;
+    var param = {};
+    var cols =[[
+        { field: 'media_name', align: 'center', minWidth: 200, title: '媒体名称', templet: '#name_tpl' },
+        { field: 'channel_type', minWidth: 100, align: 'center', title: '频道类型' },
+        { field: 'cost', align: 'center', minWidth: 100, title: '成本价', templet: '#cost_tpl' },
+        { field: 'v0_cost', align: 'center', minWidth: 100, title: 'v0价格', templet: '#v0_cost_tpl' },
+        { field: 'v1_cost', align: 'center', minWidth: 100, title: 'v1价格', templet: '#v1_cost_tpl' },
+        { field: 'v2_cost', align: 'center', minWidth: 100, title: 'v2价格', templet: '#v2_cost_tpl' },
+        { field: 'v3_cost', align: 'center', minWidth: 100, title: 'v3价格', templet: '#v3_cost_tpl' },
+        { field: 'province', align: 'center', title: '所在区域', hide: true },
+        { field: 'portal_media', align: 'center', title: '综合门户', hide: true },
+        { field: 'special_industry_str', align: 'center', title: '特别行业', hide: true },
+        { field: 'entrance_level', align: 'center', title: '入口级别', templet: '#entrance_levelTpl', hide: true },
+        { field: 'link_type', align: 'center', title: '链接类型', templet: '#link_typeTpl', hide: true },
+        { field: 'publish_rate', align: 'center', minWidth: 80, title: '出稿率', templet: '<span>{{d.publish_rate}}%</span>' },
+        { field: 'pc_weight', align: 'center', minWidth: 100, title: '电脑权重', templet: '#pc_weight_tpl' },
+        { field: 'm_weight', align: 'center', minWidth: 100, title: '移动权重', templet: '#m_weight_tpl' },
+        { field: 'publication_time', align: 'center', minWidth: 100, title: '发稿速度', templet: '#publication_time_tpl' },
+        { field: 'avg_publish_time', align: 'center', title: '平均出稿时间', width: 120},
+        { field: 'm_weight', align: 'center', minWidth: 100, title: '收录情况', templet: '#include_condition_tpl' },
+        { field: 'news_resource', align: 'center', minWidth: 120, title: '新闻源', templet: '#news_resource_tpl' },
+        { field: 'weekend_publish', align: 'center', minWidth: 120, title: '周末', templet: '#weekend_publish_tpl' , hide: true},
+        { field: 'remark', align: 'center', title: '备注', minWidth: 250 }
+      ]];
+
+    var dataTable = table.render({
+      elem: '#table-media-list',
+      url: '/fxadmin/media/index.html',
+      method: 'POST',
+      toolbar: true,
+      defaultToolbar: ["filter"],
+      cols: cols,
+      cellMinWidth: 100,
+      page: true,
+      limit:20
+    });
+
+    // 上方条件筛选事件
+    // $("#media_name").on("input", function () {
+    //   $("#submit").trigger('click');
+    // });
+    // $("#remark").on("input", function () {
+    //       $("#submit").trigger('click');
+    //   });
+
+    form.on('radio', function () {
+      $("#submit").trigger('click');
+    });
+    //
+    // form.on('select', function () {
+    //   $("#submit").trigger('click');
+    // });
+
+      $("#sousuo").on("click", function () {
+          $("#submit").trigger('click');
+      });
+
+    form.on('submit(submit)', function (data) {
+      param = data.field;
+      if(param.price == 'init'){
+          var min_price = $('#price_min').val(),
+              max_price = $('#price_max').val();
+          if(min_price == '' &&  max_price == ''){
+              layer.msg('价格区间不能为空', { icon: 5 });
+              return false;
+          }
+            param.price = (min_price == '' ? 0 : min_price) + '@' + (max_price == '' ? 999999 : max_price);
+      }
+      reloadTable(1);
+      return false;
+    });
+
+    //价格导出
+    $(".exportData").off().on('click', function () {
+      var params = $("#filtForm").serialize();
+      $.ajax({
+        type: "POST",
+        url: '/fxadmin/media/index.html?export=true&' + params,
+        dataType: "json",
+        beforeSend: function () {
+          var index = layer.load(1, {
+            shade: [0.1, '#000']
+          });
+        },
+        success: function (res) {
+          if (res.code === 200) {
+            layer.closeAll();
+            JsonToExcel(res.data, '新闻媒体价格表', 'sheet', res.msg);
+          } else {
+            layer.closeAll();
+            layer.msg(res.msg, { icon: 5 });
+          }
+        }
+      });
+    });
+
+    // 重新加载表格
+    function reloadTable(page) {
+      var curr;
+      if (page) {
+        curr = { curr: 1 }
+      } else {
+        curr = {}
+      }
+      dataTable.reload({
+        where: param,
+        page: curr
+      });
+    }
+
+  });
+
+  $(document).on("mouseenter mouseleave", ".wx_name", function (event) {
+    var _t = $(this), qr_view = $("#qr_view"), src = _t.attr("data-src");
+    if (event.type === "mouseenter") {
+      var pos = _t.offset();
+      qr_view.show().css({ top: pos.top, left: pos.left + 140, zIndex: 6666, backgroundImage: "url(" + src + ")" });
+    } else if (event.type === "mouseleave") {
+      qr_view.hide();
+    }
+  });
+  $("body").on('mouseover', ".online", function () {
+    layer.tips('小编在线收稿ing~', $(this), {
+      tips: [2,'#1074d0'],
+      time: 0
+    });
+  }).on('mouseout', '.online', function () {
+    layer.closeAll();
+  });
+  $("body").on('mouseover', "[data-tip]", function () {
+      layer.tips($(this).data('tip'), $(this), {
+          tips: [2,'#1074d0'],
+          time: 0
+      });
+  }).on('mouseout', "[data-tip]", function () {
+      layer.closeAll();
+  });
+
+</script>
+
+<script type="text/html" id="name_tpl">
+    {{# if(d.recommend === 3){  }}
+    <span class="layui-badge-dot online" style="background-color: #13ce66"></span>
+    {{# } }}
+    {{# if(d.other_tag === 1){ }}
+    <span class="layui-badge layui-bg-blue">赔</span>
+    {{# } }}
+    {{# if(d.mediauptime){ }}
+    <span class="layui-badge">荐</span>
+    {{# } }}
+    <a href="{{d.case_link}}" target="_blank">{{d.media_name}}</a>
+    {{# if(d.entrance_link !== ''){ }}
+    <a href="{{d.entrance_link}}" target="_blank" style="color:#fd5c5c;">（入口）</a>
+    {{# } }}
+    {{# if(d.authority_media==1){ }}
+    <span class="layui-badge" style="background-color: #ffc24b" data-tip="官方优质媒体">V </span>
+    {{# } }}
+    {{# var  tags=['quality_tag','stable_tag','hot_tag','pine_tag','recommend_tag','only_tag','fast_tag','employ_tag'] ;var tag_name=['优','稳','热','松','荐','独','秒','包'];
+    var tags_desc=['价格优','价格、出稿稳定','发布多','不挑稿，审核松','推荐','独家合作','快速出稿','包收录'];
+    var tags_color=['#fec84d','#3697eb','#fe513b','#f746bd','#fc4a93','#ac43f4','#4fc7fd','#ff814a'];
+    for(var i=0; i< tags.length;i++ ){ }}
+    {{# if(d[tags[i]] >0){ }}
+    <span class="layui-badge {{tags[i]}}" style="background-color:{{tags_color[i]}}"  data-tip="{{tags_desc[i]}}">{{tag_name[i]}}</span>
+    {{# } }}
+    {{# } }}
+</script>
+<script type="text/html" id="pc_weight_tpl">
+  {{# if( d.pc_weight !== null ){ }}
+    <div class="pc_weight">{{d.pc_weight}}</div>
+    {{# } }}
+</script>
+<script type="text/html" id="m_weight_tpl">
+  {{# if( d.m_weight !== null ){ }}
+    <div class="m_weight">{{d.m_weight}}</div>
+    {{# } }}
+</script>
+<script type="text/html" id="include_condition_tpl">
+    {{# if(d.include_condition === 0){ }}
+    不包收录
+    {{# }else{ }}
+    包收录
+    {{# } }}
+</script>
+<script type="text/html" id="news_resource_tpl">
+    {{# if(d.news_resource === 0){ }}
+    非百度新闻源
+    {{# }else{ }}
+    百度新闻源
+    {{# } }}
+</script>
+<script type="text/html" id="link_type_tpl">
+    {{# if(d.link_type === '2'){ }}
+    可带联系方式
+    {{# }else{ }}
+    不可带联系方式
+    {{# } }}
+</script>
+<script type="text/html" id="publication_time_tpl">
+    {{# if( d.publication_time ==1 ){ }}
+    一小时内
+    {{# }else if( d.publication_time ==2){ }}
+    两小时内
+    {{# }else if( d.publication_time ==12){ }}
+    半天
+    {{# }else if( d.publication_time ==24){ }}
+    当天
+    {{# }else if( d.publication_time ==48){ }}
+    隔天
+    {{# }else if( d.publication_time ==49){ }}
+    2天以上
+    {{# } }}
+</script>
+<script type="text/html" id="entrance_levelTpl">
+  {{# if(d.entrance_level==0){ }}
+  <span class="tag-danger">没有入口</span>
+  {{# }else if(d.entrance_level==1){ }}
+  首页入口
+  {{# }else if(d.entrance_level==2){ }}
+  频道入口
+  {{# }else if(d.entrance_level==3){ }}
+  上级入口
+  {{# } }}
+</script>
+<script type="text/html" id="link_typeTpl">
+  {{# if( d.link_type ==0 ){ }}
+  不可带网址
+  {{# }else{ }}
+  <span class="tag-success">可带网址</span>
+  {{# } }}
+</script>
+<script type="text/html" id="weekend_publish_tpl">
+  {{# if( d.weekend_publish ==0 ){ }}
+ 周末不可发
+  {{# }else{ }}
+  <span class="tag-success">周末可发</span>
+  {{# } }}
+</script>
+
+<script type="text/html" id="cost_tpl">
+    {{# if(d.recommend == 5){ }}
+    {{d.jf_cost}}积分
+    {{# }else{ }}
+    ￥{{d.cost}}
+    {{# } }}
+</script>
+<script type="text/html" id="v0_cost_tpl">
+    {{# if(d.recommend == 5){ }}
+    {{d.jf_cost}}积分
+    {{# }else{ }}
+    ￥{{d.v0_cost}}
+    {{# } }}
+</script>
+<script type="text/html" id="v1_cost_tpl">
+    {{# if(d.recommend == 5){ }}
+    {{d.jf_cost}}积分
+    {{# }else{ }}
+    ￥{{d.v1_cost}}
+    {{# } }}
+</script>
+<script type="text/html" id="v2_cost_tpl">
+    {{# if(d.recommend == 5){ }}
+    {{d.jf_cost}}积分
+    {{# }else{ }}
+    ￥{{d.v2_cost}}
+    {{# } }}
+</script>
+<script type="text/html" id="v3_cost_tpl">
+    {{# if(d.recommend == 5){ }}
+    {{d.jf_cost}}积分
+    {{# }else{ }}
+    ￥{{d.v3_cost}}
+    {{# } }}
+</script>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+
+<style>
+  .title {
+    width: 100%;
+    display: inline-block;
+    margin-bottom: 10px;
+    line-height: 24px;
+  }
+
+  .label {
+    float: left;
+    cursor: pointer;
+  }
+
+  .textarea {
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #e6e6e6;
+    line-height: 1.5rem;
+    width: 100%;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+
+  .tag {
+    cursor: pointer;
+    padding: 5px 35px 5px 25px;
+    border: 1px solid #c1baba;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 0 10px 10px 0;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  .tag:hover{
+    border-color: orangered;
+    color: orangered;
+  }
+
+  .tag:hover i {
+    color: orangered;
+  }
+
+  .tag i {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    color: #ffffff;
+  }
+</style>
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;" target="iframe">系统管理</a>
+        <a><cite>稿件敏感词</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+
+          <div class="title">
+            <div class="label" style="font-weight: bold;">敏感词列表</div>
+          </div>
+          <div id="words" class="textarea"></div>
+          <div style="margin-top: 20px;">
+            <button type="button" class="layui-btn btn-primary" id="add">添加敏感词</button>
+          </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+
+<script>
+  layui.use(['element', 'layer', 'form'], function () {
+    var form = layui.form;
+    var layer = layui.layer;
+    // 在这里渲染违禁词内容
+    var words ='代妈,亚游,办证,BET365,配资,花生日记,云集品,赌,小妹上门,小姐上门,兴旺体育,亚博体育,莱汇币,维卡币,暗黑币,万福币,EGD网络黄金,GCB光彩币,张健五行币,亚欧币,欧年宝,扬州宝缘,江苏联宝,万协云商,之道出行,麦点商城,大唐天下,万家购物,代人体检,代替体检,体检代检,众盈,代孕,试管婴儿,bet365,习近平,李克强,客服电话,人工服务电话,休闲养生会所,信用卡套现,花呗套现,股票配资,记录查询,聊天记录,京东套现,代开发票,汽车解码器,香烟批发,监控他人,黑客办事,北京赛车,时时彩,百家乐';
+    var array = words.split(',');
+
+    initWords();
+
+    function initWords() {
+      var html = '';
+      for (var i = 0; i < array.length; i++) {
+        html += '<div class="tag">' + array[i] + '<i class="layui-icon layui-icon-close"></i></div>'
+      }
+      $("#words").html(html);
+    }
+
+    $("#add").on('click', function () {
+      layer.prompt(function (value) {
+        array.push(value);
+        update();
+      });
+    });
+
+    $("#words").on('click', '.tag', function () {
+      var t_index = $(this).index();
+      layer.confirm('确定删除敏感词“'+array[$(this).index()]+'”吗？', {icon: 3, title:'提示'}, function(index){
+        array.splice(t_index, 1);
+        update();
+        layer.close(index);
+      });
+    });
+
+    function update() {
+      $.post('/fxadmin/system/sensitiveword.html', { keyword: array.join(',') }, function (res) {
+        if (res.code === 200) {
+          layer.closeAll();
+          layer.msg('操作成功', { icon: 6 });
+          initWords();
+        } else {
+          layer.msg(res.msg, { icon: 5 });
+        }
+      });
+    }
+    
+  });
+</script>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+
+<style>
+  #roleModal {
+    display: none;
+    padding: 20px 20px 0 20px;
+  }
+</style>
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">权限管理</a>
+        <a><cite>角色管理</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form">
+          <div class="layui-row layui-col-space20">
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs6 layui-col-md-offset10 layui-col-sm-offset10">
+              <button type="button" class="layui-btn layui-btn-normal btn-primary layui-btn-fluid" id="addRole">
+                <span>新建角色</span>
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="layui-row">
+          <table class="layui-hide" id="table-media-list" lay-filter="roleTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <div id="roleModal">
+      <form class="layui-form" lay-filter="roleModal">
+        <div class="layui-form-item">
+          <label class="layui-form-label">角色名称</label>
+          <div class="layui-input-block">
+            <input type="text" id="role" required lay-verify="required" class="layui-input">
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+<script src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script src="/static/assets/js/layui/layui.js"></script>
+<script>
+  layui.use(['element', 'layer', 'table', 'form'], function () {
+    var table = layui.table;
+    var form = layui.form;
+    var layer = layui.layer;
+
+    var dataTable = table.render({
+      elem: '#table-media-list',
+      url: '/fxadmin/role/index.html',
+      method: 'POST',
+      cols: [[
+        // { field: 'id', align: 'center', title: '编号' ,width:100},
+        { field: 'role', align: 'center', title: '角色', minWidth: 120 },
+        { field: 'id', align: 'center', templet: '#tool', minWidth: 180, title: '操作' }
+      ]]
+    });
+
+    $("#addRole").on('click', function () {
+      edit();
+    });
+
+    table.on('tool(roleTable)', function (obj) {
+      var data = obj.data;
+      switch (obj.event) {
+        case 'edit':
+          edit(obj)
+          break;
+        case 'auth':
+          window.location.href = '/fxadmin/role/authority.html?id=' + data.id;
+          break;
+        case 'del':
+          del(obj);
+          break;
+      }
+    });
+
+    function edit(obj) {
+      $("#role").val(obj ? obj.data.role : '');
+      var index = layer.open({
+        type: 1,
+        title: obj ? '角色信息' : '添加角色',
+        content: $('#roleModal'),
+        btn: obj ? '提交' : '添加',
+        yes: function (index) {
+          var param = { role: $("#role").val() }
+          if (obj) {
+            param.id = obj.data.id
+          }
+          $.post('/fxadmin/role/edit.html', param, function (res) {
+            if (res.code === 200) {
+              layer.msg('操作成功', { icon: 6 });
+              layer.close(index);
+              if (obj) {
+                obj.update({
+                  role: $("#role").val()
+                });
+              } else {
+                dataTable.reload();
+              }
+            } else {
+              layer.msg(res.msg, { icon: 5 });
+            }
+          });
+        }
+      });
+    }
+
+    function del(obj) {
+      var index = layer.confirm('确定删除该角色？', {
+        btn: ['确实', '取消']
+      }, function () {
+        $.post('/fxadmin/role/del.html', { id: obj.data.id }, function (res) {
+          if (res.code === 200) {
+            layer.msg('删除成功', { icon: 6 });
+            layer.close(index);
+            obj.del();
+          } else {
+            layer.msg(res.msg, { icon: 5 });
+          }
+        });
+      });
+    }
+  });
+
+</script>
+
+<script type="text/html" id="tool">
+  <a class="tag-primary btn-primary" lay-event="edit">编辑</a>
+  {{# if(2==1){ }}
+  <a class="tag-success btn-success" lay-event="auth">权限</a>
+  {{# }else if(d.id !=1){}}
+  <a class="tag-success btn-success" lay-event="auth">权限</a>
+  {{# } }}
+  <a class="tag-danger btn-danger" lay-event="del">删除</a>
+</script>

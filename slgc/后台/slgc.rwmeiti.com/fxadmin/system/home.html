@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/iconfont.css" />
+<style>
+    .tips {
+        background-color: #f3f5f7;
+        border-color: #42b983;
+        padding: 1rem 1.5rem;
+        border-left-width: .5rem;
+        border-left-style: solid;
+        margin-bottom: 2rem;
+        line-height: 1.5rem;
+    }
+</style>
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">系统管理</a>
+        <a><cite>发稿平台设置</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+          <div class="card">
+              <div class="layui-row">
+                  <div class="tips">
+                      <p>用户端设置管理用户端左侧导航栏</p>
+                      <p>1.菜单名称对应 用户端显示文字内容</p>
+                      <p> 2.状态可以控制是否在导航栏显示</p>
+                      <p> 3.排序则控制展示顺序 数字越小展示优先级越高 ps:排序值请填写大于0的正整数</p>
+                      <p>2.图标采用svg图片 请在<a href="https://www.iconfont.cn/home/index" target="_blank" style="color: #0a53be" >iconfont-阿里巴巴矢量图标库</a>下载svg图片上传</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form" id="tplForm">
+          <div class="layui-row layui-col-space20">
+            <div class="layui-row">
+              <div class="layui-col-lg2 layui-col-md3 layui-col-sm4">
+                <input type="text" name="auth_name"  placeholder="搜索菜单名称" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="layui-row">
+          <table class="layui-hide" id="table-media-list" lay-filter="homeTable"></table>
+        </div>
+      </div>
+    </div>
+    <div id="modaladdtpl" style="display: none;padding:10px;">
+      <form class="layui-form" action="" lay-filter="tplModal" enctype="multipart/form-data">
+        <div class="layui-form-item">
+          <label class="layui-form-label">
+            <text style="color:red;">*</text>
+            名称</label>
+            <div class="layui-input-block">
+            <input type="text" id="auth_name" name="auth_name" lay-verify="required|username" placeholder="名称" autocomplete="off"
+                   class="layui-input layui-input-lg">
+            <input type="text" id="id" name="id" style="display: none;" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">显示</label>
+            <div class="layui-input-block">
+            <input type="radio" name="menu_show" value="0" title="否" checked>
+            <input type="radio" name="menu_show" value="1" title="是">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">父级</label>
+            <div class="layui-input-block">
+            <select name="pid"  lay-verify="required" >
+            <option value="0">－顶级菜单－</option>
+            <option value="314" >首页</option>
+            <option value="315" >文章发布</option>
+            <option value="323" >订单管理</option>
+            <option value="331" >查看价格</option>
+            <option value="338" >财务管理</option>
+            <option value="342" >个人中心</option>
+            <option value="348" >收录反馈</option>
+            <option value="350" >改稿反馈</option>
+                        </select>
+         </div>
+        </div>
+<!--        <div class="layui-form-item">-->
+<!--          <label class="layui-form-label">默认图标</label>-->
+<!--            <div class="layui-input-block">-->
+
+<!--            <input type="text" id="icon" name="icon" lay-verify="" placeholder="图标代码" autocomplete="off"-->
+<!--                   class="layui-input">-->
+<!--          </div>-->
+<!--        </div>-->
+
+          <div class="layui-form-item">
+              <label class="layui-form-label">svg上传</label>
+              <div class="layui-input-inline">
+                  <div class="layui-upload-drag" id="linklogo" data-url="">
+                      <img id="uploadImg" src="" style='width: 60px;height: 60px;'/>
+                  </div>
+              </div>
+              <input type="hidden" name="svg" id="svg"  autocomplete="off" class="layui-input" value="">
+          </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">排序</label>
+            <div class="layui-input-block">
+                <input type="text" id="sort" name="sort" lay-verify="integer" placeholder="请输入排序，从大到小，倒序排列"  class="layui-input">
+          </div>
+        </div>
+          <button class="layui-btn" id="submitedit" style="display: none;" lay-submit lay-filter="submitedit">提交</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/JsonExportExcel.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/global.js"></script>
+
+<script>
+  layui.use(['element', 'table', 'layer', 'form','upload','jquery'], function () {
+    var table = layui.table;
+    var layer = layui.layer;
+    var form = layui.form;
+    var upload = layui.upload;
+    var $ = layui.jquery;
+    var width = $(document).width();
+    var toolWidth = width <= 768 ? 100 : 500;
+    var tip;
+    var disable = false;
+
+
+    var dataTable = table.render({
+      elem: '#table-media-list',
+      url: '/fxadmin/system/home.html',
+      method: 'POST',
+      toolbar: '#headerTool',
+      defaultToolbar: ['filter'],
+      totalRow: true,
+      cols: [[
+        { field: 'auth_name', align: 'center', title: '菜单名称', minWidth: 120,},
+        { field: 'menu_show', align: 'center', title: '状态', minWidth: 110, templet: '#menu_showTpl' },
+        // { field: 'icon', align: 'center', title: '图标', minWidth: 110, },
+        { field: 'svg', align: 'center', title: 'svg图标', minWidth: 110, templet: '#svgTpl'},
+        // {field: "sort", title: "排序", width: 80, align: "center", templet:function(d){
+        //     return editInput('sort',d,'/system/setSort');
+        //   }},
+          {field: "sort", title: "排序", width: 80, align: "center"},
+        { field: 'id', align: 'center',fixed:'right', title: '操作', minWidth: toolWidth ,templet:'#toolTpl'}
+      ]],
+      page: true,
+      limit: 20,
+      done:function(res){
+
+      }
+    });
+
+      $('input[name="auth_name"]').on("input", debounce(function () {
+          auth_name = $(this).val();
+          reloadTable();
+      }));
+
+    table.on('tool(homeTable)', function (obj) {
+      var data = obj.data;
+      if (obj.event === 'edit') {
+        form.val("tplModal", data);
+        if(data.svg){
+            $("#uploadImg").attr('src',data.svg);
+            $("#svg").val(data.svg);
+        }
+        layer.open({
+          type: 1,
+          title: '编辑',
+          content: $('#modaladdtpl'),
+          area: ['560px', '560px'],
+          btn:['提交','取消'],
+          yes:function(index){
+            $("#submitedit").trigger('click');
+          }
+        });
+      }
+    });
+    //是否展示在前端
+    form.on('switch(menu_show_update)', function(data){
+      // 得到开关的value值，实际是需要修改的ID值。
+      var id = data.value;
+      var status = this.checked ? '1' : '0';
+      $.post("/fxadmin/system/change_menu_show.html",{id:id,status:status},function(res){
+        if(res.code === 200){
+          layer.msg(res.msg,{icon:6});
+        }else{
+          layer.msg(res.msg,{icon:5});
+        }
+      })
+    });
+
+    $("#addtpl_config").click(function () {
+      layer.open({
+        type: 1,
+        title: '添加配置项',
+        content: $('#modaladdtpl'),
+        btn:['添加','取消'],
+        yes:function(index){
+          $("#submitadd").trigger('click');
+        }
+      });
+    });
+
+    // 指定开关事件
+    form.on('switch(switchTest)', function(data){
+      layer.msg('开关 checked：'+ (this.checked ? '0' : '1'), {
+        offset: '6px'
+      });
+      //layer.tips('温馨提示：', data.othis)
+    });
+
+
+    function editInput(field, d, url, callback) {
+      if (typeof url === "undefined") {
+        return d[field];
+      }
+      if (typeof callback === "undefined") {
+        callback = '';
+      }
+      return '' +
+              '<div class="layui-input-inline">' +
+              '   <div class="layui-input-inline layui-table-input-inline">' +
+              '       <input type="text" lay-filter="sort"  class="layui-input layui-table-input" autocomplete="off" ' +
+              'style="height:28px;" id="layui-table-input_' + d.id + '" value="' + d[field] + '" ' +
+              'data-id="' + d.id + '" ' +
+              'data-value="' + d[field] + '" ' +
+              'data-field="' + field + '" ' +
+              'data-callback="' + callback + '" ' +
+              'data-url="' + url + '" />' +
+              '   </div>' +
+              '</div>';
+    }
+    //编辑排序
+    form.on('input(sort)', function(data){
+
+    });
+
+    //文件上传
+    layui.use('upload', function(){
+      var upload = layui.upload;
+      upload.render({
+          elem: '#linklogo', //绑定元素
+          url: "/fxadmin/upload/uploadsvg.html", //上传接口
+          accept: 'file',
+          exts: 'svg',
+          done: function (res) {
+              if (res.code === 200) {
+                  $("#uploadImg").attr('src',res.data.url);
+                  $("#svg").val(res.data.url);
+              } else {
+                  layer.msg(res.msg, { icon: 2, time: 1000 });
+              }
+          }, error: function () {
+              //请求异常回调
+          }
+      });
+  });
+    //修改配置项
+    form.on('submit(submitedit)',function(data){
+      var params = data.field;
+      $.post('/fxadmin/system/save_authhome.html',params,function(res){
+          if(res.code === 200){
+              layer.closeAll();
+              layer.msg(res.msg,{icon:6});
+              //reloadTable();
+          }else{
+              layer.msg(res.msg,{icon:5});
+          }
+      })
+      return false;
+  });
+      function reloadTable() {
+          dataTable.reload({
+              where: {
+                  auth_name: auth_name
+              },
+              page: {
+                  curr: 1
+              }
+          });
+      }
+  });
+</script>
+
+<script type="text/html" id="menu_showTpl">
+  <input type="checkbox" name="menu_show" lay-skin="switch" {{# if( d.menu_show === 1 ){ }}checked{{# } }}   lay-text="显示|关闭"  value= {{ d.id}}  lay-filter="menu_show_update">
+</script>
+
+<script type="text/html" id="toolTpl">
+  <a class="tag-primary btn-primary" lay-event="edit">编辑</a>
+</script>
+<script type="text/html" id="svgTpl">
+    {{# if( d.svg){ }}
+    <img id="" src="{{ d.svg}}" style='width: 25px;height: 25px;'/>
+    {{# } }}
+</script>
+
+
+
+
+
+

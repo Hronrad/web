@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/iconfont.css" />
+<style>
+    .td-select,#all_check{width:18px;height:18px;cursor: pointer;}
+    .td-select i,#all_check i{color:#ffffff !important;background: #ffffff !important;line-height: 16px !important;border:1px solid #d2d2d2;border-radius:2px;line-height:16px;}
+    .td-select:hover i,#all_check:hover i{border-color: #1890ff;background-color: #ececec;}
+    .btn-unselect i,#all_check.active i{background: #1890ff !important;border-color: #1890ff;}
+    .tips { background-color: #f3f5f7; border-color: #42b983; padding: 1rem 1.5rem; border-left-width: .5rem; border-left-style: solid; margin-bottom: 2rem; line-height: 38px; min-height: 38px}
+    .tips span{ color: orangered;font-weight: bold;margin: 0 5px; }
+    #date_start,#date_end{width: 100px;float: left;margin-right: 10px;}
+    #timing{float: right;margin-right: 10px;}
+    @media screen and (max-width: 768px) {
+        .layui-table-cell {
+            height: 100px;
+            white-space: normal;
+            word-break: break-all;
+            overflow: hidden;
+        }
+    }
+</style>
+
+<div class="main-body">
+    <div class="layui-row layui-col-space20">
+        <div class="layui-col-md12">
+          <span class="layui-breadcrumb">
+            <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+            <a href="javascript:;">自媒体管理</a>
+            <a><cite>自媒体订单</cite></a>
+          </span>
+                        <div class="export">导出数据 <span class="iconfont iconexport"></span></div>
+                    </div>
+        <div class="layui-col-md12">
+            <div class="card">
+                <div class="tips">
+                                        <input type="text" id="date_start" name="date_start" placeholder="开始日期" autocomplete="off" class="layui-input">
+                    <input type="text" id="date_end" name="date_end" placeholder="结束日期" autocomplete="off" class="layui-input">
+                    <p><span id="username">所有</span>已完成自媒体订单总收益：<span id="num1">0</span>元，已完成自媒体订单总成本：<span id="num2">0</span>元，已完成自媒体订单总利润：<span id="num3">0</span>元。
+                                        </p>
+                                    </div>
+                <form class="layui-form filtForm" id="export_order">
+                    <div class="layui-row layui-col-space20">
+
+                        <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+                            <input type="text" name="media_name" id="media_name" placeholder="媒体名称" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+                            <input type="text" name="title" id="title" placeholder="标题" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+                            <input type="text" name="name" id="name" placeholder="用户名" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+                            <select class="layui-select" id="status" name="status" lay-filter="status">
+                                <option value="">发布状态</option>
+                                <option value="0" >未处理</option>
+                                <option value="1">发布中</option>
+                                <option value="2">已完成</option>
+                                <option value="-1">已拒稿</option>
+                                <option value="-2">已删除</option>
+                            </select>
+                        </div>
+                        <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+                            <select class="layui-select" id="from" name="from" lay-filter="from">
+                                <option value="">媒体类型</option>
+                                <option value="1" >自建媒体</option>
+                                <option value="99">api媒体</option>
+                            </select>
+                        </div>
+                        <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+                            <input type="text" id="date1" name="date1" placeholder="开始日期" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+                            <input type="text" id="date2" name="date2" placeholder="结束日期" autocomplete="off" class="layui-input">
+                        </div>
+                                                <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+                            <input type="text" name="admin" id="admin" placeholder="所属管理员" autocomplete="off" class="layui-input">
+                        </div>
+                         <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+                          <textarea name="no" placeholder="订单号" class="layui-textarea"></textarea>
+                        </div>
+                        <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+                          <textarea name="no3" placeholder="第三方订单号" class="layui-textarea"></textarea>
+                        </div>
+
+                         <div class="layui-input-inline">
+                            <div class="layui-btn" id="search">搜索</div>
+                        </div>
+                        <button style="display: none;" id="submit" lay-submit lay-filter="submit">提交</button>
+                    </div>
+                </form>
+                <div class="layui-row">
+                    <table class="layui-hide" id="table-media-list" lay-filter="mediaTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="publish_div" style="display: none;padding:20px 20px 0 0;">
+        <form class="layui-form" action="" lay-filter="managerModal">
+            <div class="layui-form-item">
+                <label class="layui-form-label">标题</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" type="text" name="title" id="p_title" disabled class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">媒体名称</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" type="text" name="media_name" id="p_media_name" disabled class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">发布网址</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" type="text" name="url" id="url" class="layui-input">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="refuse_div" style="display: none;padding: 20px 20px 0 20px;">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">媒体名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="refuse_media" required lay-verify="required" disabled autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">标题</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="refuse_title" required lay-verify="required" disabled autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">拒稿原因</label>
+                <div class="layui-input-inline">
+                    <select id="reason1" lay-verify="required">
+                        <option value="">请选择</option>
+                        <option value="内容不适合"> 内容不适合</option>
+                        <option value="无有效来源">无有效来源</option>
+                        <option value="已截稿">已截稿</option>
+                        <option value="暂停收稿">暂停收稿</option>
+                        <option value="重复提交">重复提交</option>
+                        <option value="网站故障">网站故障</option>
+                        <option value="标题不行">标题不行</option>
+                        <option value="未收录">未收录</option>
+                        <option value="链接打不开">链接打不开</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">其他原因</label>
+                <div class="layui-input-block">
+                    <textarea id="reason2" placeholder="请输入内容" class="layui-textarea"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+<script src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/JsonExportExcel.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/global.js"></script>
+<script>
+    layui.use(['element', 'layer', 'table', 'form', 'laydate'], function () {
+        var table = layui.table;
+        var form = layui.form;
+        var layer = layui.layer;
+        var laydate = layui.laydate;
+        var media_name = '';
+        var status = '';
+        var date_1 = '';
+        var date_2 = '';
+        var checkRow = [];
+        var cost_show = `false`;
+        var from = '';
+        var initParam = `` ? { status:'0',from:'1' } : {};
+
+        var dataTable = table.render({
+            elem: '#table-media-list',
+            url: '/fxadmin/wemedia/order.html',
+            toolbar: '#headerTool',
+            defaultToolbar: [],
+            method: 'POST',
+            where: initParam,
+            cols: [[
+                { field: 'checked', width: 55, align: 'center', title: '<span id="all_check"><i class="layui-icon"></i></span>', templet:'#check_tpl' },
+                { field: 'order_no', align: 'center', title: '订单号', minWidth: 120 },
+                { field: 'status', align: 'center', title: '发布状态', minWidth: 100, templet: '#statusTpl' },
+                { field: 'media_name', align: 'center', title: '媒体名称', minWidth: 120 },
+                { field: 'platform', align: 'center', title: '平台名称', minWidth: 100 },
+                { field: 'is_sent', align: 'center', title: '媒体类型', minWidth: 110, templet: '#typeTpl' },
+                { field: 'title', align: 'center', title: '文章标题', minWidth: 150, templet: '#titleTpl' },
+                { field: 'name', align: 'center', minWidth: 100, title: '用户名' },
+
+                { field: 'admin', align: 'center', minWidth: 100, title: '所属管理员' },
+                { field: 'customer', align: 'center', minWidth: 100, title: '所属客户' },
+
+                { field: 'is_sent', align: 'center', title: '推送状态', minWidth: 175, templet: '#sentTpl' },
+                { field: 'sent_remark', align: 'center', title: '推送提示', minWidth: 150},
+                { field: 'price', align: 'center', title: '文章费用', minWidth: 100, templet: "#priceTpl" },
+                                { field: 'cost', align: 'center', title: '订单成本价', minWidth: 100, templet: "#costTpl" },
+                                { field: 'url', align: 'center', title: '发布网址', minWidth: 150, templet: '#urlTpl' },
+                { field: 'created_at', align: 'center', title: '提交时间', minWidth: 180 },
+                { field: 'published_at', align: 'center', title: '发布时间', minWidth: 180 },
+                { field: 'id', align: 'center', fixed: 'right', templet: '#tool', title: '操作', width: $(document).width() < 768 ? 100 : 250 }
+            ]],
+            page: true,
+            done: function () {
+                isAllCheck();
+            }
+        });
+
+       /* $(".filtForm input").on('input', function () {
+            $("#submit").trigger('click');
+        });
+
+        form.on('select(status)', function () {
+            $("#submit").trigger('click');
+        });
+        form.on('select(limited_order)', function () {
+            $("#submit").trigger('click');
+        });
+        form.on('select(from)', function (data) {
+            $("#submit").trigger('click');
+        });*/
+        
+        $("#search").on('click',function(){
+            $("#submit").trigger('click');
+        })
+        var date_start = laydate.render({
+            elem: '#date_start',
+            min: '2019-12-18',
+            done: function (val) {
+                date_1 = val;
+                loadStatisticsData();
+            }
+        });
+
+        var date_end = laydate.render({
+            elem: '#date_end',
+            done: function (val) {
+                date_2 = val;
+                loadStatisticsData();
+            }
+        });
+
+        function loadStatisticsData() {
+            var admin = $('#admin').val();
+            if (admin.length > 0  && admin !== '空'){
+                $('#username').text(admin);
+            }else if (admin.length > 0  && admin === '空'){
+                $('#username').text('无管理员');
+            }else{
+                $('#username').text('所有');
+            }
+            $.post('/fxadmin/wemedia/total_money.html', { date1: date_1, date2: date_2 }, function (res) {
+                if (res.code === 200) {
+                    $("#num1").html(res.data.total_price);
+                    $("#num2").html(res.data.total_cost);
+                    $("#num3").html(res.data.profit);
+                } else {
+                    layer.msg(res.msg, { icon: 5 });
+                }
+            });
+        }
+
+        var date1 = laydate.render({
+            elem: '#date1',
+            done: function () {
+                $("#submit").trigger('click');
+            }
+        });
+
+        var date2 = laydate.render({
+            elem: '#date2',
+            done: function () {
+                $("#submit").trigger('click');
+            }
+        });
+
+        form.on('submit(submit)', function (data) {
+            reloadTable(data.field);
+            return false;
+        });
+
+        $(".export").on('click', function () {
+            var params = $("#export_order").serialize();
+            $.post('/fxadmin/wemedia/order.html?export=true&' + params, function (res) {
+                if (res.code === 200) {
+                    JsonToExcel(res.data, '自媒体订单', 'sheet', res.msg);
+                } else {
+                    layer.msg(res.msg, { icon: 5 });
+                }
+            });
+        });
+
+        table.on('toolbar(mediaTable)', function (obj) {
+            if ($(".layui-form-checked").length === 0) {
+                layer.msg('还未选择订单，请先选择', { icon: 5 });
+            } else {
+                var selection = new Array;
+                $(".layui-form-checked").each(function () {
+                    selection.push($(this).prev("input[type='checkbox']").data("pid"));
+                });
+                var ids = selection.join(',');
+                switch (obj.event) {
+                    case 'pushSelect':
+                        layer.confirm('是否【批量推送】已选择的 ' + selection.length + ' 项？', { icon: 3, title: '提示' }, function (index) {
+                            $.post('/fxadmin/wemedia/pushbatch.html', { id: ids }, function (res) {
+                                if (res.code === 200) {
+                                    layer.msg(res.msg, { icon: 6 });
+                                    layer.close(index);
+                                    reloadTable();
+                                } else {
+                                    layer.msg(res.msg, { icon: 5 });
+                                }
+                            })
+                        });
+                        break;
+                    case 'getSelect':
+                        layer.confirm('是否【批量收稿】已选择的 ' + selection.length + ' 项？', { icon: 3, title: '提示' }, function (index) {
+                            $.post('/fxadmin/wemedia/receivebatch.html', { id: ids }, function (res) {
+                                if (res.code === 200) {
+                                    layer.msg(res.msg, { icon: 6 });
+                                    layer.close(index);
+                                    reloadTable();
+                                } else {
+                                    layer.msg(res.msg, { icon: 5 });
+                                }
+                            })
+                        });
+                        break;
+                    case 'refuseSelect':
+                        layer.confirm('是否【批量拒稿】已选择的 ' + selection.length + ' 项？', { icon: 3, title: '提示' }, function (index) {
+                            layer.prompt({ title: '请填写拒稿原因', formType: 2 }, function (pass, index2) {
+                                $.post('/fxadmin/wemedia/refusebatch.html', { id: ids, reason: pass }, function (res) {
+                                    if (res.code === 200) {
+                                        layer.msg(res.msg, { icon: 6 });
+                                        layer.close(index2);
+                                        layer.close(index);
+                                        reloadTable();
+                                    } else {
+                                        layer.msg(res.msg, { icon: 5 });
+                                    }
+                                });
+                            });
+                        });
+                        break;
+                };
+            }
+        });
+
+        form.on('checkbox(td_check)', function (data) {
+            isAllCheck();
+        });
+
+        $(document).on("click", "#all_check", function () {
+            $(this).toggleClass("active");
+            var td = $("td .layui-form-checkbox");
+            if ($(this).hasClass('active')) {
+                td.each(function () {
+                    if (!$(this).hasClass("layui-form-checked")) {
+                        $(this).trigger("click");
+                    }
+                });
+            } else {
+                td.each(function () {
+                    if ($(this).hasClass("layui-form-checked")) {
+                        $(this).trigger("click");
+                    }
+                });
+            }
+        });
+
+        function isAllCheck() {
+            var allCheck = true;
+            $("td .layui-form-checkbox").each(function () {
+                if (!$(this).hasClass("layui-form-checked")) {
+                    allCheck = false;
+                    return false;
+                }
+            });
+            if (allCheck) {
+                if ($("td .layui-form-checkbox").length > 0) {
+                    $("#all_check").addClass('active');
+                }
+            } else {
+                $("#all_check").removeClass('active');
+            }
+        }
+
+        table.on('tool(mediaTable)', function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case 'push':
+                    push(obj);
+                    break;
+                case 'refuse':
+                    refuse(obj, 1);
+                    break;
+                case 'receive':
+                    receive(obj);
+                    break;
+                case 'publish':
+                    publish(obj);
+                    break;
+                case 'edit':
+                    edit(obj);
+                    break;
+                case 'republish':
+                    republish(obj);
+                    break;
+                case 'refuse2':
+                    refuse(obj, 2);
+                    break;
+                 case "del":
+                    del(obj);
+                    break;
+                case "editreason":
+                    editreason(obj);
+                    break;
+            }
+        });
+
+        //单个推送
+        function push(obj) {
+            $.post('/fxadmin/wemedia/push.html', { id: obj.data.id }, function (res) {
+                if (res.code === 200) {
+                    layer.msg(res.msg, { icon: 6 });
+                    obj.update({
+                        is_sent: 1
+                    });
+                } else {
+                    layer.msg(res.msg, { icon: 5 });
+                }
+            });
+        }
+
+        //单个拒稿: status-1  初次拒稿 ；status-2  再次拒稿
+        function refuse(obj, status) {
+            var data = obj.data;
+            $("#refuse_media").val(data.media_name);
+            $("#refuse_title").val(data.title);
+            $('#reason1').val("");
+            form.render('select');
+            $('#reason2').val("");
+            layer.open({
+                type: 1,
+                content: $('#refuse_div'),
+                btn: ['提交', '取消'],
+                yes: function (index) {
+                    var reason = $('#reason1').val() + $('#reason2').val();
+                    if (!reason) {
+                        layer.msg('请选择拒稿理由!');
+                        return;
+                    }
+                    $.post('/fxadmin/wemedia/refuse.html', {
+                        id: data.id,
+                        reason: reason,
+                        status: status
+                    }, function (data) {
+                        if (data.code == 200) {
+                            layer.msg(data.msg, { icon: 6 });
+                            obj.update({
+                                status: -1,
+                                id: obj.data.id
+                            });
+                            layer.close(index);
+                        } else {
+                            layer.msg(data.msg, { icon: 5 });
+                        }
+                    });
+                }
+            });
+        }
+	    //单个删除
+	    function del(obj) {
+	      $.post('/fxadmin/wemedia/delo.html', { id: obj.data.id }, function (res) {
+	        if (res.code === 200) {
+	          layer.msg(res.msg, { icon: 6 });
+	          obj.update({
+	            status: -2,
+	          });
+	        } else {
+	          layer.msg(res.msg, { icon: 5 });
+	        }
+	      });
+	    }
+        //单个收稿
+        function receive(obj) {
+            $.post('/fxadmin/wemedia/recieve.html', { id: obj.data.id }, function (res) {
+                if (res.code === 200) {
+                    layer.msg(res.msg, { icon: 6 });
+                    obj.update({
+                        status: 1,
+                        id: obj.data.id
+                    });
+                } else {
+                    layer.msg(res.msg, { icon: 5 });
+                }
+            });
+        }
+
+        //单个发布
+        function publish(obj) {
+            var data = obj.data;
+            $("#p_title").val(data.title);
+            $("#p_media_name").val(data.media_name);
+            $("#url").val(data.url);
+            layer.open({
+                type: 1,
+                content: $('#publish_div'),
+                btn: ['提交', '取消'],
+                yes: function (index) {
+                    var id = data.id;
+                    var url = $('#url').val();
+                    var order_no = data.order_no;
+                    $.post('/fxadmin/wemedia/publish.html', { id: id, url: url, order_no: order_no }, function (data) {
+                        if (data.code == 200) {
+                            layer.msg(data.msg, { icon: 6 });
+                            obj.update({
+                                status: 2,
+                                url: url,
+                                id: obj.data.id
+                            });
+                            layer.close(index);
+                        } else {
+                            layer.msg(data.msg, { icon: 5 });
+                        }
+                    });
+                }
+            });
+        }
+
+        //单个编辑
+        function edit(obj) {
+            var data = obj.data;
+            $("#p_title").val(data.title);
+            $("#p_media_name").val(data.media_name);
+            $("#url").val(data.url);
+            layer.open({
+                type: 1,
+                content: $('#publish_div'),
+                btn: ['提交', '取消'],
+                yes: function (index) {
+                    var id = data.id;
+                    var url = $('#url').val();
+                    var order_no = data.order_no;
+                    $.post('/fxadmin/wemedia/editurl.html', { id: id, url: url, order_no: order_no }, function (data) {
+                        if (data.code == 200) {
+                            layer.msg(data.msg, { icon: 6 });
+                            obj.update({
+                                url: url,
+                                id: obj.data.id
+                            });
+                            layer.close(index);
+                        } else {
+                            layer.msg(data.msg, { icon: 5 });
+                        }
+                    });
+                }
+            });
+        }
+
+        //单个重新发布
+        function republish(obj) {
+            var data = obj.data;
+            $("#p_title").val(data.title);
+            $("#p_media_name").val(data.media_name);
+            $("#url").val(data.url);
+            layer.open({
+                type: 1,
+                content: $('#publish_div'),
+                btn: ['提交', '取消'],
+                yes: function (index, layero) {
+                    var id = data.id;
+                    var url = $('#url').val();
+                    var order_no = data.order_no;
+                    $.post('/fxadmin/wemedia/republish.html', { id: id, url: url, order_no: order_no }, function (data) {
+                        if (data.code == 200) {
+                            layer.msg(data.msg, { icon: 6 });
+                            obj.update({
+                                status: 2,
+                                url: url,
+                                id: obj.data.id
+                            });
+                            layer.close(index);
+                        } else {
+                            layer.msg(data.msg, { icon: 5 });
+                        }
+                    });
+                }
+            });
+        }
+
+
+        //编辑拒稿原因
+        function editreason(obj)
+        {
+            layer.prompt({
+                    formType: 0,
+                    value: obj.data.reason,
+                    title: '编辑拒稿原因',
+                },
+                function(value, index, elem){
+                    layer.close(index);
+                    $.post('/fxadmin/wemedia/refusereason.html',{id:obj.data.id,reason:value},function(data){
+                        if (data.code == 200) {
+                            layer.msg(data.msg, { icon: 6 });
+                            obj.update({
+                                reason: value,
+                                url: url,
+                                id: obj.data.id
+                            });
+                            layer.close(index);
+                        } else {
+                            layer.msg(data.msg, { icon: 5 });
+                        }
+                    })
+
+                });
+
+        }
+
+        function reloadTable(param) {
+            dataTable.reload({
+                where: param,
+                page: {
+                    curr: 1
+                }
+            });
+        }
+
+        $("body").on('mouseover', ".refuse", function () {
+            layer.tips('拒稿原因：' + $(this).data('reason'), $(this), {
+                tips: [2, '#ff4949'],
+                time: 0
+            });
+        }).on('mouseout', '.refuse', function () {
+            layer.closeAll();
+        });
+
+    });
+</script>
+
+<script type="text/html" id="headerTool">
+    <a class="layui-btn btn-primary" lay-event="pushSelect">批量推送</a>
+    <a class="layui-btn btn-success" lay-event="getSelect">批量收稿</a>
+    <a class="layui-btn btn-danger" lay-event="refuseSelect">批量拒稿</a>
+</script>
+
+<script type="text/html" id="check_tpl">
+    {{# if($.inArray(d.status,[0,1])!=-1 && d.is_sent !=1 ){ }}
+    <input type="checkbox" lay-skin="primary" lay-filter="td_check" data-pid="{{d.id}}">
+    {{# } }}
+</script>
+
+<script type="text/html" id="urlTpl">
+    {{# if(d.status==2){ }}
+    <a href="{{d.url}}" target="_blank">查看网址</a>
+    {{# }else if(d.status==-1){ }}    
+       {{# if(/^[0-9]*$/.test(d.reason) === true){ }}
+        <span style="color:#f74e4e">已拒稿</span>
+        {{# }else{ }}
+      <span style="color:#f74e4e">已拒稿：{{d.reason}}</span>
+        {{# } }}
+    {{# } }}
+</script>
+<script type="text/html" id="titleTpl">
+    <a href="/preview/2/{{d.order_no}}.html" target="view_window">{{d.title}}</a>
+</script>
+
+<script type="text/html" id="statusTpl">
+    {{# if(d.status === -2){ }}
+    <span class="tag-danger">已删除</span>
+    {{# }else if(d.status === -1){ }}
+    <span class="tag-danger refuse" data-reason="{{# if(/^[0-9]*$/.test(d.reason) === false){ }}{{d.reason}} {{# } }}">已拒稿</span>
+    {{# }else if(d.status === 0){ }}
+    {{# if(d.is_sent !== 1){ }}
+    <span class="tag-default">未处理</span>
+    {{# } }}
+    {{# }else if(d.status === 1){ }}
+    <span class="tag-primary">发布中</span>
+    {{# }else if(d.status === 2){ }}
+    <span class="tag-success">已完成</span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="sentTpl">
+    {{# if(d.status !== -2){ }}
+    {{# if(d.is_sent === 0){ }}
+    <span class="tag-primary">未推送</span>
+    {{# }else if(d.is_sent === -1){ }}
+    <span class="tag-default">自建媒体，请手动处理</span>
+    {{# }else if(d.is_sent === 1){ }}
+    <span class="tag-success">已推送</span>
+    {{# } }}
+    {{# } }}
+</script>
+<script type="text/html" id="costTpl">
+    {{# if(d.cost >0){ }}
+    ￥{{d.cost}}
+    {{# } }}
+    {{# if(d.jf_cost >0){ }}
+    {{d.jf_cost}}积分
+    {{# } }}
+</script>
+<script type="text/html" id="typeTpl">
+    {{# if($.inArray(d.is_sent,[0,1]) !=-1){ }}
+    <span class="tag-primary">api媒体</span>
+    {{# }else{ }}
+    <span class="tag-default">自建媒体</span>
+    {{# } }}
+    {{# if(d.jf_cost >0){ }}
+    <i class="layui-icon layui-icon-rmb" style="font-size: 12px; color: #1E9FFF;"></i>
+    {{# } }}
+</script>
+<script type="text/html" id="tool">
+    {{# if(d.is_sent === 0){ }}
+    {{# if(d.status === -2){ }}
+    已删除
+    {{# } else if(d.status === -1 ){ }}
+        {{# if(d.republish === 0){ }}
+    <a class="tag-primary btn-success" lay-event="republish">重新发布</a>
+        {{# } }}
+    <a class="tag-primary btn-warning" lay-event="del">删除</a>
+    <a class="tag-primary btn-primary" lay-event="editreason">拒稿原因</a>
+    {{# }else if(d.status === 2){ }}
+    <a class="tag-primary btn-primary" lay-event="edit">编辑网址</a>
+    {{# if (d.rerefuse === 0){ }}
+    <a class="tag-primary btn-danger" lay-event="refuse2">再拒稿</a>
+    {{# }}}
+    {{# }else{ }}
+    <a class="tag-primary btn-primary" lay-event="push">推送</a>
+    <a class="tag-primary btn-danger" lay-event="refuse">拒稿</a>
+    {{# } }}
+    {{# } else if(d.is_sent === 1){ }}
+
+        {{# if (d.status !== 2 &&  d.status !== -1){ }}
+             API处理
+        {{# } }}
+        {{# if (d.status == -1){ }}
+            <a class="tag-primary btn-warning" lay-event="del">删除</a>
+            <a class="tag-primary btn-primary" lay-event="editreason">拒稿原因</a>
+            {{# if(d.republish === 0){ }}
+            <a class="tag-primary btn-success" lay-event="republish">重新发布</a>
+            {{# } }}
+        {{# } }}
+        {{#  if(d.status === 2){  }}
+        <a class="tag-primary btn-primary" lay-event="edit">编辑网址</a>
+            {{#  if(d.rerefuse === 0 ){  }}
+            <a class="tag-primary btn-danger" lay-event="refuse2">再拒稿</a>
+            {{# } }}
+        {{# } }}
+    {{# } else if(d.is_sent === -1){ }}
+    {{# if(d.status === -2){ }}
+    已删除
+    {{# }else if(d.status === -1){ }}
+    {{# if(d.republish === 0){ }}
+    <a class="tag-primary btn-success" lay-event="republish">重新发布</a>
+    {{# } }}
+    <a class="tag-primary btn-warning" lay-event="del">删除</a>
+    <a class="tag-primary btn-primary" lay-event="editreason">拒稿原因</a>
+    {{# }else if(d.status === 1){ }}
+   {{# if(d.republish === 0 && d.rerefuse === 0) { }}
+    <a class="tag-primary btn-danger" lay-event="refuse">拒稿</a>
+   {{# } }}
+    <a class="tag-primary btn-success" lay-event="publish">发布</a>
+    {{# }else if(d.status === 2){ }}
+    <a class="tag-primary btn-primary" lay-event="edit">编辑网址</a>
+    {{# if (d.rerefuse === 0){  }}
+    <a class="tag-primary btn-danger" lay-event="refuse2">再拒稿</a>
+    {{# }}}
+    {{# }else if(d.status === 0){ }}
+    <a class="tag-primary btn-primary" lay-event="receive">收稿</a>
+    <a class="tag-primary btn-success" lay-event="publish">发布</a>
+    <a class="tag-primary btn-danger" lay-event="refuse">拒稿</a>
+    {{# } }}
+    {{# } }}
+
+
+</script>
+<script type="text/html" id="priceTpl">
+    {{# if(d.pay_jf >0){ }}
+    {{d.pay_jf}}积分
+    {{# }else{ }}
+    ￥{{d.price}}
+    {{# } }}
+</script>

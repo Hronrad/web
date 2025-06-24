@@ -1,0 +1,376 @@
+             <!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+
+<style>
+  @media screen and (max-width: 768px) {
+    .layui-table-cell {
+      height: auto;
+      white-space: normal;
+      word-break: break-all;
+      overflow: hidden;
+    }
+  }
+
+  .modal {
+    display: none;
+    padding: 20px 20px 20px 0;
+  }
+</style>
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">客户管理</a>
+        <a><cite>所有客户</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form" lay-filter="filt">
+          <div class="layui-row layui-col-space20">
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs12">
+              <input type="text" id="name" name="name" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs12">
+              <input type="number" id="mobile" name="mobile" placeholder="请输入手机号" autocomplete="off"
+                     class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs12">
+              <input type="number" id="qq" name="qq" placeholder="请输入QQ" autocomplete="off"
+              class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs12">
+              <input type="text" id="admin" name="admin" placeholder="所属管理员" autocomplete="off"
+                     class="layui-input">
+            </div>
+              <div class="layui-col-lg2 layui-col-sm2  layui-col-xs12">
+                  <select class="layui-select" id="money" name="money" lay-filter="money">
+                      <option value="0">余额</option>
+                      <option value="1">有余额</option>
+                  </select>
+              </div>
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs12">
+              <input type="text" id="meijie_name" name="meijie_name" placeholder="邀请人" autocomplete="off"
+                      class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs12">
+              <input type="text" id="date1" name="date1" placeholder="注册时间开始" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs12">
+              <input type="text" id="date2" name="date2" placeholder="注册时间截止" autocomplete="off" class="layui-input">
+              <button class="layui-btn" id="search" style="display: none;" lay-submit lay-filter="search">提交</button>
+            </div>
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs12 layui-col-md-offset6">
+            <a class="layui-btn"  href="/fxadmin/customer/regstatics.html" >注册统计</a>
+            </div>
+          </div>
+
+        </form>
+        <div class="layui-row">
+          <table class="layui-hide" id="table-customer-list" lay-filter="userTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="cusModal" class="modal">
+  <form class="layui-form" action="" lay-filter="cusModal">
+    <div class="layui-form-item">
+      <label class="layui-form-label">分配给：</label>
+      <div class="layui-input-block">
+        <select id="admin_id" class="layui-select" lay-verify="required" name="admin_id">
+          <option value="">请选择</option>
+                  </select>
+      </div>
+    </div>
+    <div class="layui-form-item pwd">
+      <label class="layui-form-label">说明：</label>
+      <div class="layui-input-block">
+        <p>公海中的客户一旦分配，可在左侧【所有客户】中重新分配。</p>
+      </div>
+    </div>
+    <button class="layui-btn" id="submit" style="display: none;" lay-submit lay-filter="submit">提交</button>
+  </form>
+</div>
+
+             <div id="tag" class="modal">
+               <form class="layui-form" action="" lay-filter="cusModal">
+                 <div class="layui-form-item">
+                   <label class="layui-form-label">标签：</label>
+                   <div class="layui-input-block">
+                     <select id="tag_id" class="layui-select" lay-verify="required" name="tag_id">
+                       <option value="">请选择</option>
+                                              <option value="1">直客</option>
+                                              <option value="2">媒介</option>
+                                              <option value="3">直编</option>
+                                              <option value="4">广告公司</option>
+                                              <option value="5">传媒公司</option>
+                                              <option value="6">代理</option>
+                                              <option value="7">无效数据</option>
+                                              <option value="8">微商</option>
+                                              <option value="9">博彩</option>
+                                              <option value="10">负面</option>
+                                              <option value="11">写手</option>
+                                              <option value="12">无意注册</option>
+                                              <option value="13">没有需求</option>
+                                              <option value="14">找代写</option>
+                                              <option value="15">找代发</option>
+                                            </select>
+                   </div>
+                 </div>
+                 <button class="layui-btn" id="submit" style="display: none;" lay-submit lay-filter="submit">提交</button>
+               </form>
+             </div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/global.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+
+<script>
+  layui.use(['element', 'table', 'layer', 'form', 'laydate'], function () {
+    var table = layui.table;
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var count = parseInt(``);
+
+    $("#name,#mobile,#admin,#meijie_name,#qq").on("input", function () {
+      $("#search").trigger("click");
+    });
+      form.on('select(money)', function () {
+          $("#search").trigger('click');
+      });
+    var date1 = laydate.render({
+      elem: '#date1',
+      done: function (val, date, endDate) {
+        $("#search").trigger("click");
+      }
+    });
+
+    var date2 = laydate.render({
+      elem: '#date2',
+      done: function (val, date, endDate) {
+        $("#search").trigger("click");
+      }
+    });
+
+    var dataTable = table.render({
+      elem: '#table-customer-list',
+      url: '/fxadmin/customer/all.html',
+      method: 'POST',
+      cols: [[
+        { field: 'name', align: 'center', title: '用户名', minWidth: 120 },
+        { field: 'userlevel', align: 'center', title: '会员等级', minWidth: 100 },
+        { field: 'money', align: 'center', title: '账户余额', minWidth: 110, templet: '#moneyTpl', totalRow: true },
+        { field: 'jf', align: 'center', title: '积分', minWidth: 110,  totalRow: true },
+        { field: 'status', align: 'center', title: '状态', minWidth: 100, templet: '#statusTpl' },
+        { field: 'mobile', align: 'center', title: '手机号', minWidth: 130 },
+        { field: 'qq', align: 'center', title: 'QQ', minWidth: 100},
+        { field: 'order_count', align: 'center', title: '已完成订单量', minWidth: 130 },
+        { field: 'remark', align: 'center', title: '备注', minWidth: 100},
+        { field: 'tag', align: 'center', title: '标签', minWidth: 100},
+        { field: 'admin', align: 'center', title: '所属管理员', minWidth: 100, templet: '#adminTpl' },
+        { field: 'meijie_name', align: 'center', title: '邀请人', minWidth: 100, templet: '#adminTp2' },
+        { field: 'resource', align: 'center', title: '来源', minWidth: 100, templet: '#resource' },
+        { field: 'created_at', align: 'center', title: '注册时间', minWidth: 160, templet: '<span>{{ linux_to_date(d.created_at) }}</span>' },
+        { field: 'id', fixed: 'right', align: 'center', title: '操作', minWidth: 280, templet: '#toolTpl' }
+      ]],
+      page: true
+    });
+
+    table.on('tool(userTable)', function (obj) {
+      var data = obj.data;
+      if (obj.event === 'free') {
+        var index = layer.confirm('确定将【' + obj.data.name + '】放入公海？', {
+          btn: ['确定', '取消']
+        }, function () {
+          $.post('/fxadmin/customer/untying.html', { id: data.id }, function (res) {
+            if (res.code === 200) {
+              layer.close(index);
+              obj.update({
+                admin: null,
+                id: obj.data.id
+              });
+              count ++;
+              layer.msg(res.msg, { icon: 6 });
+            } else {
+              layer.msg(res.msg, { icon: 5 });
+            }
+          });
+        });
+      } if (obj.event === 'get') {
+        var index = layer.confirm('确定将【' + data.name + '】设置为我的客户？当前剩余客户量为：' + count, {
+          btn: ['确定', '取消']
+        }, function () {
+          $.post('/fxadmin/customer/mycustomer.html', { id: obj.data.id }, function (res) {
+            if (res.code === 200) {
+              layer.close(index);
+              obj.update({
+                admin: '已设置',
+                id:obj.data.id
+              });
+              count--;
+              layer.msg('绑定成功，当前剩余客户量为：' + res.data.count, { icon: 6 });
+            } else {
+              layer.msg(res.msg, { icon: 5 });
+            }
+          });
+        });
+      } else if (obj.event === 'set') {
+        form.val('cusModal', { admin_id: '' });
+        layer.open({
+          type: 1,
+          title: '分配客户【' + data.name + '】',
+          content: $('#cusModal'),
+          btn: ['提交', '取消'],
+          yes: function (index) {
+            var admin_id = $("#admin_id option:selected").val();
+            var admin_name = $("#admin_id option:selected").html();
+            $.post('/fxadmin/customer/binding.html', { admin_id:admin_id,id:obj.data.id }, function (res) {
+              if (res.code === 200) {
+                layer.closeAll();
+                obj.update({
+                  admin: admin_name,
+                  id:obj.data.id
+                });
+                layer.msg(res.msg, { icon: 6 });
+              } else {
+                layer.msg(res.msg, { icon: 5 });
+              }
+            });
+          }
+        });
+      } else if (obj.event === 'remark') {
+        var index = layer.prompt({
+          formType: 2,
+          value: obj.data.remark,
+          title: '用户备注',
+        }, function (value) {
+          $.post('/fxadmin/customer/add_remark.html', { id: obj.data.id, remark: value }, function (res) {
+            if (res.code === 200) {
+              obj.update({
+                remark: value
+              });
+              layer.msg(res.msg, { icon: 6 });
+              layer.close(index);
+            } else {
+              layer.msg(res.msg, { icon: 5 });
+            }
+          });
+        });
+      }else if(obj.event === 'tag'){
+        form.val('tag', { tag_id: '' });
+        layer.open({
+          type: 1,
+          title: '修改标签',
+          content: $('#tag'),
+          btn: ['提交', '取消'],
+          yes: function () {
+            var tag_id = $("#tag_id option:selected").val();
+            $.post('/fxadmin/customer/tag.html', { tag_id:tag_id,id:obj.data.id }, function (res) {
+              if (res.code === 200) {
+                layer.closeAll();
+                obj.update({
+                  tag :$("#tag_id option:selected").text()
+                });
+                layer.msg(res.msg, { icon: 6 });
+              } else {
+                layer.msg(res.msg, { icon: 5 });
+              }
+            });
+          }
+        });
+      }
+    });
+    form.on('submit(search)', function (data) {
+      reloadTable(data.field);
+      return false;
+    });
+    function reloadTable(param) {
+      dataTable.reload({
+        where: param,
+        page: {
+          curr: 1
+        }
+      });
+    }
+  });
+</script>
+
+<script type="text/html" id="moneyTpl">
+  {{# if( d.money !== null ){ }}
+  ￥{{d.money}}
+  {{# } }}
+</script>
+<script type="text/html" id="resource">
+ {{# if( d.resource === 1 ){ }}
+ QQ群
+ {{# }else if( d.resource === 2 ){ }}
+ 微信群
+ {{# }else if( d.resource === 3 ){ }}
+ 社区论坛
+ {{# }else if( d.resource === 4 ){ }}
+ 百度搜索
+ {{# }else if( d.resource === 5 ){ }}
+ 朋友介绍
+ {{# }else if( d.resource === 6 ){ }}
+ 其他
+ {{# }else if( d.resource === 7 ){ }}
+ 百度贴吧
+ {{# }else if( d.resource === 8 ){ }}
+ 悟空问答
+ {{# }else if( d.resource === 9 ){ }}
+ 列表网
+ {{# }else if( d.resource === 10 ){ }}
+ 脉脉
+ {{# }else if( d.resource === 11 ){ }}
+ 领英
+ {{# }else if( d.resource === 12 ){ }}
+ 知乎
+ {{# }else if( d.resource === 13 ){ }}
+ 小红书
+ {{# }else if( d.resource === 14 ){ }}
+ 微博
+ {{# }else if( d.resource === 15 ){ }}
+ 简书
+ {{# }else if( d.resource === 16 ){ }}
+ 58同城
+ {{# } }}
+</script>
+
+<script type="text/html" id="statusTpl">
+  {{# if( d.status === 1 ){ }}
+  <span class="tag-success">已启用</span>
+  {{# }else if( d.status === 0 ){ }}
+  <span class="tag-danger">已禁用</span>
+  {{# } }}
+</script>
+
+<script type="text/html" id="adminTpl">
+  {{# if( d.admin ){ }}
+  {{d.admin}}
+  {{# }else{ }}
+  <span class="tag-danger">未设置</span>
+  {{# } }}
+</script>
+<script type="text/html" id="adminTp2">
+  {{# if( d.meijie_name ){ }}
+  {{d.meijie_name}}
+  {{# } }}
+</script>
+
+<script type="text/html" id="toolTpl">
+  {{# if(d.admin ){ }}
+  <a class="tag-success btn-danger" lay-event="free">放入公海</a>
+  {{# }else{ }}
+    <a class="tag-success btn-success" lay-event="set">分配客户</a>
+  {{# } }}
+  <a class="tag-success btn-primary" lay-event="remark">修改备注</a>
+  <a class="tag-success btn-primary" lay-event="tag">修改标签</a>
+</script>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+
+<style>
+  .filt .layui-form-radio * {
+    font-size: 12px;
+    line-height: 30px;
+  }
+
+  .filt .layui-form-radio {
+    margin-right: -4px !important;
+    padding-right: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .filt .layui-form-radio>div {
+    padding: 0 15px;
+    border: 1px solid #DCDFE6
+  }
+
+  .filt .layui-form-radio:nth-child(2)>div {
+    border-radius: 2px 0 0 2px;
+    margin-left: -1px;
+  }
+
+  .filt .layui-form-radio:last-child>div {
+    border-radius: 0 2px 2px 0;
+    margin-left: -1px;
+  }
+
+  .filt .layui-form-radio>i {
+    display: none;
+  }
+
+  .filt .layui-form-radioed>div {
+    background-color: #1890ff;
+    color: #ffffff !important;
+    border-color: #1890ff;
+  }
+</style>
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12 chart_head">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">会员管理</a>
+        <a><cite>注册统计</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form filt">
+          <div class="layui-row layui-col-space20">
+            <div class="layui-col-lg2 layui-col-md3 layui-col-sm4 layui-col-xs12">
+              <input type="text" name="date1" id="date1" lay-verify="date" placeholder="开始日期"
+                     autocomplete="off"
+                     class="layui-input">
+            </div>
+            <div class="layui-col-lg2 layui-col-md3 layui-col-sm4 layui-col-xs12">
+              <input type="text" name="date2" id="date2" lay-verify="date" placeholder="结束日期" autocomplete="off"
+                     class="layui-input">
+            </div>
+            <div class="layui-col-lg5 layui-col-md6 layui-col-sm4 layui-col-xs12 layui-col-lg-offset3">
+              <div style="float: right;">
+                <input type="radio" name="type" value="1" title="日"" checked="">
+                <input type="radio" name="type" value="2" title="月">
+                <input type="radio" name="type" value="3" title="年">
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="layui-row">
+          <div id="chart" style="width: 100%;height:500px;margin-top: 20px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/echarts.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/echarts-theme-mjhz.js"></script>
+
+<script>
+  layui.use(['element', 'layer', 'form', 'laydate'], function () {
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var chart = echarts.init(document.getElementById("chart"), 'mjhz');
+
+    initData();   
+
+    $(window).resize(function () {
+      chart.resize();
+    });
+
+    var date2 = laydate.render({
+      elem: '#date2',
+      done: function (val, date, endDate) {
+        initData();
+      }
+    });
+
+    var date1 = laydate.render({
+      elem: '#date1',
+      done: function (val, date, endDate) {
+        initData();
+      }
+    });
+
+    form.on('radio', function (data) {
+      initData();
+    });
+
+    function initData(){
+      var date1 = $("#date1").val();
+      var date2 = $("#date2").val();
+      var type = $("input[type='radio']:checked").val();
+
+      $.ajax({
+        type: "POST",
+        url: "/fxadmin/users/register.html",
+        data: { date1: date1, date2: date2, type: type },
+        dataType: "json",
+        beforeSend: function () {
+          var index = layer.load(1, {
+            shade: [0.1, '#000']
+          });
+        },
+        success: function (res) {
+          if (res.code === 200) {
+            layer.closeAll();
+            initChart(res.data.title, res.data.data, res.data.data1);
+          } else {
+            layer.closeAll();
+            layer.msg(res.msg, { icon: 5 });
+          }
+        }
+      });
+    }
+
+    function initChart(xData, yData1, yData2) {
+      var option = {
+        title: {
+          text: '平台注册数据统计图',
+          textStyle: {
+            fontSize: 20,
+            lineHeight: 30
+          },
+          left: 'center',
+          top: 'bottom'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            crossStyle: {
+              color: '#999'
+            }
+          }
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: { show: true, title: ' ' }
+          }
+        },
+        dataZoom:[{
+          type:'inside',
+        }],
+        legend: {
+          data: ['注册量', '总注册量']
+        },
+        xAxis: [
+          {
+            type: 'category',
+            splitLine: { show: false },
+            data: xData,
+            axisPointer: {
+              type: 'shadow'
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            splitLine: { show: false },
+            name: '注册量'
+          },
+          {
+            type: 'value',
+            splitLine: { show: false },
+            name: '总注册量'
+          }
+        ],
+        series: [
+          {
+            name: '注册量',
+            type: 'bar',
+            data: yData1,
+            barMaxWidth: 20,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(
+                0, 0, 0, 1,
+                [
+                  { offset: 0, color: '#66b5ff' },
+                  { offset: 1, color: '#ffdc79' }
+                ]
+              )
+            }
+          },
+          {
+            name: '总注册量',
+            type: 'line',
+            yAxisIndex: 1,
+            data: yData2,
+            itemStyle: {
+              color: '#f85b4b'
+            }
+          }
+        ]
+      };
+      chart.setOption(option);
+    }
+  });
+</script>

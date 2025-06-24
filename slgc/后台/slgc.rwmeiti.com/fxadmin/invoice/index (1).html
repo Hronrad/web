@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">会员管理</a>
+        <a><cite>发票列表</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form">
+          <div class="layui-row layui-col-space20">
+           <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" name="order_no" id="order_no" placeholder="订单号" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" name="name" id="uname" placeholder="申请人" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" name="title" id="title" placeholder="发票抬头" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="date1" name="date1" placeholder="开始日期" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="date2" name="date2" placeholder="结束日期" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <select size="1" name="status" id="type" lay-filter="type">
+                <option value="">开票状态</option>
+                <option value="0">申请中</option>
+                <option value="1">出票中</option>
+                <option value="2">已拒绝</option>
+                <option value="3">已开票</option>
+                <option value="4">已签收</option>
+              </select>
+            </div>
+          </div>
+          <button style="display: none;" id="submit" lay-submit lay-filter="submit">提交</button>
+        </form>
+        <div class="layui-row">
+          <table class="layui-hide" id="table-money-record" lay-filter="moneyTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <div id="modalInvoiceSetting" style="display: none;padding:10px 20px;">
+      <form class="layui-form">
+        <div class="layui-form-item">
+          <label class="layui-form-label">发票明细</label>
+          <div class="layui-input-block">
+            <input type="text" id="invoice_detail" required lay-verify="required" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">发票税率 %</label>
+          <div class="layui-input-block">
+            <input type="number" id="tax_rate" required lay-verify="required" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">开票公告</label>
+          <div class="layui-input-block">
+            <textarea id="notice" class="layui-textarea"></textarea>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div id="modalMsg" style="display: none;padding:10px 20px;">
+      <table class="layui-table">
+        <tbody>
+          <tr>
+            <td>发票类型</td>
+            <td id="msg-type"></td>
+          </tr>
+          <tr>
+            <td>税率</td>
+            <td id="msg-tax"></td>
+          </tr>
+          <tr>
+            <td>发票抬头</td>
+            <td id="msg-title"></td>
+          </tr>
+          <tr>
+            <td>税务登记证号</td>
+            <td id="msg-no"></td>
+          </tr>
+          <tr>
+            <td>发票明细</td>
+            <td id="msg-detail"></td>
+          </tr>
+          <tr>
+            <td>发票金额</td>
+            <td id="msg-money"></td>
+          </tr>
+          <tr class="hide">
+            <td>开户银行名称</td>
+            <td id="msg-bank"></td>
+          </tr>
+          <tr class="hide">
+            <td>开户账号</td>
+            <td id="msg-account"></td>
+          </tr>
+          <tr class="hide">
+            <td>注册场所地址</td>
+            <td id="msg-address"></td>
+          </tr>
+          <tr class="hide">
+            <td>注册固定电话</td>
+            <td id="msg-phone"></td>
+          </tr>
+          <tr>
+            <td>收件人</td>
+            <td id="msg-uname"></td>
+          </tr>
+          <tr>
+            <td>收件电话</td>
+            <td id="msg-uphone"></td>
+          </tr>
+          <tr>
+            <td>收件地址</td>
+            <td id="msg-uaddress"></td>
+          </tr>
+          <tr>
+            <td>邮箱</td>
+            <td id="msg-email"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="modalExpress" style="display: none;padding:10px 20px;">
+      <div>
+        <table class="layui-table">
+          <colgroup>
+            <col width="150">
+            <col width="200">
+          </colgroup>
+          <tbody>
+            <tr>
+              <td>收件人</td>
+              <td id="exp-uname"></td>
+            </tr>
+            <tr>
+              <td>收件电话</td>
+              <td id="exp-uphone"></td>
+            </tr>
+            <tr>
+              <td>收件地址</td>
+              <td id="exp-uaddress"></td>
+            </tr>
+            <tr>
+              <td>快递名称</td>
+              <td>
+                <input type="text" class="layui-input" id="exp-name">
+              </td>
+            </tr>
+            <tr>
+              <td>快递单号</td>
+              <td>
+                <input type="text" class="layui-input" id="exp-no">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/global.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+
+<script>
+  layui.use(['element', 'layer', 'table', 'form', 'laydate'], function () {
+    var table = layui.table;
+    var form = layui.form;
+    var layer = layui.layer;
+    var laydate = layui.laydate;
+    $("#uname,#title,#order_no").on("input", debounce(function () {
+      $("#submit").trigger("click");
+    }));
+    form.on('select(type)', function (data) {
+      $("#submit").trigger("click");
+    });
+
+    var dataTable = table.render({
+      elem: '#table-money-record',
+      url: '/fxadmin/invoice/index.html',
+      method: "POST",
+      toolbar: '#headerTool',
+      defaultToolbar: ['filter'],
+      cols: [[
+        { field: 'order_no', align: 'center', title: '订单号', minWidth: 220 , totalRowText: '合计'},
+        { field: 'name', align: 'center', title: '申请人', minWidth: 120 },
+        { field: 'money', align: 'center', title: '金额', minWidth: 100, templet:'<span>￥{{d.money}}</span>' },
+        { field: 'title', align: 'center', title: '发票抬头', minWidth: 240},
+        { field: 'type', align: 'center', title: '发票类型', minWidth: 120, templet: '#typeTpl' },
+        { field: 'status', align: 'center', title: '状态', minWidth: 120, templet: '#statusTpl' },
+        { field: 'email', align: 'center', title: '邮箱', minWidth: 120 },
+        { align: 'center', title: '开票信息', minWidth: 120, templet: '#msgTpl' },
+        { field: 'tax_rate', align: 'center', title: '税率(%)', minWidth: 100, templet: '<span>{{d.tax_rate}}%</span>' },
+        { field: 'tax', align: 'center', title: '税额', minWidth: 100, templet: '<span>￥{{d.tax}}</span>' },
+        { field: 'add_time', align: 'center', title: '申请时间', minWidth: 160, templet: '<span>{{ linux_to_date(d.add_time) }}</span>' },
+        { field: 'billing_time', align: 'center', title: '处理时间', minWidth: 160, templet: '<span>{{linux_to_date(d.billing_time) }}</span>' },
+        { field: 'id', align: 'center', fixed: 'right', title: '操作', minWidth: 180, templet: '#toolTpl' }
+      ]],
+      page: true
+    });
+    laydate.render({
+      elem: '#date1',
+      done: function (data) {
+        $("#submit").trigger('click');
+      }
+    });
+
+    laydate.render({
+      elem: '#date2',
+      done: function () {
+        $("#submit").trigger('click');
+      }
+    });
+
+    table.on('tool(moneyTable)', function (obj) {
+      var data = obj.data;
+      switch (obj.event) {
+        case 'msg':
+          showInvoiceInfo(data);
+          break;
+        case 'invoice':
+          invoice(obj);
+          break;
+        case 'refuse':
+          refuse(obj);
+          break;
+        case 'express':
+          showExpressInfo(obj);
+          break;
+        case 'reason':
+          showRefuseReason(data.refuse_reason);
+          break;
+      }
+    });
+
+    form.on('submit(submit)',function(data){
+      reloadTable(data.field);
+      return false;
+    });
+
+    function reloadTable(data) {
+      dataTable.reload({
+        where:data,
+        page: {
+          curr: 1
+        }
+      });
+    }
+
+    function showInvoiceInfo(data) {
+      $("#msg-type").html(data.type === 1 ? '普通发票' : '专用发票');
+      $("#msg-tax").html(data.tax_rate + '%');
+      $("#msg-title").html(data.title);
+      $("#msg-no").html(data.registration_no);
+      $("#msg-detail").html(data.invoice_detail);
+      $("#msg-money").html(data.money);
+      $("#msg-bank").html(data.bank_name);
+      $("#msg-account").html(data.bank_account);
+      $("#msg-address").html(data.register_address);
+      $("#msg-phone").html(data.register_phone);
+      $("#msg-uname").html(data.recipients_name);
+      $("#msg-uphone").html(data.recipients_phone);
+      $("#msg-uaddress").html(data.recipients_address);
+      $("#msg-email").html(data.email);
+
+      if (data.type === 1) {
+        $(".hide").hide();
+      } else {
+        $(".hide").show();
+      }
+      layer.open({
+        type: 1,
+        title: '申请开票信息',
+        area: '600px',
+        content: $('#modalMsg')
+      });
+    }
+
+    function showExpressInfo(obj) {
+      var data = obj.data;
+      $("#exp-uname").html(data.recipients_name);
+      $("#exp-uphone").html(data.recipients_phone);
+      $("#exp-uaddress").html(data.recipients_address);
+      $("#exp-name").val(data.delivery_name);
+      $("#exp-no").val(data.delivery_no);
+      var index2 = layer.open({
+        type: 1,
+        title: '快递信息',
+        area: '300px',
+        content: $('#modalExpress'),
+        btn: '更新',
+        yes: function () {
+          var delivery_name = $("#exp-name").val();
+          var delivery_no = $("#exp-no").val();
+          $.post('/fxadmin/invoice/adddelivery.html', { id: data.id, delivery_name: delivery_name, delivery_no: delivery_no }, function (res) {
+            if (res.code === 200) {
+              layer.msg(res.msg, { icon: 6 });
+              layer.close(index2);
+              obj.update({
+                status: 3,
+                delivery_name: delivery_name,
+                delivery_no: delivery_no
+              })
+              $("#exp-name").val('');
+              $("#exp-no").val('');
+            } else {
+              layer.msg(res.msg, { icon: 5 });
+            }
+          });
+        }
+      });
+    }
+
+    function showRefuseReason(reason) {
+      layer.open({
+        type: 1,
+        title: '拒绝原因',
+        area: '300px',
+        content: '<div style="padding:20px">' + reason + '</div>'
+      });
+    }
+
+    function invoice(obj) {
+      // 开始处理开票事件
+      $.post('/fxadmin/invoice/changestatus.html', { id: obj.data.id, type: 1 }, function (res) {
+        if (res.code === 200) {
+          obj.update({
+            status: 1,
+            billing_time:res.data,
+            id: obj.data.id
+          })
+          layer.msg(res.msg, { icon: 6 });
+          var index1 = layer.confirm('开票状态已更新，是否现在填写快递信息？', {
+            btn: ['确实', '取消']
+          }, function () {
+            layer.close(index1);
+            showExpressInfo(obj);
+          });
+        } else {
+          layer.msg(res.msg, { icon: 5 });
+        }
+      });
+    }
+
+    function refuse(obj) {
+      // 拒绝开票事件
+      var index = layer.prompt({ title: '填写拒绝开票原因', formType: 2 }, function (text, index) {
+        $.post('/fxadmin/invoice/changestatus.html', { id: obj.data.id, type: 2, reason: text }, function (res) {
+          if (res.code === 200) {
+            obj.update({ status: 2, refuse_reason: text, id: obj.data.id ,billing_time:res.data});
+            layer.msg(res.msg, { icon: 6 });
+          } else {
+            layer.msg(res.msg, { icon: 5 });
+          }
+        });
+        layer.close(index);
+      });
+    }
+
+    $("body").on('mouseover', ".refuse", function () {
+      layer.tips('拒稿原因：' + $(this).data('reason'), $(this), {
+        tips: [2, '#ff4949'],
+        time: 0
+      });
+    }).on('mouseout', '.refuse', function () {
+      layer.closeAll();
+    });
+
+  });
+</script>
+
+<script type="text/html" id="typeTpl">
+    {{# if(d.type === 1){ }}
+    <span class="tag-primary"> 普通发票 </span>
+    {{# }else if(d.type === 2){  }}
+    <span class="tag-success"> 专用发票 </span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="statusTpl">
+    {{# if(d.status === 0){ }}
+    <span class="tag-primary"> 申请中 </span>
+    {{# }else if(d.status === 1){  }}
+    <span class="tag-default"> 出票中 </span>
+    {{# }else if(d.status === 2){ }}
+    <span class="tag-danger refuse" data-reason="{{d.refuse_reason}}"> 已拒绝 </span>
+    {{# }else if(d.status === 3){  }}
+    <span class="tag-success"> 已开票 </span>
+    {{# }else if(d.status === 4){  }}
+    <span class="tag-success"> 已签收 </span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="msgTpl">
+    <a class="tag-default btn-default" lay-event="msg">查看</a>
+</script>
+
+<script type="text/html" id="toolTpl">
+    {{# if(d.status === 0){ }}
+    <a class="tag-success btn-success" lay-event="invoice">处理</a>
+    <a class="tag-danger btn-danger" lay-event="refuse">拒绝</a>
+    {{# }else if(d.status === 1){  }}
+    <a class="tag-primary btn-primary" lay-event="express">处理完成添加快递信息</a>
+    {{# }else if(d.status === 2){ }}
+    <a class="tag-default btn-default" lay-event="reason">拒绝原因</a>
+    {{# }else if(d.status === 3){ }}
+    <a class="tag-default btn-success" lay-event="express">快递信息</a>
+    {{# } }}
+</script>

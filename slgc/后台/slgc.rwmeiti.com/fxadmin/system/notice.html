@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+
+<style>
+  .title {
+    width: 100%;
+    display: inline-block;
+    margin-bottom: 10px;
+    line-height: 24px;
+  }
+
+  .label {
+    float: left;
+    cursor: pointer;
+  }
+
+  .radio {
+    float: right;
+  }
+
+  .layui-form-switch {
+    margin-top: 0 !important;
+  }
+
+  .textarea {
+    min-height: 200px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #e6e6e6;
+    line-height: 1.5rem;
+    width: 100%;
+    font-size: 14px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  #meditor,
+  #zeditor,
+  #xeditor,
+  #beditor,
+  #veditor,
+  #deditor {
+    display: none;
+  }
+
+  .myTabs {
+    height: 30px;
+  }
+
+  .myTab {
+    padding: 0 20px;
+    height: 32px;
+    float: left;
+    line-height: 32px;
+    border: 1px solid #dcdfe6;
+    border-right: none;
+    cursor: pointer;
+  }
+
+  .myTab:last-child {
+    border-right: 1px solid #dcdfe6;
+  }
+
+  .myTab.active {
+    background: #1890ff;
+    color: #ffffff;
+    border: 1px solid #1890ff;
+  }
+
+  .tab {
+    display: none;
+    padding-top: 20px;
+  }
+
+  .tab.active {
+    display: block;
+  }
+</style>
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">系统管理</a>
+        <a><cite>发稿注意事项</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <div class="myTabs">
+          <div class="myTab active">新闻媒体</div>
+          <div class="myTab">自媒体</div>
+          <div class="myTab">微信媒体</div>
+          <div class="myTab">微博媒体</div>
+          <div class="myTab">代写发布</div>
+          <div class="myTab">短视频发布</div>
+        </div>
+        <div class="tab tab0 active">
+          <form class="layui-form" action="">
+            <div class="title">
+              <div class="label" data-tips="提示：注意事项将在【新闻媒体】发稿页面展示">新闻媒体 - 发稿注意事项</div>
+              <div class="radio">富文本 <input type="checkbox" name="isrich" lay-skin="switch" lay-filter="m-switch"></div>
+            </div>
+            <div id="mtextarea" class="textarea" contenteditable="true"></div>
+            <div><textarea id="meditor" name="meditor"></textarea></div>
+            <div style="margin-top: 20px;">
+              <button class="layui-btn btn-primary" lay-submit lay-filter="submit_btn_m">提交</button>
+            </div>
+          </form>
+        </div>
+        <div class="tab tab1">
+          <form class="layui-form" action="">
+            <div class="title">
+              <div class="label" data-tips="提示：注意事项将在【自媒体】发稿页面展示">自媒体 - 发稿注意事项</div>
+              <div class="radio">富文本 <input type="checkbox" name="isrich" lay-skin="switch" lay-filter="z-switch"></div>
+            </div>
+            <div id="ztextarea" class="textarea" contenteditable="true"></div>
+            <div><textarea id="zeditor" name="zeditor"></textarea></div>
+            <div style="margin-top: 20px;">
+              <button class="layui-btn btn-primary" lay-submit lay-filter="submit_btn_z">提交</button>
+            </div>
+          </form>
+        </div>
+        <div class="tab tab2">
+          <form class="layui-form" action="">
+            <div class="title">
+              <div class="label" data-tips="提示：注意事项将在【微信】发稿页面展示">微信媒体 - 发稿注意事项</div>
+              <div class="radio">富文本 <input type="checkbox" name="isrich" lay-skin="switch" lay-filter="x-switch"></div>
+            </div>
+            <div id="xtextarea" class="textarea" contenteditable="true"></div>
+            <div><textarea id="xeditor" name="xeditor"></textarea></div>
+            <div style="margin-top: 20px;">
+              <button class="layui-btn btn-primary" lay-submit lay-filter="submit_btn_x">提交</button>
+            </div>
+          </form>
+        </div>
+        <div class="tab tab3">
+          <form class="layui-form" action="">
+            <div class="title">
+              <div class="label" data-tips="提示：注意事项将在【微博】发稿页面展示">微博 - 发稿注意事项</div>
+              <div class="radio">富文本 <input type="checkbox" name="isrich" lay-skin="switch" lay-filter="b-switch"></div>
+            </div>
+            <div id="btextarea" class="textarea" contenteditable="true"></div>
+            <div><textarea id="beditor" name="beditor"></textarea></div>
+            <div style="margin-top: 20px;">
+              <button class="layui-btn btn-primary" lay-submit lay-filter="submit_btn_b">提交</button>
+            </div>
+          </form>
+        </div>
+        <div class="tab tab4">
+          <form class="layui-form" action="">
+            <div class="title">
+              <div class="label" data-tips="提示：注意事项将在【代写】发稿页面展示">代写 - 发稿注意事项</div>
+              <div class="radio">富文本 <input type="checkbox" name="isrich" lay-skin="switch" lay-filter="d-switch"></div>
+            </div>
+            <div id="dtextarea" class="textarea" contenteditable="true"></div>
+            <div><textarea id="deditor" name="deditor"></textarea></div>
+            <div style="margin-top: 20px;">
+              <button class="layui-btn btn-primary" lay-submit lay-filter="submit_btn_d">提交</button>
+            </div>
+          </form>
+        </div>
+        <div class="tab tab5">
+          <form class="layui-form" action="">
+            <div class="title">
+              <div class="label" data-tips="提示：注意事项将在【短视频】发稿页面展示">短视频 - 发稿注意事项</div>
+              <div class="radio">富文本 <input type="checkbox" name="isrich" lay-skin="switch" lay-filter="v-switch"></div>
+            </div>
+            <div id="vtextarea" class="textarea" contenteditable="true"></div>
+            <div><textarea id="veditor" name="veditor"></textarea></div>
+            <div style="margin-top: 20px;">
+              <button class="layui-btn btn-primary" lay-submit lay-filter="submit_btn_v">提交</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/tinymce/tinymce.min.js"></script>
+<script>
+  layui.use(['element', 'form'], function () {
+    var element = layui.element;
+    var form = layui.form;
+    var isChecked1 = false;
+    var isChecked2 = false;
+    var isChecked3 = false;
+    var isChecked4 = false;
+    var isChecked5 = false;
+    var isChecked6 = false;
+    // 在这里渲染注意事项内容
+    $("#mtextarea").html(`<p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Segoe UI&quot;, &quot;Lucida Grande&quot;, Helvetica, Arial, &quot;Microsoft YaHei&quot;, FreeSans, Arimo, &quot;Droid Sans&quot;, &quot;wenquanyi micro hei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Hiragino Sans GB W3&quot;, FontAwesome, sans-serif; font-size: 13px;">1、文章内容必须属于合法内容，如有负面、涉政、敏感等一律不予发布并停止账号使用。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Segoe UI&quot;, &quot;Lucida Grande&quot;, Helvetica, Arial, &quot;Microsoft YaHei&quot;, FreeSans, Arimo, &quot;Droid Sans&quot;, &quot;wenquanyi micro hei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Hiragino Sans GB W3&quot;, FontAwesome, sans-serif; font-size: 13px;">2、文章提交发布后不可修改、取消或删除，请在提交之前确认好文章内容。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Segoe UI&quot;, &quot;Lucida Grande&quot;, Helvetica, Arial, &quot;Microsoft YaHei&quot;, FreeSans, Arimo, &quot;Droid Sans&quot;, &quot;wenquanyi micro hei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Hiragino Sans GB W3&quot;, FontAwesome, sans-serif; font-size: 13px;">3、一篇文章的发布时间为1-36小时以内，平均大约花费6小时。稿件时效默认为1个月（按自然月来计算）,如有特殊备注请以媒体备注为准。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Segoe UI&quot;, &quot;Lucida Grande&quot;, Helvetica, Arial, &quot;Microsoft YaHei&quot;, FreeSans, Arimo, &quot;Droid Sans&quot;, &quot;wenquanyi micro hei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Hiragino Sans GB W3&quot;, FontAwesome, sans-serif; font-size: 13px;">4、审稿时间为：周一至周五 09:00-18:00，下午16点后提交的文章在隔天发布。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Segoe UI&quot;, &quot;Lucida Grande&quot;, Helvetica, Arial, &quot;Microsoft YaHei&quot;, FreeSans, Arimo, &quot;Droid Sans&quot;, &quot;wenquanyi micro hei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Hiragino Sans GB W3&quot;, FontAwesome, sans-serif; font-size: 13px;">5、所选媒体可能会因为审稿不达标，导致个别所选媒体不能发布，届时会建议您更换媒体或退款。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Segoe UI&quot;, &quot;Lucida Grande&quot;, Helvetica, Arial, &quot;Microsoft YaHei&quot;, FreeSans, Arimo, &quot;Droid Sans&quot;, &quot;wenquanyi micro hei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Hiragino Sans GB W3&quot;, FontAwesome, sans-serif; font-size: 13px;">6、不能带网址的一律不能带电话、QQ、微信等信息，百度新闻源根据文章质量不保证100%收录。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Segoe UI&quot;, &quot;Lucida Grande&quot;, Helvetica, Arial, &quot;Microsoft YaHei&quot;, FreeSans, Arimo, &quot;Droid Sans&quot;, &quot;wenquanyi micro hei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Hiragino Sans GB W3&quot;, FontAwesome, sans-serif; font-size: 13px;">7、入口或者站内搜索媒体方无法保证，有特殊要求请提前备注清楚。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Segoe UI&quot;, &quot;Lucida Grande&quot;, Helvetica, Arial, &quot;Microsoft YaHei&quot;, FreeSans, Arimo, &quot;Droid Sans&quot;, &quot;wenquanyi micro hei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Hiragino Sans GB W3&quot;, FontAwesome, sans-serif; font-size: 13px;">8、文章标题22字以内，内容500~2500字内，图片0~3张内，图片宽度500像素内，媒体可能会对文章进行适当的调整。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Segoe UI&quot;, &quot;Lucida Grande&quot;, Helvetica, Arial, &quot;Microsoft YaHei&quot;, FreeSans, Arimo, &quot;Droid Sans&quot;, &quot;wenquanyi micro hei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Hiragino Sans GB W3&quot;, FontAwesome, sans-serif; font-size: 13px;">9、文章中包含的网址、电话、图片过大、图片过多等，媒体会根据内容规范进行调整或者删减，属于正常情况。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Segoe UI&quot;, &quot;Lucida Grande&quot;, Helvetica, Arial, &quot;Microsoft YaHei&quot;, FreeSans, Arimo, &quot;Droid Sans&quot;, &quot;wenquanyi micro hei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Hiragino Sans GB W3&quot;, FontAwesome, sans-serif; font-size: 13px;">10、word文档上传之后请仔细检查，是否与编辑器内显示一致，请确认一致后再继续操作。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Segoe UI&quot;, &quot;Lucida Grande&quot;, Helvetica, Arial, &quot;Microsoft YaHei&quot;, FreeSans, Arimo, &quot;Droid Sans&quot;, &quot;wenquanyi micro hei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Hiragino Sans GB W3&quot;, FontAwesome, sans-serif; font-size: 13px;">11、包收录的媒体，若稿件未收录，请在第二个工作日提交反馈，有特殊要求的媒体请按照媒体备注操作（例：周五出的稿件，在周六日非正常工作日的情况下，最晚周一下班前反馈未收录）。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Segoe UI&quot;, &quot;Lucida Grande&quot;, Helvetica, Arial, &quot;Microsoft YaHei&quot;, FreeSans, Arimo, &quot;Droid Sans&quot;, &quot;wenquanyi micro hei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Hiragino Sans GB W3&quot;, FontAwesome, sans-serif; font-size: 13px;">12、稿件发布频道不保证，编辑根据稿件内容安排频道。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Segoe UI&quot;, &quot;Lucida Grande&quot;, Helvetica, Arial, &quot;Microsoft YaHei&quot;, FreeSans, Arimo, &quot;Droid Sans&quot;, &quot;wenquanyi micro hei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Hiragino Sans GB W3&quot;, FontAwesome, sans-serif; font-size: 13px;">13、所有成功发布的稿件，除了发布在手机端媒体资源的专稿，其他稿件一律不保证手机端可以打开。</p>`);
+    $("#ztextarea").html(`<p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, 微软雅黑, Tahoma, Arial, sans-serif; font-size: 13px;">1、文章内容必须属于合法内容，如有负面、涉政、敏感等一律不予发布并停止账号使用。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, 微软雅黑, Tahoma, Arial, sans-serif; font-size: 13px;">2、文章提交发布后不可修改、取消或删除，请在提交之前确认好文章内容。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, 微软雅黑, Tahoma, Arial, sans-serif; font-size: 13px;">3、一篇文章的发布时间为1-36小时以内，平均大约花费6小时。稿件时效默认为1个月,如有备注以媒体备注为准。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, 微软雅黑, Tahoma, Arial, sans-serif; font-size: 13px;">4、所选媒体可能会因为审稿不达标，导致所选媒体不能发布，届时会在后台拒稿款项直接返回到账户。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, 微软雅黑, Tahoma, Arial, sans-serif; font-size: 13px;">5、根据自媒体平台规则文章中一律不能带电话、QQ、微信等联系方式，文章发出后都不保证被百度等搜索引擎收录。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, 微软雅黑, Tahoma, Arial, sans-serif; font-size: 13px;">6、文章标题建议30字以内，内容500~2500字内，图片0~3张内，图片宽度500像素内，这样可增加出稿率。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, 微软雅黑, Tahoma, Arial, sans-serif; font-size: 13px;">7、文章中包含的网址、电话、图片过大、图片过多等，媒体会根据内容规范进行调整或者删减，属于正常情况。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, 微软雅黑, Tahoma, Arial, sans-serif; font-size: 13px;">8、word文档上传之后请仔细检查，是否与编辑器内显示一致，请确认一致后再继续操作。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, 微软雅黑, Tahoma, Arial, sans-serif; font-size: 13px;">9、稿件发布频道不保证，平台系统根据稿件内容安排频道。</p><p style="margin-top: 0.5rem; margin-bottom: 0.5rem; box-sizing: border-box; color: rgb(51, 51, 51); font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, 微软雅黑, Tahoma, Arial, sans-serif; font-size: 13px;">10、个别自媒体平台会自动识别相同文章导致审核不通过，所以同一篇文章，最好不要提交同一个自媒体平台（比如百家号）。</p>`);
+    $("#xtextarea").html(``);
+    $("#btextarea").html(``);
+    $("#dtextarea").html(``);
+  
+    $(".myTab").on("click", function () {
+      $(this).addClass("active").siblings().removeClass("active");
+      var index = $(".myTab.active").index();
+      $(".tab" + index).addClass("active").siblings().removeClass("active");
+    });
+
+    $(".label").mouseover(function () {
+      layer.tips($(this).data("tips"), $(this), { tips: [1, '#3595CC'] });
+    }).mouseout(function () {
+      layer.closeAll('tips');
+    });
+
+    form.on('switch(m-switch)', function (data) {
+      isChecked1 = !isChecked1;
+      $("#mtextarea").toggle();
+      if (isChecked1) {
+        initEditor($("#mtextarea").html(), "#meditor");
+      } else {
+        $("#mtextarea").html(tinymce.get('meditor').getContent());
+        tinymce.remove("#meditor");
+      }
+    });
+
+    form.on('switch(z-switch)', function (data) {
+      isChecked2 = !isChecked2;
+      $("#ztextarea").toggle();
+      if (isChecked2) {
+        initEditor($("#ztextarea").html(), "#zeditor");
+      } else {
+        $("#ztextarea").html(tinymce.get('zeditor').getContent());
+        tinymce.remove("#zeditor");
+      }
+    });
+
+    form.on('switch(x-switch)', function (data) {
+      isChecked3 = !isChecked3;
+      $("#xtextarea").toggle();
+      if (isChecked3) {
+        initEditor($("#xtextarea").html(), "#xeditor");
+      } else {
+        $("#xtextarea").html(tinymce.get('xeditor').getContent());
+        tinymce.remove("#xeditor");
+      }
+    });
+
+    form.on('switch(b-switch)', function (data) {
+      isChecked4 = !isChecked4;
+      $("#btextarea").toggle();
+      if (isChecked4) {
+        initEditor($("#btextarea").html(), "#beditor");
+      } else {
+        $("#btextarea").html(tinymce.get('beditor').getContent());
+        tinymce.remove("#beditor");
+      }
+    });
+
+    form.on('switch(d-switch)', function (data) {
+      isChecked5 = !isChecked5;
+      $("#dtextarea").toggle();
+      if (isChecked5) {
+        initEditor($("#dtextarea").html(), "#deditor");
+      } else {
+        $("#dtextarea").html(tinymce.get('deditor').getContent());
+        tinymce.remove("#deditor");
+      }
+    });
+     form.on('switch(v-switch)', function (data) {
+      isChecked6 = !isChecked6;
+      $("#vtextarea").toggle();
+      if (isChecked6) {
+        initEditor($("#vtextarea").html(), "#veditor");
+      } else {
+        $("#vtextarea").html(tinymce.get('veditor').getContent());
+        tinymce.remove("#veditor");
+      }
+    });
+
+    form.on('submit(submit_btn_m)', function (data) {
+      var content;
+      if (!isChecked1) {
+        content = $("#mtextarea").html();
+      } else {
+        content = tinymce.get('meditor').getContent();
+      }
+      editNotice(content, 1);
+      return false;
+    });
+
+    form.on('submit(submit_btn_z)', function (data) {
+      var content;
+      if (!isChecked2) {
+        content = $("#ztextarea").html();
+      } else {
+        content = tinymce.get('zeditor').getContent();
+      }
+      editNotice(content, 2);
+      return false;
+    });
+
+    form.on('submit(submit_btn_x)', function (data) {
+      var content;
+      if (!isChecked3) {
+        content = $("#xtextarea").html();
+      } else {
+        content = tinymce.get('xeditor').getContent();
+      }
+      editNotice(content, 3);
+      return false;
+    });
+
+    form.on('submit(submit_btn_b)', function (data) {
+      var content;
+      if (!isChecked4) {
+        content = $("#btextarea").html();
+      } else {
+        content = tinymce.get('beditor').getContent();
+      }
+      editNotice(content, 4);
+      return false;
+    });
+
+    form.on('submit(submit_btn_d)', function (data) {
+      var content;
+      if (!isChecked5) {
+        content = $("#dtextarea").html();
+      } else {
+        content = tinymce.get('deditor').getContent();
+      }
+      editNotice(content, 5);
+      return false;
+    });
+    
+    form.on('submit(submit_btn_v)', function (data) {
+      var content;
+      if (!isChecked6) {
+        content = $("#vtextarea").html();
+      } else {
+        content = tinymce.get('veditor').getContent();
+      }
+      editNotice(content, 8);
+      return false;
+    });
+
+    function editNotice(data, type) {
+      var arr = ['新闻媒体', '自媒体', '微信', '微博', '代写','','','短视频'];
+      var index = layer.confirm("您将提交对【" + arr[type - 1] + "】发布注意事项的修改，其它类型请点击上方的tab按钮进入相应页面进行提交。", {
+        btn: ['提交', '取消']
+      }, function () {
+        $.post('/fxadmin/system/editnotice.html', { content: data, media_type: type }, function (res) {
+          if (res.code === 200) {
+            layer.msg(res.msg, { icon: 6 });
+          } else {
+            layer.msg(res.msg, { icon: 5 });
+          }
+          layer.close(index);
+        })
+      });
+    }
+
+    function initEditor(val, dom) {
+      tinymce.init({
+        selector: dom,
+        language: 'zh_CN',
+        height: '400px',
+        menubar: false,
+        auto_focus: true,
+        autosave_ask_before_unload: false,
+        plugins: 'indent2em code link autoformat preview wordcount',
+        toolbar: 'code undo redo link bold forecolor alignleft aligncenter alignright indent2em fontselect fontsizeselect preview',
+        font_formats: '宋体=宋体;黑体=黑体;仿宋=仿宋;楷体=楷体;隶书=隶书;幼圆=幼圆;Arial=arial,helvetica,sans-serif;Comic Sans MS=comic sans ms,sans-serif;Courier New=courier new,courier;Tahoma=tahoma,arial,helvetica,sans-serif;Times New Roman=times new roman,times;Verdana=verdana,geneva;Webdings=webdings;Wingdings=wingdings,zapf dingbats',
+        init_instance_callback: editor => {
+          if (val) {
+            editor.setContent(val)
+          }
+        }
+      });
+    }
+  });
+</script>

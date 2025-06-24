@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">会员管理</a>
+        <a><cite>反馈列表</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form" lay-filter="form" id="form-money">
+          <div class="layui-row layui-col-space20">
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="uname" name="name" placeholder="用户名" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="date1" name="date1" placeholder="开始日期" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="date2" name="date2" placeholder="结束日期" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <select name="type" id="type">
+                <option value="">反馈类型</option>
+                <option value="1">反馈</option>
+                <option value="2">提问</option>
+                <option value="3">建议</option>
+                <option value="4">错误</option>
+              </select>
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <select size="1" name="status">
+                <option value="">反馈状态</option>
+                <option value="0">待解决 -</option>
+                <option value="1">已解决</option>
+              </select>
+            </div>
+            <button style="display: none;" id="submit" lay-submit lay-filter="submit">提交</button>
+          </div>
+        </form>
+        <div class="layui-row">
+          <table id="table-money-record" lay-filter="dataTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+
+<script>
+  layui.use(['element', 'laydate', 'table', 'form'], function () {
+    var table = layui.table;
+    var form = layui.form;
+    var laydate = layui.laydate;
+
+    $("#uname").on("input", function () {
+      $("#submit").trigger('click');
+    });
+
+    form.on('select', function (data) {
+      $("#submit").trigger('click');
+    });
+
+    form.on('submit(submit)', function (data) {
+      reloadTable(data.field);
+      return false;
+    });
+
+    laydate.render({
+      elem: '#date1',
+      done: function (data) {
+        $("#submit").trigger('click');
+      }
+    });
+
+    laydate.render({
+      elem: '#date2',
+      done: function () {
+        $("#submit").trigger('click');
+      }
+    });
+
+    var dataTable = table.render({
+      elem: '#table-money-record',
+      url: '/wtnnn/user_feedback.html',
+      method: "POST",
+      cols: [[
+        { field: 'name', align: 'center', title: '用户名', minWidth: 180 },
+        { field: 'title', align: 'center', title: '问题标题', minWidth: 180, templet: '#detailTpl' },
+        { field: 'type_name', align: 'center', title: '类型', minWidth: 180, templet: '#type_nameTpl' },
+        { field: 'status', align: 'center', title: '状态', minWidth: 180, templet: '#statusTpl' },
+        { field: 'add_time', align: 'center', title: '添加时间', minWidth: 180 },
+        { field: 'update_time', align: 'center', title: '最后更新时间', minWidth: 180 },
+        { field: 'id', align: 'center', title: '操作', width: 250, templet: "#toolTpl" },
+      ]],
+      page: true
+    });
+
+    table.on('tool(dataTable)', function (obj) {
+      if (obj.event === 'edit') {
+        window.location.href = '/index/feedback/detail/id/' + obj.data.id+'/from/1';
+      } else if (obj.event === 'close') {
+        var index = layer.confirm('问题将被标记为已解决。', {
+          btn: ['确实', '取消']
+        }, function () {
+          changeStatus(obj, 1);
+        });
+      } else if (obj.event === 'open') {
+        changeStatus(obj, 0);
+      }
+    });
+
+    function changeStatus(obj, status) {
+      $.post('/fxadmin/users/changefeedback.html', { id: obj.data.id }, function (res) {
+        if (res.code === 200) {
+          layer.msg(res.msg, { icon: 6 });
+          obj.update({
+            status: status,
+            id: obj.data.id
+          })
+        } else {
+          layer.msg(res.msg, { icon: 5 });
+        }
+      })
+    }
+
+    function reloadTable(param) {
+      dataTable.reload({
+        where: param,
+        page: {
+          curr: 1
+        }
+      });
+    }
+
+  });
+</script>
+<script type="text/html" id="detailTpl">
+  <a href="/index/feedback/detail/id/{{d.id}}">{{d.title}}</a>
+</script>
+<script type="text/html" id="statusTpl">
+  {{#  if(d.status == 0){ }}
+  <span class="tag-warning">待解决</span>
+  {{#  } else if(d.status == 1){ }}
+  <span class="tag-success">已解决</span>
+  {{#  } }}
+</script>
+<script type="text/html" id="type_nameTpl">
+  {{#  if(d.type_name === '错误'){ }}
+  <span class="tag-danger">{{d.type_name}}</span>
+  {{#  } else { }}
+  <span class="tag-success">{{d.type_name}}</span>
+  {{#  } }}
+</script>
+<script type="text/html" id="toolTpl">
+  {{#  if(d.status == 0){ }}
+  <a class="tag-primary btn-primary" lay-event="edit">回复</a>
+  <a class="tag-danger btn-danger" lay-event="close">标记已解决</a>
+  {{# } else { }}
+  问题已解决
+  {{#  } }}
+</script>

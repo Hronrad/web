@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/iconfont.css" />
+
+<style>
+  @media screen and (max-width: 768px) {
+    .layui-table-cell {
+      height: auto;
+      white-space: normal;
+      word-break: break-all;
+      overflow: hidden;
+    }
+  }
+    .upload{
+    margin-right: 10px;
+    color: #f56c6c;
+    float: right;
+    cursor: pointer;
+    font-size: 14px;
+  }
+</style>
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">会员管理</a>
+        <a><cite>会员列表</cite></a>
+      </span>
+            <div class="export">导出数据 <span class="iconfont iconexport"></span></div>
+            <div class="upload" id="upload">导入用户<span class="iconfont iconexport"></span></div>
+
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form" id="userForm">
+          <div class="layui-row layui-col-space20">
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs12">
+              <input type="text" id="name" name="name" placeholder="请输入用户名(模糊)" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs12">
+              <input type="text" id="names" name="names" placeholder="请输入完整用户名(精确)" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm2 layui-col-xs12">
+              <input type="number" id="mobile" name="mobile" placeholder="请输入手机号" autocomplete="off"
+                     class="layui-input">
+            </div>
+            <div class="layui-col-md1 layui-col-sm2 layui-col-xs12">
+              <select name="type" lay-filter="type">
+                <option value="">- 账户余额 -</option>
+                <option value="1">有余额</option>
+                <option value="2">无余额</option>
+              </select>
+            </div>
+            <div class="layui-col-md1 layui-col-sm2 layui-col-xs12">
+                <select name="level" lay-filter="level">
+                  <option value="">- 会员级别 -</option>
+                  <option value="v0">v0</option>
+                  <option value="v1">v1</option>
+                  <option value="v2">v2</option>
+                  <option value="v3">v3</option>
+                </select>
+              </div>
+                        <div class="layui-col-md2 layui-col-sm3 layui-col-xs12 layui-col-md-offset2 layui-col-sm-offset1 ">
+              <button type="button" class="layui-btn layui-btn-normal layui-btn-fluid" id="addUser">
+                <i class="layui-icon layui-icon-add-1" style="font-size: 16px;"></i><span>添加会员</span>
+              </button>
+              <button style="display: none;" id="search" lay-submit lay-filter="search">提交</button>
+            </div>
+          </div>
+        </form>
+        <div class="layui-row">
+          余额总计: ￥<span id="totalYuE">0.00</span>
+        </div>
+        <div class="layui-row">
+          <table class="layui-hide" id="table-user-list" lay-filter="userTable"></table>
+        </div>
+      </div>
+    </div>
+    <div id="modalAddUser" style="display: none;padding:20px;">
+      <form class="layui-form" action="" lay-filter="userModal">
+        <div class="layui-form-item">
+          <label class="layui-form-label">用户名</label>
+          <div class="layui-input-block">
+            <input type="text" id="editName" name="name" lay-verify="required|username" placeholder="请输入用户名" autocomplete="off"
+                   class="layui-input">
+            <input type="text" id="userId" name="id" style="display: none;" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item pwd">
+          <label class="layui-form-label">登录密码</label>
+          <div class="layui-input-block">
+            <input type="text" name="pwd" placeholder="请输入登录密码" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">手机号</label>
+          <div class="layui-input-block">
+            <input type="text" name="mobile"  placeholder="请输入手机号" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">QQ号</label>
+          <div class="layui-input-block">
+            <input type="text" name="qq" lay-verify="qq" placeholder="请输入QQ号" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">电子邮箱</label>
+          <div class="layui-input-block">
+            <input type="text" name="email" lay-verify="email" placeholder="请输入电子邮箱" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">会员等级</label>
+          <div class="layui-input-block">
+            <input type="radio" name="userlevel" value="v0" title="v0" checked>
+            <input type="radio" name="userlevel" value="v1" title="v1">
+            <input type="radio" name="userlevel" value="v2" title="v2">
+            <input type="radio" name="userlevel" value="v3" title="v3">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">管理员</label>
+          <div class="layui-input-block">
+          <select name="meijie_id" lay-filter="meijie_id" >
+            <option value="">- 管理员 -</option>
+                        <option value="1">root</option>
+                        <option value="2">fxadmin</option>
+                      </select></div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+          <label class="layui-form-label">备注</label>
+          <div class="layui-input-block">
+            <input type="text" name="usernotes" placeholder="请输入备注信息" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item resetpwd">
+            <label class="layui-form-label" style="color:red">重置密码</label>
+            <div class="layui-input-block">
+              <input type="text" name="reset_password" autocomplete="off" placeholder="无需改密码可不填" class="layui-input">
+            </div>
+        </div>
+        <button class="layui-btn" id="submitadd" style="display: none;" lay-submit lay-filter="submitadd">提交</button>
+        <button class="layui-btn" id="submitedit" style="display: none;" lay-submit lay-filter="submitedit">提交</button>
+        <!-- <button type="reset" class="layui-btn layui-btn-primary">重置</button> -->
+        <button type="reset" id="resetinput" style="display: none" class="layui-btn btn-success">重置</button>
+      </form>
+    </div>
+    <!--充值-->
+    <!-- <div id="recharge" style="display:none;padding: 20px;">
+      <form class="layui-form">
+        <div class="layui-form-item">
+          <label class="layui-form-label">充值金额</label>
+          <div class="layui-input-block">
+            <input id="re_money" type="number" name="title" lay-verify="title" required autocomplete="off"
+                   placeholder="请输入大于0的数值" class="layui-input">
+          </div>
+        </div>
+      </form>
+    </div> -->
+    <!--资金调整-->
+    <div id="add_ads_style" style="display:none;padding: 20px 20px 0 0;">
+      <form class="layui-form" lay-filter="recharge-modal">
+        <div class="layui-form-item" id="tips">
+          <label class="layui-form-label">类型</label>
+          <div class="layui-input-block">
+            <input type="text" name="id" id="id" style="display: none;">
+            <input type="radio" name="recharge" value="1" title="代充值" lay-filter="isRecharge">
+            <input type="radio" name="recharge" value="0" title="资金调整" checked lay-filter="isRecharge">
+          </div>
+        </div>
+        <div class="layui-form-item" id="filt_type">
+          <label class="layui-form-label">调整类型</label>
+          <div class="layui-input-block">
+            <input type="radio" name="type" value="1" title="增加" checked>
+            <input type="radio" name="type" value="2" title="减少">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">调整金额</label>
+          <div class="layui-input-block">
+            <input id="money" type="number" name="money" required autocomplete="off"
+                   placeholder="请输入大于0的数值！" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item" id="filt_remark" style="margin-bottom: 0 !important;">
+          <label class="layui-form-label">调整原因</label>
+          <div class="layui-input-block">
+            <input type="text" name="remark" id="remark" required autocomplete="off"
+                   class="layui-input">
+            <button style="display: none;" class="layui-btn" id="submit" lay-submit lay-filter="submit">立即提交</button>
+          </div>
+        </div>
+        <input type="hidden"  class="token" name="__token__" value="3233d9dc154dcaa0b5076b1c87b1ffb9" />
+      </form>
+    </div>
+    <!--调整开票金额-->
+   <div id="modalEditInvoice" style="display:none;padding: 10px;">
+      <form class="layui-form">
+        <div class="layui-form-item">
+          <label class="layui-form-label" style="width: 115px">当前可开票金额</label>
+          <div class="layui-input-inline">
+            <span id="now_allow" type="text" name="now_allow"> </span>元
+          </div>
+        </div>
+        <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 115px">调整可开票金额为</label>
+        <div class="layui-input-inline">
+          <input id="allow_money" type="number" name="allow_money"  required autocomplete="off"
+                 placeholder="请输入大于0的数值" class="layui-input">
+        </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/JsonExportExcel.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/global.js"></script>
+
+<script>
+  layui.use(['element', 'table', 'layer', 'form','upload'], function () {
+    var table = layui.table;
+    var layer = layui.layer;
+    var form = layui.form;
+    var upload = layui.upload;
+    var width = $(document).width();
+    var toolWidth = width <= 768 ? 100 : 500;
+    var tip;
+    var disable = false;
+    $("#name,#names,#mobile,#invite_code").on("input", debounce(function () {
+      $("#search").trigger("click");
+    }));
+    form.on('select(type)', function (data) {
+      $("#search").trigger("click");
+    });
+    form.on('select(level)', function (data) {
+      $("#search").trigger("click");
+    });
+
+    form.on("submit(search)",function(data){
+      reloadTable(data.field);
+      return false;
+    })
+
+    $(".export").on('click', function () {
+      var params = $("#userForm").serialize();
+      $.post('/wtnnn/user_list.html?export=true&' + params, function (res) {
+        if (res.code === 200) {
+          JsonToExcel(res.data, '会员列表', 'sheet', res.msg);
+        } else {
+          layer.msg(res.msg, { icon: 5 });
+        }
+      });
+    });
+
+    var dataTable = table.render({
+      elem: '#table-user-list',
+      url: '/wtnnn/user_list.html',
+      method: 'POST',
+      toolbar: '#headerTool',
+      defaultToolbar: ['filter'],
+      totalRow: true,
+      cols: [[
+        { field: 'name', align: 'center', title: '用户名', minWidth: 120, totalRowText: '合计'},
+        { field: 'userlevel', align: 'center', title: '会员等级', width: 100 },
+        { field: 'money', align: 'center', title: '账户余额', minWidth: 110, templet: '#moneyTpl', totalRow: true },
+        { field: 'jf', align: 'center', title: '账户积分', minWidth: 160,  totalRow: true,templet:"#jfTpl" },
+        { field: 'status', align: 'center', title: '状态', minWidth: 110, templet: '#statusTpl' },
+        { field: 'mobile', align: 'center', title: '手机号', minWidth: 130 },
+        { field: 'qq', align: 'center', title: 'QQ', minWidth: 120 },
+        { field: 'email', align: 'center', title: '电子邮箱', minWidth: 100 },
+        { field: 'pinvitecode', align: 'center', title: '注册填写邀请码', minWidth: 180,templet:"#pinTpl"   },
+        { field: 'hz', align: 'center', title: '抽奖次数', minWidth: 100 },
+        { field: 'is_invoice', align: 'center', title: '发票申请', minWidth: 120, templet:'#invoiceTpl' },
+        { field: 'is_invitecode', align: 'center', title: '邀请码申请', minWidth: 120,templet:'#inviteTpl' },
+        { field: 'is_sl', align: 'center', title: '收录查询', minWidth: 100,templet:'#slTpl' },
+        { field: 'usernotes', align: 'center', title: '备注', minWidth: 120 },
+        { field: 'created_at', align: 'center', title: '注册时间', minWidth: 150, templet: '<span>{{ linux_to_date(d.created_at) }}</span>' },
+        { field: 'last_login', align: 'center', title: '最后登录时间', minWidth: 150, templet: '<span>{{ linux_to_date(d.last_login) }}</span>' },
+        { field: 'last_ip', align: 'center', title: '最后登录IP', minWidth: 120 },
+      //  { field: 'keyword', align: 'center', title: '关键词', minWidth: 100 },
+        { field: 'id', align: 'center',fixed:'right', title: '操作', minWidth: toolWidth ,templet:'#toolTpl'}
+        ]],
+      page: true,
+      done:function(res){
+        $("#totalYuE").html(res.msg)
+      }
+    });
+
+    // layer.tips('点此查看更多信息', $(".layui-table-tool .layui-table-tool-self"), { tips: [4, '#FF5722'] });
+
+    table.on('tool(userTable)', function (obj) {
+      var data = obj.data;
+      $(".pwd").hide();
+      $(".status").show();
+      $(".resetpwd").show();
+      if (obj.event === 'edit') {
+        $("#userId").val(data.id);
+        form.val("userModal", data);
+        $("#editName").attr("disabled","disabled");
+        layer.open({
+          type: 1,
+          title: '修改资料',
+          content: $('#modalAddUser'),
+          btn:['提交','取消'],
+          yes:function(index){
+            $("#submitedit").trigger('click');
+          }
+        });
+      } else if (obj.event === 'money') {
+          form.val('recharge-modal', { id: data.id, recharge: 0, type: 2, money: '', remark: '' });
+          $("#filt_type").show();
+          $("#filt_remark").show();
+          layer.open({
+            type: 1,
+            title: '<span>【' + data.name + '：' + data.mobile + '</span>】' + "资金调整",
+            area: ['350px', '335px'],
+            content: $('#add_ads_style'),
+            btn: ['提交', '取消'],
+            yes: function (index, layero) {
+              $("#submit").trigger('click');
+            }
+          });
+          $("body").on('mouseover', ".layui-form-radio>div", function () {
+            tip = layer.tips('代充值在【充值记录】中查看，  资金调整在【资金记录】中查看', $(this), {
+              tips: [3, '#ff4949'],
+              time: 0
+            });
+          }).on('mouseout', '.layui-form-radio>div', function () {
+            layer.close(tip);
+          });          
+      } else if(obj.event === 'del'){
+        status(obj,-1);
+      } else if(obj.event === 'useful'){
+        status(obj,1);
+      } else if(obj.event === 'useless'){
+        status(obj,0);
+      } else if(obj.event === 'no_inv'){
+        changeType(obj,1,0)
+      } else if(obj.event === 'inv'){
+        changeType(obj,1,1)
+      } else if(obj.event === 'no_code'){
+        changeType(obj,2,0)
+      } else if(obj.event === 'code'){
+        changeType(obj,2,1)
+      }else if(obj.event === 'no_sl'){
+        changeType(obj,3,0)
+      }else if(obj.event === 'sl'){
+        changeType(obj,3,1)
+      }else if(obj.event === 'msg'){
+        window.location.href="/fxadmin/notice/noticeedit.html?user_id="+data.id
+      }else if(obj.event === 'money_inv'){
+        changeIovMoney(obj)
+      }else if(obj.event === 'activity'){
+        activity(obj)
+      }else if(obj.event=== 'edit_pin'){
+        console.log(1231213132)
+        layer.prompt({title:'编辑推广人(请输入推广人邀请码)'},function(value, index){
+          if(isNaN(value)){alert('请输入推广人邀请码');return;}
+          $.post('/fxadmin/users/chargepin.html', {user_id:obj.data.id,code:value}, function (res) {
+            if (res.code === 200) {
+              layer.closeAll();
+              obj.update({
+                pinvitecode:value
+              });
+              layer.msg(res.msg, { icon: 6 });
+            } else {
+              layer.msg(res.msg, { icon: 5 })
+            }
+          });
+        })
+      }else if(obj.event === 'changejf'){
+        layer.prompt({title:'增加/减少积分'},function(value, index){
+          if(isNaN(value)){alert('请输入数字');return;}
+          $.post('/fxadmin/users/rechargejf.html', {user_id:obj.data.id,jf:value}, function (res) {
+            if (res.code === 200) {
+              layer.closeAll();
+              obj.update({
+                jf:obj.data.jf + parseInt(value)
+              });
+              layer.msg(res.msg, { icon: 6 });
+            } else {
+              layer.msg(res.msg, { icon: 5 })
+            }
+          });
+        })
+      }
+    });
+
+    //资金调整：切换是否为充值
+    form.on('radio(isRecharge)', function (data) {
+      if (data.value === '1') {
+        $("#filt_type").hide();
+        $("#filt_remark").hide();        
+        $("input[name='types'][value='0']").removeAttr("checked");
+        $("#remark").val('管理员代充值');
+      } else {
+        $("#filt_type").show();
+        $("#filt_remark").show();
+        $("#remark").val('');
+      }
+    });
+
+    // 资金调整
+    form.on('submit(submit)', function (data) {
+      var param = data.field;
+      if(!disable){
+        disable = true;
+        $.post('/fxadmin/users/modifywallet.html', param, function (res) {
+          setTimeout(function(){
+            if(res.data.token)$(".token").val(res.data.token)
+            disable = false;
+          },1000);
+          if (res.code === 200) {
+            layer.closeAll();
+            reloadTable();
+            layer.msg(res.msg, { icon: 6 });
+          } else {
+            layer.msg(res.msg, { icon: 5 })
+          }
+        });
+        return false;
+      }
+      return false;
+    });
+
+    //添加会员
+    form.on('submit(submitadd)',function(data){
+      var params = data.field;
+      delete params.reset_password;
+      delete params.id;
+      $.post('/fxadmin/users/adduser.html',params,function(res){
+        if(res.code === 200){
+          layer.closeAll();
+          reloadTable();
+          layer.msg(res.msg,{icon:6});
+        }else{
+          layer.msg(res.msg,{icon:5});
+        }
+      })
+      return false;
+    });
+
+    // 修改资料
+    form.on('submit(submitedit)',function(data){
+      var params = data.field;
+      delete params.pwd;
+      $.post('/fxadmin/users/changeinfo.html',params,function(res){
+        if(res.code === 200){
+          layer.closeAll();
+          layer.msg(res.msg,{icon:6});
+          reloadTable();
+        }else{
+          layer.msg(res.msg,{icon:5});
+        }
+      })
+      return false;
+    });
+
+    form.on('switch(status)', function(data){
+// 得到开关的value值，实际是需要修改的ID值。
+      var id = data.value;
+      var status = this.checked ? '1' : '0';
+      $.post("/fxadmin/users/deluser.html",{id:id,status:status},function(res){
+        if(res.code === 200){
+          layer.msg(res.msg,{icon:6});
+        }else{
+          layer.msg(res.msg,{icon:5});
+        }
+      })
+    });
+    form.on('switch(is_invitecode)',function(data){
+      var id = data.value;
+      var status = this.checked ? '1' : '0';
+      $.post("/fxadmin/users/changetype.html",{id:id,type:2,status:status},function(res){
+        if(res.code === 200){
+          layer.msg(res.msg,{icon:6});
+        }else{
+          layer.msg(res.msg,{icon:5});
+        }
+      })
+    })
+
+   form.on('switch(is_sl)',function(data){
+      var id = data.value;
+      var status = this.checked ? '1' : '0';
+      $.post("/fxadmin/users/changetype.html",{id:id,type:3,status:status},function(res){
+        if(res.code === 200){
+          layer.msg(res.msg,{icon:6});
+        }else{
+          layer.msg(res.msg,{icon:5});
+        }
+      })
+     })
+
+    $("#addUser").click(function () {
+      $("#resetinput").trigger('click');
+      $(".status").hide();
+      $(".pwd").show();
+      $(".resetpwd").hide();
+      $("#editName").removeAttr("disabled");
+      layer.open({
+        type: 1,
+        title: '添加会员',
+        content: $('#modalAddUser'),
+        btn:['添加','取消'],
+        yes:function(index){
+          $("#submitadd").trigger('click');
+        }
+      });
+    });
+
+    //账号启用、禁用、删除
+    function status(obj,status){
+      var name = obj.data.name;
+      var id = obj.data.id;
+      if(status === -1){
+        var confirm = layer.confirm('确定删除用户【 '+ name +' 】？', {
+          btn: ['确定','取消']
+        }, function(){
+          changeStatus(id,status);
+        });
+      } else {
+        changeStatus(id,status);
+      }      
+      function changeStatus(id,status){
+        $.post("/fxadmin/users/deluser.html",{id:id,status:status},function(res){
+          if(res.code === 200){
+            layer.msg(res.msg,{icon:6});
+            if(status === -1){
+              obj.del();
+            }else{
+              obj.update({
+                status:status,
+                id:id
+              });
+            }
+          }else{
+            layer.msg(res.msg,{icon:5});
+          }
+        })
+      }
+    }
+
+    //账号开票和推广禁用、启用
+    function changeType(obj,type,status){
+      $.post("/fxadmin/users/changetype.html",{id:obj.data.id,type:type,status:status},function(res){
+        if(res.code === 200){
+          layer.msg(res.msg,{icon:6});
+          if(type === 1){
+            obj.update({
+              is_invoice:status,
+              id:obj.data.id
+            });
+          }else if(type === 2){
+            obj.update({
+              is_invitecode:status,
+              id:obj.data.id
+            });
+          }else{
+            obj.update({
+              is_sl:status,
+              id:obj.data.id
+            });
+          }
+        }else{
+          layer.msg(res.msg,{icon:5});
+        }
+      })
+    }
+
+    //调整可开票金额
+    function changeIovMoney(obj){
+
+      $.post("/fxadmin/invoice/getinvoiceallow.html",{id:obj.data.id},function(res){
+        if(res.code === 200){
+          $('#now_allow').html(res.data.invoice_allow);
+          layer.open({
+            type: 1,
+            title: '添加会员',
+            area:['400px','300px'],
+            content: $('#modalEditInvoice'),
+            btn: ['确定', '取消'],
+            yes: function (index) {
+              var allow_money=$('#allow_money').val();
+              $.ajax({
+                type: "POST",
+                url: "/fxadmin/invoice/editinvoiceallow.html",
+                data: {id:obj.data.id,money:allow_money },
+                dataType: "json",
+                beforeSend: function () {
+                  var index = layer.load(1, {
+                    shade: [0.1, '#000']
+                  });
+                },
+                success: function (res) {
+                    layer.closeAll();
+                    layer.msg(res.msg);
+                }
+              })
+            }
+          })
+        }else{
+          layer.msg(res.msg,{icon:5});
+        }
+      })
+    }
+    function reloadTable(param) {
+      dataTable.reload({
+        where: param,
+        page: {
+          curr: 1
+        }
+      });
+    }
+
+    function activity(obj) {
+      layer.prompt({
+        formType: 0,
+        value:obj.data.hz,
+        title: '请输入抽奖次数',
+      }, function(hz, index, elem){
+        layer.close(index);
+        $.post("/fxadmin/users/activity.html",{id:obj.data.id,hz:hz},function(res){
+          if(res.code === 200){
+            obj.update({
+              hz:hz,
+              id:obj.data.id
+            })
+            layer.msg(res.msg,{icon:6});
+          }else{
+            layer.msg(res.msg,{icon:5});
+          }
+        })
+      });
+    }
+    
+        upload.render({
+            elem: '#upload'
+            , url: '/fxadmin/users/upload.html'
+            , multiple: false  //多文件上传
+            , accept: "file"
+            , data: { action: 'layupload' }
+            , auto: false           
+            , choose: function (obj) {
+                obj.preview(function (index, file, result) {
+                    if ($(".fileName[data-filename='" + file.name.toLowerCase() + "']").length > 0)
+                        layer.msg("文件已存在");
+                    else
+                        obj.upload(index, file);//文件上传
+                });
+            }
+            , done: function (res, index, upload) {               
+                 if(res.code == 200){
+                      layer.msg("文件上传成功",{time:3000,end:function () {
+                                location.href = '/yjt0615/user_list.html';
+                      }
+                  });                 
+               }else{
+                  layer.msg(res.msg);
+               }
+            }
+        });
+
+
+
+
+  });
+</script>
+<script type="text/html" id="pinTpl">
+{{# if( d.pinvitecode){ }}
+   {{d.pinvitecode}}
+{{# } }}
+<a class="tag-primary btn-primary" lay-event="edit_pin">编辑推广人</a>
+<!-- <input type="checkbox" name="is_invoice" value="{{d.is_invoice}}" lay-skin="switch" lay-text="允许|禁止" lay-filter="invoice" {{ d.is_invoice == 1 ? 'checked' : '' }}> -->
+</script>
+<script type="text/html" id="invoiceTpl">
+  {{# if( d.is_invoice === 1 ){ }}
+  <span class="tag-success">允许</span>
+  {{# }else if( d.is_invoice === 0 ){ }}
+  <span class="tag-danger">禁止</span>
+  {{# } }}
+  <!-- <input type="checkbox" name="is_invoice" value="{{d.is_invoice}}" lay-skin="switch" lay-text="允许|禁止" lay-filter="invoice" {{ d.is_invoice == 1 ? 'checked' : '' }}> -->
+</script>
+
+<script type="text/html" id="inviteTpl">
+  <input type="checkbox" name="is_invitecode" lay-skin="switch" {{# if( d.is_invitecode === 1 ){ }}checked{{# } }}   lay-text="允许|禁止"  value= {{ d.id}}  lay-filter="is_invitecode">
+</script>
+<script type="text/html" id="slTpl">
+  <input type="checkbox" name="is_sl" lay-skin="switch" {{# if( d.is_sl === 1 ){ }}checked{{# } }}   lay-text="允许|禁止"  value= {{ d.id}}  lay-filter="is_sl"> 
+</script>
+<script type="text/html" id="jfTpl">
+  <span style="width:50px;">{{ d.jf}}</span>
+  <a class="tag-success btn-primary" lay-event="changejf" style="margin-left: 10px;">积分调整</a>
+</script>
+
+
+
+<script type="text/html" id="moneyTpl">
+  {{# if( d.money !== null ){ }}
+  ￥{{d.money}}
+  {{# } }}
+</script>
+<script type="text/html" id="nameTpl">
+  {{d.name}}
+</script>
+
+<script type="text/html" id="statusTpl">
+  <input type="checkbox" name="status" lay-skin="switch" {{# if( d.status === 1 ){ }}checked{{# } }}   lay-text="启用|禁用"  value= {{ d.id}}  lay-filter="status">
+</script>
+
+<script type="text/html" id="toolTpl">
+  <a class="tag-primary btn-primary" lay-event="edit">编辑</a>
+  <a class="tag-success btn-primary" lay-event="money">资金调整</a>
+  {{# if( d.is_invoice === 1 ){ }}
+  <a class="tag-primary btn-warning" lay-event="no_inv">禁止开票</a>
+  <a class="tag-primary btn-primary" lay-event="money_inv">开票金额</a>
+  {{# }else if( d.is_invoice === 0 ){ }}
+  <a class="tag-primary btn-success" lay-event="inv">允许开票</a>
+  {{# } }}
+  <a class="tag-primary btn-primary" lay-event="msg">发私信</a>
+  <a class="tag-primary btn-danger" lay-event="del">删除</a>
+  </script>
+
+

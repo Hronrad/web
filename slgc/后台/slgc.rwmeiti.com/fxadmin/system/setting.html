@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">系统管理</a>
+        <a><cite>发稿平台设置</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <div class="layui-row">
+          <div class="layui-col-lg2 layui-col-md3 layui-col-sm4">
+            <input type="text" id="name" placeholder="搜索配置" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-row">
+          <table class="layui-hide" id="table-media-list" lay-filter="test"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/global.js"></script>
+<script>
+  layui.use(['element', 'layer', 'table', 'form'], function () {
+    var table = layui.table;
+    var form = layui.form;
+    var layer = layui.layer;
+    var name = '';
+    var dataTable = table.render({
+      elem: '#table-media-list',
+      url: '/fxadmin/system/setting.html',
+      method: 'POST',
+      cols: [[
+        { field: 'name', align: 'center', title: '配置项', minWidth: 180 },
+        { field: 'adesc', align: 'center', title: '说明  ', minWidth: 450 },
+        { field: 'option_value', align: 'center', title: '当前状态', minWidth: 80, templet: "#value" },
+        { field: 'status', fixed: 'right', align: 'center', title: '操作', width: 100, templet: '#tool' }
+      ]],
+      page: true,
+      response: {
+        statusCode: 0
+      },
+      parseData: function (res) {
+        if(res.code != 222){
+        var data = res.data;
+        var arr = [];
+        for (var i = 0; i < data.length; i++) {
+          data[i].status = data[i].option_value === 'true' ? 1 : 0
+        }
+        return {
+          "code": res.code,
+          "msg": res.msg,
+          "count": res.count,
+          "data": data
+        }
+      }
+      }
+    });
+
+    $("#name").on("input", debounce(function () {
+      name = $(this).val();
+      reloadTable();
+    }));
+
+    table.on('tool(test)', function (obj) {
+      switch (obj.event) {
+        case 'close':
+          setting(obj, 0);
+          break;
+        case 'open':
+          setting(obj, 1);
+          break;
+      };
+    });
+
+    function setting(obj, type) {
+      $.post('/fxadmin/system/opensetting.html', { id: obj.data.id, type: type ,option_name:obj.data.option_name}, function (res) {
+        if (res.code === 200) {
+          layer.msg('【' + obj.data.name + '】已' + (type ? '开启' : '关闭'), { icon: 6 });
+          obj.update({
+            option_value: type ? 'true' : 'false',
+            status: type
+          });
+        } else {
+          layer.msg(res.msg, { icon: 5 });
+        }
+      });
+    }
+
+    function reloadTable() {
+      dataTable.reload({
+        where: {
+          name: name
+        },
+        page: {
+          curr: 1
+        }
+      });
+    }
+
+  });
+</script>
+
+<script type="text/html" id="value">
+  {{# if (d.option_value === 'true') {}}
+  <div class="tag-success">已开启</div>
+  {{# }else{ }}
+  <div class="tag-danger">已关闭</div>
+  {{# }}}
+</script>
+
+<script type="text/html" id="tool">
+  {{# if(d.status === 1){ }}
+  <a class="tag-danger btn-danger" lay-event="close">关闭</a>
+  {{# }else{ }}
+  <a class="tag-success btn-success" lay-event="open">开启</a>
+  {{# } }}
+</script>

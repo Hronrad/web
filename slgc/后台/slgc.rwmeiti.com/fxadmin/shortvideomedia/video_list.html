@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/iconfont.css" />
+
+<style>
+  #modalInvoiceSetting {
+    display: none;
+    padding: 20px 20px 0 20px;
+  }
+  .editTip{color: red;margin-left: 5px;font-weight: bold;}
+  @media screen and (max-width: 768px) {
+    .layui-table-cell {
+      height: auto;
+      white-space: normal;
+      word-break: break-all;
+      overflow: hidden;
+    }
+  }
+</style>
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">短视频素材管理</a>
+        <a><cite>短视频列表</cite></a>
+      </span>
+       <div class="export">导出数据 <span class="iconfont icon-export"></span></div>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form">
+          <div class="layui-row layui-col-space20">
+            <div class="layui-col-lg2 layui-col-md3 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="media_name" placeholder="短视频名称" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-lg2 layui-col-md3 layui-col-sm4 layui-col-xs12">
+              <select class="layui-select" id="status" name="status" lay-filter="status">
+                <option value="">媒体状态</option>
+                <option value="1">上架中</option>
+                <option value="-1">已下架</option>
+              </select>
+            </div>
+            <div class="layui-col-lg2 layui-col-md3 layui-col-sm4 layui-col-xs12">
+              <select class="layui-select" id="from" name="from" lay-filter="from">
+                <option value="">媒体类型</option>
+                <option value="1">自建媒体</option>
+                <option value="99">api媒体</option>
+              </select>
+            </div>
+            <div class="layui-col-lg2 layui-col-md3 layui-col-sm4 layui-col-xs6 ">
+              <button type="button" class="layui-btn layui-btn-normal btn-primary layui-btn-fluid"
+                      id="addMedia">
+                <i class="layui-icon layui-icon-add-1" style="font-size: 16px;"></i><span>添加短视频</span>
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="layui-row">
+          <table class="layui-hide" id="table-media-list" lay-filter="mediaTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script src="/static/assets/js/layui/layui.js"></script>
+<script>
+  layui.use(['element', 'laydate', 'layer', 'table', 'form'], function () {
+    var table = layui.table;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var layer = layui.layer;
+    var element = layui.element;
+    var media_name = '';
+    var status = '';
+    var from = '';
+    var checkRow = [];
+
+    var dataTable = table.render({
+      elem: '#table-media-list',
+      url: '/fxadmin/shortvideomedia/index.html?show_price=1&sort=30',
+      method: 'POST',
+      toolbar: '#headerTool',
+      defaultToolbar: ['filter'],
+      cols: [[
+        { type: 'checkbox' },
+        { field: 'id', align: 'center', title: '编号', minWidth:80},
+        { field: 'media_name', align: 'center', title: '名称', minWidth: 150, templet: '#media_name_td' },
+        { field: 'platform', align: 'center', title: '平台', minWidth: 100},
+        { field: 'province', align: 'center', title: '所在地' },
+        { field: 'status', align: 'center', title: '状态', minWidth: 100,templet: '#status_Tpl'},
+        { field: 'hobby', align: 'center', title: '爱好', minWidth: 100},
+        { field: 'fans_num', align: 'center', title: '粉丝数', minWidth: 100},
+        { field: 'avg_likes_num', align: 'center', title: '平均点赞数', minWidth: 100},
+        { field: 'total_likes_num', align: 'center', title: '累计点赞数', minWidth: 100},
+        { field: 'hobby', align: 'center', title: '爱好', minWidth: 100},
+        { field: 'can_modify', align: 'center', title: '修改内容', minWidth: 100,templet: '#modify_Tpl'},
+        { field: 'industry', align: 'center', title: '行业', minWidth: 100},
+        { field: 'can_hepai', align: 'center', title: '投放方式', minWidth: 100,templet: '#hepai_Tpl'},
+
+
+        { field: 'cost', align: 'center', title: '直发成本价', minWidth: 120, templet: '<span>￥{{d.cost}}</span>' },
+        { field: 'v0_cost', align: 'center', title: 'v0直发价格', minWidth: 120, templet: '<span>￥{{d.v0_cost}}</span>' },
+        { field: 'v1_cost', align: 'center', title: 'v1直发价格', minWidth: 120, templet: '<span>￥{{d.v1_cost}}</span>' },
+        { field: 'v2_cost', align: 'center', title: 'v2直发价格', minWidth: 120, templet: '<span>￥{{d.v2_cost}}</span>' },
+        { field: 'v3_cost', align: 'center', title: 'v3直发价格', minWidth: 120, templet: '<span>￥{{d.v3_cost}}</span>' },
+        { field: 'video_cost', align: 'center', title: '合拍成本价', minWidth: 120, templet: '<span>￥{{d.hepai_cost}}</span>' },
+        { field: 'video_v0_cost', align: 'center', title: 'v0合拍价格', minWidth: 120, templet: '<span>￥{{d.hepai_v0_cost}}</span>' },
+        { field: 'video_v1_cost', align: 'center', title: 'v1合拍价格', minWidth: 120, templet: '<span>￥{{d.hepai_v1_cost}}</span>' },
+        { field: 'video_v2_cost', align: 'center', title: 'v2合拍价格', minWidth: 120, templet: '<span>￥{{d.hepai_v2_cost}}</span>' },
+        { field: 'video_v3_cost', align: 'center', title: 'v3合拍价格', minWidth: 120, templet: '<span>￥{{d.hepai_v3_cost}}</span>' },
+        { field: 'orderby', align: 'center', title: '排序', minWidth:100},
+        { field: 'remark', align: 'center', title: '备注', minWidth: 250 },
+        { field: 'id', fixed: 'right', align: 'center', templet: '#barDemo', title: '操作', width: $(document).width() < 768 ? 100 : 300 }
+      ]],
+      page: true
+    });
+
+    // layer.tips('点此查看更多信息', $(".layui-table-tool .layui-table-tool-self"), { tips: [4, '#FF5722'] });
+
+    $("#media_name").on("input", function () {
+      media_name = $(this).val();
+      reloadTable();
+    });
+
+    form.on('select(status)', function (data) {
+      status = data.value;
+      reloadTable();
+    });
+    form.on('select(from)', function (data) {
+      from = data.value;
+      reloadTable();
+    });
+    table.on('toolbar(mediaTable)', function (obj) {
+      var checkStatus = table.checkStatus(obj.config.id);
+      var data = checkStatus.data;
+      var array = [];
+      switch (obj.event) {
+        case 'delSelect':
+          if (data.length !== 0) {
+            for (var i = 0; i < data.length; i++) {
+              array.push(data[i].id);
+            }
+            delSelect(array.join(","),  data.length);
+          } else {
+            layer.msg('请先选择媒体', { icon: 5 });
+          }
+          break;
+      };
+    });
+
+    table.on('checkbox(mediaTable)', function (obj) {
+      if (obj.type === 'one') {
+        if (obj.checked) {
+          checkRow.push(obj);
+        } else {
+          for (var i = 0; i < checkRow.length; i++) {
+            if (checkRow[i].data.id === obj.data.id) {
+              checkRow.splice(i, 1)
+            }
+          }
+        }
+      } else {
+        if (obj.checked) {
+
+        } else {
+          checkRow = [];
+        }
+      }
+    });
+
+    table.on('tool(mediaTable)', function (obj) {
+      var data = obj.data;
+      switch (obj.event) {
+        case 'rec':
+          recommend(obj);
+          break;
+        case 'edit':
+          layer.open({
+            type: 2,
+            maxmin: true,
+            area: ['80%', '80%'],
+            title: '编辑媒体<span class="editTip">（' + (obj.data.from === 99 ? 'API媒体，仅能修改会员价格！' : '如有未审核的媒体 编辑之后会变成上架中！') + '）</span>',
+            content: '/fxadmin/shortvideomedia/add.html?id=' + data.id,
+            cancel: function(){
+              $(".refresh").trigger("click");
+            }
+          });
+          break;
+        case 'black':
+          del(obj);
+          break;
+        case 'white':
+          white(obj);
+          break;
+        case 'update':
+          update(obj);
+          break;
+
+      }
+    });
+    function update(obj) {
+      var index = layer.confirm('确定要更新该媒体？', {
+        btn: ['确实', '取消']
+      }, function () {
+        $.post('/fxadmin/shortvideomedia/update.html', {mid: obj.data.mid}, function (res) {
+          if (res.code === 200) {
+            layer.msg(obj.data.media_name + "已更新完成", {icon: 6, time: 1500}, function () {
+              reloadTable();
+            });
+
+          } else {
+            layer.msg(res.msg, {icon: 5});
+          }
+          layer.close(index);
+        })
+      })
+    }
+
+    function reloadTable() {
+      dataTable.reload({
+        where: {
+          media_name: media_name,
+          status: status,
+          from:from,
+        },
+        page: {
+          curr: 1
+        }
+      });
+      checkRow = [];
+    }
+
+    function recommend(obj) {
+      layer.prompt({
+        formType: 0,
+        value:obj.data.orderby,
+        title: '排序(倒序排列)',
+      }, function(orderby, index, elem){
+        layer.close(index);
+        $.post("/fxadmin/shortvideomedia/recommend.html",{id:obj.data.id,orderby:orderby},function(res){
+          if(res.code === 200){
+            obj.update({
+              orderby:orderby,
+              id:obj.data.id
+            })
+            layer.msg(res.msg,{icon:6});
+          }else{
+            layer.msg(res.msg,{icon:5});
+          }
+        })
+      });
+    }
+
+    function del(obj) {
+      console.log(obj);
+      var index = layer.confirm('确定删除并拉黑 ' + obj.data.media_name + ' ？', {
+        btn: ['确实', '取消']
+      }, function () {
+        $.post('/fxadmin/shortvideomedia/remove.html', { id: obj.data.id}, function (res) {
+          if (res.code === 200) {
+            layer.msg(obj.data.media_name +  '  已删除并拉黑', { icon: 6 });
+            obj.del();
+          } else {
+            layer.msg(res.msg, { icon: 5 });
+          }
+          layer.close(index);
+        })
+      });
+    }
+    function white(obj) {
+      var index = layer.confirm('确定加入白名单 ？加入白名单后，更新api媒体时，该媒体价格保持不变', {
+        btn: ['确实', '取消']
+      }, function () {
+        $.post('/fxadmin/shortvideomedia/white.html', { id: obj.data.id }, function (res) {
+          if (res.code === 200) {
+            layer.msg(obj.data.media_name + "已加入到白名单", { icon: 6 });
+          } else {
+            layer.msg(res.msg, { icon: 5 });
+          }
+          layer.close(index);
+        });
+      });
+    }
+
+
+
+    function delSelect(id,  count) {
+      var index = layer.confirm('所选小红书将被删除，确定删除当前已选择的 ' + count + ' 个媒体？', {
+        btn: ['确实', '取消']
+      }, function () {
+        layer.prompt({
+          formType: 0,
+          title: '删除原因',
+        }, function(reason, index, elem) {
+          layer.close(index);
+          $.post('/fxadmin/shortvideomedia/remove.html', {id: id, reason: reason}, function (res) {
+            if (res.code === 200) {
+              layer.msg(count + ' 个媒体已被删除', {icon: 6});
+              for (var i = 0; i < checkRow.length; i++) {
+                checkRow[i].del();
+              }
+              checkRow = [];
+            } else {
+              layer.msg(res.msg, {icon: 5});
+            }
+            layer.close(index);
+          });
+        });
+      });
+    }
+    element.on('tab(catch-tab)', function(){
+      var type=this.getAttribute('lay-id');
+      $('#type').val(type)
+    });
+    function catch_setting(obj){
+         layer.open({
+           type: 1,
+           title:'【'+obj.data.wemedia_name+'】阅读量及评论量配置',
+           content: $('#setting_catch'),
+           btn: ['提交', '取消'],
+           yes: function (index) {
+             $('#media_id').val(obj.data.id)
+             $("#submit_catch").trigger('click');
+           }
+         })
+    }
+    form.on('submit(submit_catch)', function (data) {
+      var param = data.field;
+      console.log(param)
+      $.post('/fxadmin/customservice/setcatch.html', param, function (res) {
+        if (res.code === 200) {
+          layer.closeAll();
+          reloadTable();
+          layer.msg(res.msg, { icon: 6 });
+        } else {
+          layer.msg(res.msg, { icon: 5 })
+        }
+      });
+      return false;
+    });
+
+    $("#addMedia").click(function () {
+      window.location.href = "/fxadmin/shortvideomedia/add"
+    });
+
+  });
+</script>
+
+<script type="text/html" id="headerTool">
+ <a class="layui-btn btn-danger" lay-event="delSelect">删除已选</a>
+</script>
+
+<script type="text/html" id="media_name_td">
+  <a href="{{d.entrance_link}}" target="_blank">{{ d.media_name }}</a>
+</script>
+<script type="text/html" id="hepai_Tpl">
+  {{# if(d.can_hepai ==0 ){ }}
+  <span class="tag-danger">视频直发</span>
+  {{# }else if( d.status ==1 ){ }}
+  <span class="tag-success">合拍同框</span>
+  {{# }}}
+</script>
+
+<script type="text/html" id="modify_Tpl">
+  {{# if(d.can_modify ==0 ){ }}
+  <span class="tag-danger">不能修改</span>
+  {{# }else if( d.status ==1 ){ }}
+  <span class="tag-success">能修改</span>
+  {{# }}}
+</script>
+
+
+<script type="text/html" id="status_Tpl">
+  {{# if(d.status ==0 ){ }}
+  待审核
+  {{# }else if( d.status ==1 ){ }}
+  <span class="tag-success">上架中</span>
+  {{# }else if( d.status == -1 ){ }}
+  <span class="tag-danger">已下架</span>
+  {{# }}}
+</script>
+
+<script type="text/html" id="barDemo">
+  <a class="tag-success btn-success" lay-event="rec">排序</a>
+  <a class="tag-primary btn-primary" lay-event="edit">编辑</a>
+  {{# if( d.from === 99 ){ }}
+  <a class="tag-danger btn-danger" lay-event="black">拉黑</a>
+  <a class="tag-primary btn-primary" lay-event="white">加白名单</a>
+  <a class="tag-primary btn-primary" lay-event="update">更新</a>
+  {{# }}}
+</script>
+

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/iconfont.css" />
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">会员管理</a>
+        <a><cite>充值记录</cite></a>
+      </span>
+             <div class="export">导出数据 <span class="iconfont iconexport"></span></div>
+          </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form" id="moneyTable">
+          <div class="layui-row layui-col-space20">
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="name" name="name" placeholder="用户名" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <select size="1" name="do_type" lay-filter="do_type">
+                <option value="">充值方式</option>
+                <option value="1">支付宝充值</option>
+                <option value="2">后台充值</option>
+                <option value="3">微信充值</option>
+              </select>
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="admin" name="admin" placeholder="管理员" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="meijie" name="meijie" placeholder="邀请人" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="date1" name="date1" placeholder="开始日期" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="date2" name="date2" placeholder="结束日期" autocomplete="off" class="layui-input">
+              <button style="display: none;" id="submit" lay-submit lay-filter="submit">提交</button>
+            </div>
+          </div>
+        </form>
+        <div class="layui-row">
+         充值总额: ￥<span id="total_money">0.00</span>
+        </div>
+        <div class="layui-row">
+          <table class="layui-hide" id="table-money-record" lay-filter="moneyTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/JsonExportExcel.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/global.js"></script>
+<script>
+
+  layui.use(['element', 'table', 'form', 'laydate'], function () {
+    var table = layui.table;
+    var form = layui.form;
+    var laydate = layui.laydate;
+
+    $("#name").on("input", function () {
+      $("#submit").trigger("click");
+    });
+    $("#admin").on("input", function () {
+      $("#submit").trigger("click");
+    });
+    $("#meijie").on("input", function () {
+      $("#submit").trigger("click");
+    });
+
+    form.on('select(do_type)', function (data) {
+      $("#submit").trigger("click");
+    });
+
+    $(".export").on('click', function () {
+      var params = $("#moneyTable").serialize();
+      $.post('/fxadmin/users/recharge.html?export=true&' + params, function (res) {
+        if (res.code === 200) {
+          JsonToExcel(res.data, '充值记录', 'sheet', res.msg);
+        } else {
+          layer.msg(res.msg, { icon: 5 });
+        }
+      });
+    });
+
+    var dataTable = table.render({
+      elem: '#table-money-record',
+      url: '/fxadmin/users/recharge.html',
+      method: "POST",
+      totalRow: true,
+      cols: [[
+        { field: 'name', align: 'center', title: '用户名', minWidth: 100 },
+        { field: 'money', align: 'center', title: '充值金额', minWidth: 120, templet: '<span>￥{{d.money}}</span>', totalRow:true },
+        { field: 'status', align: 'center', title: '充值状态', minWidth: 100, templet: '#statusTpl' },
+        { field: 'do_type', align: 'center', title: '充值方式', minWidth: 100, templet: '#do_typeTpl' },
+        { field: 'admin', align: 'center', title: '管理员', minWidth: 80 },
+        { field: 'meijie_name', align: 'center', title: '邀请人', minWidth: 80 },
+        { field: 'created_at', align: 'center', title: '创建时间', minWidth: 180 },
+        { field: 'updated_at', align: 'center', title: '到账时间', minWidth: 180 },
+      ]],
+      page: true,
+      done:function(res){
+        $("#total_money").html(res.msg)
+      }
+    });
+
+    laydate.render({
+      elem: '#date1',
+      done: function (data) {
+        $("#submit").trigger('click');
+      }
+    });
+
+    laydate.render({
+      elem: '#date2',
+      done: function () {
+        $("#submit").trigger('click');
+      }
+    });
+
+    form.on('submit(submit)',function(data){
+      reloadTable(data.field);
+      return false;
+    });
+
+    function reloadTable(data) {
+      dataTable.reload({
+        where: data,
+        page: {
+          curr: 1
+        }
+      });
+    }
+
+  });
+</script>
+
+<script type="text/html" id="statusTpl">
+  {{# if(d.status === 0){ }}
+  <span class="tag-primary"> 未付款 </span>
+  {{# }else if(d.status === 1){  }}
+  <span class="tag-success"> 充值成功 </span>
+  {{# } }}
+</script>
+
+<script type="text/html" id="do_typeTpl">
+  {{# if(d.do_type === 1){ }}
+  支付宝充值
+  {{# }else if(d.do_type === 2){  }}
+  后台充值
+  {{# }else if(d.do_type === 3){ }}
+  微信充值
+  {{# } }}
+</script>
+
+
+<script type="text/html" id="moneyTpl">
+  {{# if(d.status === 1){ }}
+  <span class="tag-success">￥{{d.money}}</span>
+  {{# } }}
+</script>

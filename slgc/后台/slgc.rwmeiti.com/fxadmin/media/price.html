@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+
+<style>
+  .tips {
+    background-color: #f3f5f7;
+    border-color: #42b983;
+    padding: 1rem 1.5rem;
+    border-left-width: .5rem;
+    border-left-style: solid;
+    margin-bottom: 2rem;
+    line-height: 1.5rem;
+  }
+  .tips span{
+    color: orangered;
+    font-weight: bold;
+    margin: 0 5px;
+  }
+
+  #progress {
+    padding: 30px 20px;
+    display: none;
+  }
+
+  #modalAddtask {
+    padding: 20px;
+    display: none;
+  }
+  #modalAddtask2 {
+    padding: 20px;
+    display: none;
+  }
+  .layui-form-label{
+    width: 100px;
+  }
+  .layui-input-block{
+    margin-left: 130px;
+  }
+</style>
+
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">媒体管理</a>
+        <a><cite>价格更新</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <div class="layui-row">
+          <div class="tips">
+            <p>媒体价格更新，所有通过api获取的媒体，可对其价格进行批量调整。</p>
+            <p>规则：对于原始价格<span>大于等于</span>“起始金额”，且<span>小于</span>“截止金额”之间的媒体，相应等级的客户价格会按照设置的增加价格进行调整。</p>
+            <p>例：起始金额 = 10，截止金额 = 20， V0增加 = 5，V1增加 = 4，V2增加 = 3，V3增加 = 2。</p>
+            <p style="text-indent: 2em;">如果某个媒体原始价格 12 元，则相应的 V0、V1、V2、V3等级客户的最终价格为 17，16，15，14。</p>
+            <p>注1：边界价格说明，对于某个选定的价格方案，<span>起始金额会更新，截止金额不会更新</span>。在上例中，原始价格为10的会按该价格方案进行更新，20的则不会按该价格方案进行更新。</p>
+            <p>注2：通常情况下，<span>V0增加 ≥ V1增加 ≥ V2增加 ≥ V3增加</span> 。</p>
+            <p>注3：对于未设置价格方案的媒体，默认V0增加 = V1增加 = V2增加 = V3增加 = 原始价格，即所有等级的用户价格均为原始价格 * 2。</p>
+            <p>注4：在系统配置中设置批量价格时，若值为2（百分比调价），则下方所有的价格方案中的增长值单位为%。</p>
+            <p><span>参考下图</span></p>
+            <span><img src = '/static/assets/img/price.png' style="max-width: 90%"></span>
+          </div>
+        </div>
+
+        <div class="layui-tab" lay-filter="manage_type">
+          <ul class="layui-tab-title">
+            <li class="layui-this" lay-id="1">价格更新</li>
+            <li lay-id="2" data-tip="指定频道价格更新规则">频道类型设置</li>
+          </ul>
+          <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+              <div class="layui-row">
+                <table class="layui-hide" id="table-media-price" lay-filter="priceTable"></table>
+              </div>
+            </div>
+            <div class="layui-tab-item">
+              <div class="layui-row">
+                <table class="layui-hide" id="table-media-price2" lay-filter="priceTable2"></table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="progress">
+      <div class="layui-progress layui-progress-big" lay-filter="progress" lay-showPercent="true">
+        <div class="layui-progress-bar layui-bg-blue" lay-percent="20%"></div>
+      </div>
+      <div style="font-size: .8rem;margin-top:1rem;">媒体价格更新中，当前第 <span id="page">1</span> 页，<span
+              style="color: #FF5722">请勿关闭本页面！！！</span></div>
+    </div>
+
+    <div id="modalAddtask">
+      <form class="layui-form" action="" lay-filter="form">
+        <div class="layui-form-item">
+          <label class="layui-form-label">起始金额（元）</label>
+          <div class="layui-input-block">
+            <input type="number" name="start_money" id="start_price" required lay-verify="required|price"
+                   placeholder="请输入起始金额"
+                   autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">截止金额（元）</label>
+          <div class="layui-input-block">
+            <input type="number" name="end_money" required lay-verify="required|price|end" placeholder="请输入截止金额"
+                   autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label modal-tag">v0增加</label>
+          <div class="layui-input-block">
+            <input type="number" name="v0add" required lay-verify="required|price"
+                   autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label modal-tag">v1增加</label>
+          <div class="layui-input-block">
+            <input type="number" name="v1add" required lay-verify="required|price"
+                   autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label modal-tag">v2增加</label>
+          <div class="layui-input-block">
+            <input type="number" name="v2add" required lay-verify="required|price"
+                   autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label modal-tag">v3增加</label>
+          <div class="layui-input-block">
+            <input type="number" name="v3add" required lay-verify="required|price"
+                   autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn btn-primary" lay-submit lay-filter="submit">添加</button>
+            <button type="reset" class="layui-btn btn-default">重置</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div id="modalAddtask2">
+      <form class="layui-form" action="" lay-filter="form2">
+        <div class="layui-form-item">
+          <label class="layui-form-label">频道</label>
+          <div class="layui-input-block">
+            <select name="channel_type" lay-search="" id="channel_type">
+              <option value="">直接选择或搜索选择</option>
+                            <option value="2">IT科技</option>
+                            <option value="3">生活消费</option>
+                            <option value="4">女性时尚</option>
+                            <option value="5">娱乐休闲</option>
+                            <option value="6">游戏网站</option>
+                            <option value="7">汽车网站</option>
+                            <option value="8">教育培训</option>
+                            <option value="9">酒店旅游</option>
+                            <option value="10">健康医疗</option>
+                            <option value="11">房产家居</option>
+                            <option value="12">财经商业</option>
+                            <option value="13">新闻资讯</option>
+                            <option value="14">套餐系列</option>
+                            <option value="15">最新秒杀</option>
+                            <option value="16">特价专区</option>
+                            <option value="17">文化艺术</option>
+                            <option value="18">体育运动</option>
+                            <option value="19">食品餐饮</option>
+                            <option value="30">亲子母婴</option>
+                            <option value="31">工业贸易</option>
+                          </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label modal-tag">v0增加</label>
+          <div class="layui-input-block">
+            <input type="number" name="v0add" required lay-verify="required|price"
+                   autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label modal-tag">v1增加</label>
+          <div class="layui-input-block">
+            <input type="number" name="v1add" required lay-verify="required|price"
+                   autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label modal-tag">v2增加</label>
+          <div class="layui-input-block">
+            <input type="number" name="v2add" required lay-verify="required|price"
+                   autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label modal-tag">v3增加</label>
+          <div class="layui-input-block">
+            <input type="number" name="v3add" required lay-verify="required|price"
+                   autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn btn-primary" lay-submit lay-filter="submit2">添加</button>
+            <button type="reset" class="layui-btn btn-default">重置</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script src="/static/assets/js/layui/layui.js"></script>
+<script>
+  layui.use(['element', 'layer', 'table', 'form'], function () {
+    var form = layui.form;
+    var layer = layui.layer;
+    var table = layui.table;
+    var element = layui.element;
+    var type = parseInt("1"); //类型，1-价格，2-百分比
+    $(".modal-tag").append(type === 1 ? '（元）' : '（%）');
+    var dataTable = table.render({
+      elem: '#table-media-price',
+      url:'/fxadmin/media/price.html',
+      method: 'POST',
+      toolbar: '#toolbar',
+      defaultToolbar: [],
+      cols: [[
+        { type: 'checkbox' },
+        { field: 'start_money', align: 'center', title: '起始金额', minWidth:120, templet: '<span>￥{{d.start_money}}</span>' },
+        { field: 'end_money', align: 'center', title: '截止金额', minWidth:120, templet: '<span>￥{{d.end_money}}</span>' },
+        { field: 'v0add', align: 'center', title: 'V0增加', minWidth:120, templet: type === 1 ? '<span>￥{{d.v0add}}</span>' : '<span>{{d.v0add}}%</span>' },
+        { field: 'v1add', align: 'center', title: 'V1增加', minWidth:120, templet: type === 1 ? '<span>￥{{d.v1add}}</span>' : '<span>{{d.v1add}}%</span>' },
+        { field: 'v2add', align: 'center', title: 'V2增加', minWidth:120, templet: type === 1 ? '<span>￥{{d.v2add}}</span>' : '<span>{{d.v2add}}%</span>' },
+        { field: 'v3add', align: 'center', title: 'V3增加', minWidth:120, templet: type === 1 ? '<span>￥{{d.v3add}}</span>' : '<span>{{d.v3add}}%</span>' },
+        { fixed: 'right', align: 'center', title: '操作', width: 128, templet: '#toolTpl' }
+      ]]
+    });
+
+    var dataTable2 = table.render({
+      elem: '#table-media-price2',
+      url:'/fxadmin/media/price/channel_m/1.html',
+      method: 'POST',
+      toolbar: '#tool2bar',
+      defaultToolbar: [],
+      cols: [[
+        { field: 'channel', align: 'center', title: '频道', minWidth:120},
+        { field: 'v0add', align: 'center', title: 'V0增加', minWidth:120, templet: type === 1 ? '<span>￥{{d.v0add}}</span>' : '<span>{{d.v0add}}%</span>' },
+        { field: 'v1add', align: 'center', title: 'V1增加', minWidth:120, templet: type === 1 ? '<span>￥{{d.v1add}}</span>' : '<span>{{d.v1add}}%</span>' },
+        { field: 'v2add', align: 'center', title: 'V2增加', minWidth:120, templet: type === 1 ? '<span>￥{{d.v2add}}</span>' : '<span>{{d.v2add}}%</span>' },
+        { field: 'v3add', align: 'center', title: 'V3增加', minWidth:120, templet: type === 1 ? '<span>￥{{d.v3add}}</span>' : '<span>{{d.v3add}}%</span>' },
+        { fixed: 'right', align: 'center', title: '操作', width: 128, templet: '#tool2Tpl' }
+      ]]
+    });
+
+    table.on('toolbar(priceTable)', function (obj) {
+      var data = table.checkStatus(obj.config.id).data;
+      switch (obj.event) {
+        case 'add':
+          form.val("form", { start_money: '', end_money: '', v0add: '', v1add: '', v2add: '', v3add: '' });
+          add();
+          break;
+        case 'update':
+          updatePrice(data);
+          break;
+      };
+    });
+    table.on('toolbar(priceTable2)', function (obj) {
+      var data = table.checkStatus(obj.config.id).data;
+      switch (obj.event) {
+        case 'add':
+          form.val("form2", { channel: '', v0add: '', v1add: '', v2add: '', v3add: '' });
+          add2();
+          break;
+        case 'update':
+          updatePrice(data);
+          break;
+      };
+    });
+
+    table.on('tool(priceTable)', function (obj) {
+      var data = obj.data;
+      switch (obj.event) {
+        case 'edit':
+          form.val("form", obj.data);
+          add(obj);
+          break;
+        case 'del':
+          del(obj);
+          break;
+      }
+    });
+    table.on('tool(priceTable2)', function (obj) {
+      var data = obj.data;
+      switch (obj.event) {
+        case 'edit':
+          form.val("form2", obj.data);
+          add2(obj);
+          break;
+        case 'del':
+          del(obj,1);
+          break;
+      }
+    });
+    function add(obj) {
+      var index = layer.open({
+        type: 1,
+        title: '添加价格同步方案',
+        content: $("#modalAddtask")
+      });
+      form.verify({
+        end: function (value, item) {
+          var start_price = $("#start_price").val();
+          if (parseFloat(value) < parseFloat(start_price)) {
+            return '截止金额不能小于初始金额';
+          }
+        },
+        price: [/(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/, '价格格式不正确']
+      });
+      form.on('submit(submit)', function (data) {
+        var param = data.field;
+        if (obj) {
+          param['id'] = obj.data.id;
+        }
+        $.post('/fxadmin/media/addpricem.html', param, function (res) {
+          if (res.code === 200) {
+            layer.msg(obj ? '价格方案已更新' : '价格方案已添加', { icon: 6 });
+            layer.close(index);
+            if (obj) {
+              obj.update(param);
+            } else {
+              setTimeout(function () {
+                dataTable.reload();
+              }, 1500);
+            }
+          } else {
+            layer.msg(res.msg, { icon: 5 });
+          }
+        });
+        return false;
+      });
+    }
+    function add2(obj) {
+      var index = layer.open({
+        type: 1,
+        title: '添加价格同步方案',
+        content: $("#modalAddtask2")
+      });
+      form.verify({
+        end: function (value, item) {
+          var start_price = $("#start_price").val();
+          if (parseFloat(value) < parseFloat(start_price)) {
+            return '截止金额不能小于初始金额';
+          }
+        },
+        price: [/(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/, '价格格式不正确']
+      });
+      form.on('submit(submit2)', function (data) {
+        var param = data.field;
+        if (obj) {
+          param['id'] = obj.data.id;
+        }
+        param.channel_m=1;
+        param.channel=$('#channel_type option:selected').text();
+        $.post('/fxadmin/media/addpricem.html', param, function (res) {
+          if (res.code === 200) {
+            layer.msg(obj ? '价格方案已更新' : '价格方案已添加', { icon: 6 });
+            layer.close(index);
+            if (obj) {
+              obj.update(param);
+            } else {
+              setTimeout(function () {
+                dataTable.reload();
+              }, 1500);
+            }
+          } else {
+            layer.msg(res.msg, { icon: 5 });
+          }
+        });
+        return false;
+      });
+    }
+
+    function updatePrice(data) {
+      if (data.length === 0) {
+        layer.msg('请先选择价格方案', { icon: 5 });
+      } else {
+        var array = [];
+        for (var i = 0; i < data.length; i++) {
+          array.push(data[i].id)
+        }
+        var layer_update = layer.open({
+          type: 1,
+          title: '媒体价格更新',
+          closeBtn: 0,
+          area: '400px;',
+          content: $("#progress"),
+          success: function () {
+            element.progress('progress', 0);
+            ajaxPrice({ id: array.join(',') });
+          }
+        });
+      }
+    }
+
+    function ajaxPrice(data) {
+      $.post('/fxadmin/media/updatemedia.html', data, function (res) {
+        if (res.code === 200) {
+          var page = parseInt(res.data.now_page);
+          var pages = parseInt(res.data.pages);
+          var percent = Math.round(page * 100 / pages);
+          element.progress('progress', percent + '%');
+          $("#page").html(page);
+          data['page'] = page + 1;
+          ajaxPrice(data);
+        } else if (res.code === 400) {
+          layer.msg('价格同步已完成', { icon: 6 });
+          element.progress('progress', '100%');
+          setTimeout(function () {
+            location.reload();
+          }, 2000)
+        } else {
+          layer.msg(res.msg, { icon: 5 });
+        }
+      })
+    }
+
+    function edit(obj) {
+      form.val("form", obj.data);
+      add();
+    }
+
+    function del(obj,channel=0) {
+      var index = layer.confirm('确定删除该方案？', {
+        btn: ['确实', '取消']
+      }, function () {
+        var params= { id: obj.data.id }
+        if(channel==1){
+          params.channel_m=1;
+        }
+        $.post('/fxadmin/media/delpricem.html',params, function (res) {
+          if (res.code === 200) {
+            layer.msg('价格方案已删除', { icon: 6 });
+            obj.del();
+          } else {
+            layer.msg(res.msg, { icon: 5 });
+          }
+          layer.close(index);
+        })
+      });
+    }
+
+    $("body").on('mouseover', "[data-tip]", function () {
+      layer.tips($(this).data('tip'), $(this), {
+        tips: [2,'#1074d0'],
+        time: 0
+      });
+    }).on('mouseout', "[data-tip]", function () {
+      layer.closeAll();
+    });
+
+  });
+</script>
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-container">
+      <button class="layui-btn btn-primary" lay-event="add">添加同步方案</button>
+      <button class="layui-btn btn-success" lay-event="update">以选中方案进行更新</button>
+    </div>
+  </script>
+<script type="text/html" id="toolTpl">
+    <a class="tag-primary btn-primary" lay-event="edit">编辑</a>
+    <a class="tag-danger btn-danger" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="tool2bar">
+  <div class="layui-btn-container">
+    <button class="layui-btn btn-primary" lay-event="add">补充频道同步方案</button>
+  </div>
+</script>
+<script type="text/html" id="tool2Tpl">
+  <a class="tag-primary btn-primary" lay-event="edit">编辑</a>
+  <a class="tag-danger btn-danger" lay-event="del">删除</a>
+</script>

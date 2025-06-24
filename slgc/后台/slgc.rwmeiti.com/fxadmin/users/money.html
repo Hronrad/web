@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/iconfont.css" />
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">会员管理</a>
+        <a><cite>资金记录</cite></a>
+      </span>
+      <span style="padding-left: 50px"><a href="/fxadmin/users/jfrecord.html">点此查看积分消费明细</a></span>
+             <div class="export">导出数据 <span class="iconfont iconexport"></span></div>
+          </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form" lay-filter="form" id="form-money">
+          <div class="layui-row layui-col-space20">
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="uname" name="name" placeholder="用户名" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="date1" name="date1" placeholder="开始日期" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <input type="text" id="date2" name="date2" placeholder="结束日期" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <select size="1" name="type">
+                <option value="">调整类型</option>
+                <option value="1">资金增加</option>
+                <option value="2">资金减少</option>
+              </select>
+            </div>
+            <div class="layui-col-md2 layui-col-sm4 layui-col-xs12">
+              <select size="1" name="son_type">
+                <option value="">调整原因</option>
+                <option value="1">订单扣费 -</option>
+                <option value="2">订单退款 +</option>
+                <option value="3">管理员调增 +</option>
+                <option value="4">管理员调减 -</option>
+                <option value="5">付费开票 -</option>
+                <option value="6">删除订单退款 +</option>
+                <option value="7">扣除开票手续费 -</option>
+                <option value="8">提现充值佣金 +</option>
+                <option value="9">拒绝开票申请，退还手续费 +</option>
+              </select>
+            </div>
+            <button style="display: none;" id="submit" lay-submit lay-filter="submit">提交</button>
+          </div>
+        </form>
+        <div class="layui-row">
+          <table id="table-money-record"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/JsonExportExcel.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/global.js"></script>
+<script>
+  layui.use(['element', 'laydate', 'table', 'form'], function () {
+    var table = layui.table;
+    var form = layui.form;
+    var laydate = layui.laydate;
+
+    $("#uname").on("input", function () {
+      $("#submit").trigger('click');
+    });
+
+    form.on('select', function (data) {
+      $("#submit").trigger('click');
+    });
+
+    form.on('submit(submit)', function (data) {
+      reloadTable(data.field);
+      return false;
+    });
+
+    laydate.render({
+      elem: '#date1',
+      done: function (data) {
+        $("#submit").trigger('click');
+      }
+    });
+
+    laydate.render({
+      elem: '#date2',
+      done: function () {
+        $("#submit").trigger('click');
+      }
+    });
+    $(".export").on('click', function () {
+      var params = $("#form-money").serialize();
+      $.post('/fxadmin/users/money.html?export=true&' + params, function (res) {
+        if (res.code === 200) {
+          JsonToExcel(res.data, '资金记录', 'sheet', res.msg);
+        } else {
+          layer.msg(res.msg, { icon: 5 });
+        }
+      });
+    });
+
+    var dataTable = table.render({
+      elem: '#table-money-record',
+      url: '/fxadmin/users/money.html',
+      method: "POST",
+      cols: [[
+        { field: 'name', align: 'center', title: '用户名', minWidth: 120 },
+         { field: 'no', align: 'center', title: '订单号', minWidth: 120 },
+        { field: 'money', align: 'center', title: '金额', minWidth: 180, templet: '#moneyTpl' },
+        { field: 'son_type', align: 'center', title: '调整原因', minWidth: 180, templet: '#typeTpl' },
+        { field: 'media_name', align: 'center', title: '媒体', minWidth: 120 },
+        { field: 'remark', align: 'center', title: '说明', minWidth: 180 },
+        { field: 'created_at', align: 'center', title: '操作时间', minWidth: 180 }
+      ]],
+      page: true
+    });
+
+    function reloadTable(param) {
+      dataTable.reload({
+        where: param,
+        page: {
+          curr: 1
+        }
+      });
+    }
+
+  });
+</script>
+<script type="text/html" id="moneyTpl">
+  {{#  if(d.type == 1){ }}
+  <span class="tag-success"> ￥ +{{d.money}}</span>
+  {{#  } else if(d.type == 2){ }}
+  <span class="tag-danger"> ￥ -{{d.money}}</span>
+  {{#  } }}
+</script>
+<script type="text/html" id="typeTpl">
+  {{#  if(d.son_type == 1){ }}
+  <span class="tag-danger">订单扣费</span>
+  {{#  } else if(d.son_type == 2){ }}
+  <span class="tag-success">订单退款</span>
+  {{#  } else if(d.son_type == 3){ }}
+  <span class="tag-success">管理员调增</span>
+  {{#  } else if(d.son_type == 4){ }}
+  <span class="tag-danger">管理员调减</span>
+  {{#  } else if(d.son_type == 5){ }}
+  <span class="tag-danger">付费开票</span>
+  {{#  } else if(d.son_type == 6){ }}
+  <span class="tag-success">删除订单退款</span>
+  {{#  } else if(d.son_type == 7){ }}
+  <span class="tag-success">扣除开票手续费</span>
+  {{#  } else if(d.son_type == 8){ }}
+  <span class="tag-success">提现充值佣金</span>
+  {{#  } else if(d.son_type == 9){ }}
+  <span class="tag-success">拒绝开票申请，退还手续费</span>
+  {{#  } }}
+</script>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+
+<style>
+  .title {
+    width: 100%;
+    display: inline-block;
+    margin-bottom: 25px;
+    line-height: 24px;
+  }
+
+  .label {
+    float: left;
+    cursor: pointer;
+  }
+
+  .radio {
+    float: right;
+  }
+
+  .layui-form-switch {
+    margin-top: 0 !important;
+  }
+
+  .textarea {
+    min-height: 200px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #e6e6e6;
+    line-height: 1.5rem;
+    width: 100%;
+    font-size: 14px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  #meditor {
+    display: none;
+  }
+</style>
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+                <a href="javascript:;">会员管理</a>
+        <a><cite id="notice">发私信</cite></a>
+              </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form" action="">
+          <div class="title">
+                        <div class="label" style="font-weight: bold;font-size: 1.2rem;;">私信详情</div>
+                        <div class="radio">富文本 <input type="checkbox" name="isrich" lay-skin="switch" lay-filter="m-switch"></div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">标题</label>
+            <div class="layui-input-block">
+              <input type="text" name="title" id="title" class="layui-input" value="您好">
+            </div>
+          </div>
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">内容</label>
+              <div class="layui-input-block">
+                <div id="mtextarea" class="textarea" contenteditable="true">
+                  您好您好您好您好                </div>
+                <div id="meditor" name="meditor">
+                  您好您好您好您好                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">特殊展示</label>
+              <div class="layui-input-block">
+                <input type="radio" name="type" value="0" title="否" >
+                <input type="radio" name="type" value="1" title="首页发稿必读" >
+                <input type="radio" name="type" value="2" title="首页弹窗" checked>
+              </div>
+            </div>
+          <input type="hidden" name="id" id="id" value="3">
+          <input type="hidden" name="uid" id="uid" value="23">
+          <div class="layui-form-item">
+            <div class="layui-input-block">
+              <button class="layui-btn btn-primary" lay-submit lay-filter="submit">提交</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/tinymce/tinymce.min.js"></script>
+
+<script>
+  layui.use(['element', 'layer', 'form'], function () {
+    var form = layui.form;
+    var layer = layui.layer;
+    var isChecked = false;
+
+    form.on('switch(m-switch)', function (data) {
+      isChecked = !isChecked;
+      $("#mtextarea").toggle();
+      if (isChecked) {
+        initEditor($("#mtextarea").html(), "#meditor");
+      } else {
+        $("#mtextarea").html(tinymce.get('meditor').getContent());
+        tinymce.remove("#meditor");
+      }
+    });
+
+    form.on('submit(submit)', function () {
+      var value, title = $('#title').val(), id = $('#id').val(), uid = $('#uid').val();
+      var type = $("input[type='radio']:checked").val();
+      if (!isChecked) {
+        value = $("#mtextarea").html();
+      } else {
+        value = tinymce.get('meditor').getContent();
+      }
+      $.post('/fxadmin/notice/noticeedit.html', { id: id, uid: uid, title: title, content: value, show_type:type }, function (res) {
+        if (res.code === 200) {
+          layer.msg(res.msg, { icon: 6 });
+          setTimeout(function () {
+            if(uid !== '0'){
+              window.location.href = '/fxadmin/notice/sixin.html';
+            } else {
+              window.location.href = '/fxadmin/notice/index.html';
+            }            
+          }, 1000)
+        } else {
+          layer.msg(res.msg, { icon: 5 });
+        }
+      });
+      return false;
+    });
+
+    function initEditor(val, dom) {
+      tinymce.init({
+        selector: dom,
+        language: 'zh_CN',
+        height: '400px',
+        menubar: false,
+        auto_focus: true,
+        autosave_ask_before_unload: false,
+        plugins: 'indent2em code link autoformat preview wordcount',
+        toolbar: 'code undo redo link bold forecolor alignleft aligncenter alignright indent2em fontsizeselect preview',
+        init_instance_callback: editor => {
+          if (val) {
+            editor.setContent(val)
+          }
+        }
+      });
+    }
+  });
+</script>

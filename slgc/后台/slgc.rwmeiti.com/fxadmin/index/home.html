@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/backhome.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/iconfont.css" />
+
+<div class="main-body">
+  <div class="layui-row">
+    <div class="card">
+      <div class="head">我的订单</div>
+      <div class="layui-row layui-col-space20">
+        <div class="order_col layui-col-md4 layui-col-sm6">
+          <a href="/fxadmin/media/order" target="iframe">
+            <div class="order m_order">
+              <div>未处理的媒体订单</div>
+              <div class="num">0</div>
+              <div class="btn">去处理</div>
+              <div class="bg"></div>
+              <div class="ico"></div>
+            </div>
+          </a>
+        </div>
+
+                <div class="order_col layui-col-md4 layui-col-sm6">
+          <a href="/fxadmin/wemedia/order" target="iframe">
+            <div class="order z_order">
+              <div>未处理的自媒体订单</div>
+              <div class="num">0</div>
+              <div class="btn">去处理</div>
+              <div class="bg"></div>
+              <div class="ico"></div>
+            </div>
+          </a>
+        </div>
+                <div class="order_col layui-col-md4 layui-col-sm6">
+          <a href="/fxadmin/shortvideomedia/order" target="iframe">
+            <div class="order x_order">
+              <div>未处理的短视频订单</div>
+              <div class="num">0</div>
+              <div class="btn">去处理</div>
+              <div class="bg"></div>
+              <div class="ico"></div>
+            </div>
+          </a>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-lg8 layui-col-md8 layui-col-sm12 layui-col-xs12">
+
+      <div class="card" style="margin-bottom:0 !important;">
+        <div class="head">媒体管理</div>
+        <div class="layui-row layui-col-space20">
+          <div class="layui-col-lg3 layui-col-md3 layui-col-sm6 layui-col-xs6">
+            <a href="/fxadmin/media/medialist" target="iframe">
+              <div class="media">
+                <div class="num">63676</div>
+                <div>新闻媒体</div>
+                <div class="btn">查看</div>
+              </div>
+            </a>
+          </div>
+                    <div class="layui-col-lg3 layui-col-md3 layui-col-sm6 layui-col-xs6">
+            <a href="/fxadmin/wemedia/medialist" target="iframe">
+              <div class="media z_media">
+                <div class="num">177155</div>
+                <div>自媒体</div>
+                <div class="btn">查看</div>
+              </div>
+            </a>
+          </div>
+                    <div class="layui-col-lg3 layui-col-md3 layui-col-sm6 layui-col-xs6">
+            <a href="/fxadmin/shortvideomedia/video_list" target="iframe">
+              <div class="media z_media">
+                <div class="num">30468</div>
+                <div>短视频</div>
+                <div class="btn">查看</div>
+              </div>
+            </a>
+          </div>
+                  </div>
+      </div>
+    </div>
+        <div class="layui-col-lg2 layui-col-md2 layui-col-sm6 layui-col-xs6">
+      <div class="card" style="margin-bottom:0 !important;">
+        <div class="head">发票管理</div>
+        <a href="/fxadmin/invoice/index" target="iframe">
+          <div class="tab">
+            <div class="num">0</div>
+            <div>申请中</div>
+            <div class="btn">开发票</div>
+          </div>
+        </a>
+      </div>
+    </div>
+      </div>
+
+  <div class="layui-row layui-col-space20">
+
+        <div class="layui-col-lg8 layui-col-md8 layui-col-sm12 layui-col-xs12">
+      <div class="card">
+        <div class="head" style="margin-bottom: 5px;">会员管理
+          <!-- <span>（</span><span class="layui-hide-xs">会员总数：</span><span>888）</span> -->
+          <a href="/ccc/user_list" target="iframe">
+            <div class="btn">会员列表</div>
+          </a>
+        </div>
+        <!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+
+<style>
+  .filt .layui-form-radio * {
+    font-size: 12px;
+    line-height: 30px;
+  }
+
+  .filt .layui-form-radio {
+    margin-right: -4px !important;
+    padding-right: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .filt .layui-form-radio>div {
+    padding: 0 15px;
+    border: 1px solid #DCDFE6
+  }
+
+  .filt .layui-form-radio:nth-child(2)>div {
+    border-radius: 2px 0 0 2px;
+    margin-left: -1px;
+  }
+
+  .filt .layui-form-radio:last-child>div {
+    border-radius: 0 2px 2px 0;
+    margin-left: -1px;
+  }
+
+  .filt .layui-form-radio>i {
+    display: none;
+  }
+
+  .filt .layui-form-radioed>div {
+    background-color: #1890ff;
+    color: #ffffff !important;
+    border-color: #1890ff;
+  }
+</style>
+
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12 chart_head">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;">会员管理</a>
+        <a><cite>注册统计</cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <form class="layui-form filt">
+          <div class="layui-row layui-col-space20">
+            <div class="layui-col-lg2 layui-col-md3 layui-col-sm4 layui-col-xs12">
+              <input type="text" name="date1" id="date1" lay-verify="date" placeholder="开始日期"
+                     autocomplete="off"
+                     class="layui-input">
+            </div>
+            <div class="layui-col-lg2 layui-col-md3 layui-col-sm4 layui-col-xs12">
+              <input type="text" name="date2" id="date2" lay-verify="date" placeholder="结束日期" autocomplete="off"
+                     class="layui-input">
+            </div>
+            <div class="layui-col-lg5 layui-col-md6 layui-col-sm4 layui-col-xs12 layui-col-lg-offset3">
+              <div style="float: right;">
+                <input type="radio" name="type" value="1" title="日"" checked="">
+                <input type="radio" name="type" value="2" title="月">
+                <input type="radio" name="type" value="3" title="年">
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="layui-row">
+          <div id="chart" style="width: 100%;height:500px;margin-top: 20px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/echarts.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/echarts-theme-mjhz.js"></script>
+
+<script>
+  layui.use(['element', 'layer', 'form', 'laydate'], function () {
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var chart = echarts.init(document.getElementById("chart"), 'mjhz');
+
+    initData();   
+
+    $(window).resize(function () {
+      chart.resize();
+    });
+
+    var date2 = laydate.render({
+      elem: '#date2',
+      done: function (val, date, endDate) {
+        initData();
+      }
+    });
+
+    var date1 = laydate.render({
+      elem: '#date1',
+      done: function (val, date, endDate) {
+        initData();
+      }
+    });
+
+    form.on('radio', function (data) {
+      initData();
+    });
+
+    function initData(){
+      var date1 = $("#date1").val();
+      var date2 = $("#date2").val();
+      var type = $("input[type='radio']:checked").val();
+
+      $.ajax({
+        type: "POST",
+        url: "/fxadmin/users/register.html",
+        data: { date1: date1, date2: date2, type: type },
+        dataType: "json",
+        beforeSend: function () {
+          var index = layer.load(1, {
+            shade: [0.1, '#000']
+          });
+        },
+        success: function (res) {
+          if (res.code === 200) {
+            layer.closeAll();
+            initChart(res.data.title, res.data.data, res.data.data1);
+          } else {
+            layer.closeAll();
+            layer.msg(res.msg, { icon: 5 });
+          }
+        }
+      });
+    }
+
+    function initChart(xData, yData1, yData2) {
+      var option = {
+        title: {
+          text: '平台注册数据统计图',
+          textStyle: {
+            fontSize: 20,
+            lineHeight: 30
+          },
+          left: 'center',
+          top: 'bottom'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            crossStyle: {
+              color: '#999'
+            }
+          }
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: { show: true, title: ' ' }
+          }
+        },
+        dataZoom:[{
+          type:'inside',
+        }],
+        legend: {
+          data: ['注册量', '总注册量']
+        },
+        xAxis: [
+          {
+            type: 'category',
+            splitLine: { show: false },
+            data: xData,
+            axisPointer: {
+              type: 'shadow'
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            splitLine: { show: false },
+            name: '注册量'
+          },
+          {
+            type: 'value',
+            splitLine: { show: false },
+            name: '总注册量'
+          }
+        ],
+        series: [
+          {
+            name: '注册量',
+            type: 'bar',
+            data: yData1,
+            barMaxWidth: 20,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(
+                0, 0, 0, 1,
+                [
+                  { offset: 0, color: '#66b5ff' },
+                  { offset: 1, color: '#ffdc79' }
+                ]
+              )
+            }
+          },
+          {
+            name: '总注册量',
+            type: 'line',
+            yAxisIndex: 1,
+            data: yData2,
+            itemStyle: {
+              color: '#f85b4b'
+            }
+          }
+        ]
+      };
+      chart.setOption(option);
+    }
+  });
+</script>
+      </div>
+    </div>
+        
+    <div class=" layui-col-lg4 layui-col-md4  layui-col-sm12 layui-col-xs12">
+      <div class="card">
+        <div class="head">操作必读<div class="step step1 active">1</div>
+          <div class="step step2">2</div>
+          <div class="step step3">3</div>
+        </div>
+        <div>
+          <div class="read read1">
+            <div class="title">同步新增媒体注意细节</div>
+            <div class="content content_1">
+              <p>1、如果没有设置媒体价格管理，请先设置媒体价格区间-同步新增媒体时媒体的会员价格会根据设置的价格区间进行匹配设置！</p>
+              <p>2、如果设置了媒体价格管理，更新时未匹配到对应的价格区间：所有会员价格将默认是成本价格的一倍！</p>
+              <p>
+                3、系统管理->系统配置：setSysstatus配置--如状态开启：同步新增媒体时，媒体状态将同步，不需要手动审核。如状态关闭：同步新增媒体时，媒体状态变为待审核状态，需要人工手动在新增媒体栏中进行审核。
+              </p>
+              <p>4、同步新增媒体时：系统将先自动删除所有原来同步新增的媒体，再重新更新一次所有的同步新增的媒体（避免媒体状态不一致）。</p>
+              <p>5、点击同步新增媒体时：请仔细阅读页面的提示信息并按照页面的提示信息进行操作。</p>
+            </div>
+          </div>
+          <div class="read read2">
+            <div class="title">媒体价格修改说明</div>
+            <div class="content">
+              <p>1、如果手动修改了同步新增媒体的媒体的会员价格，同步新增媒体后，该媒体的会员价格将重新根据设置的价格区间进行匹配并且设置！</p>
+              <p>2、如果手动修改了同步新增媒体的媒体的会员价格，原媒体的信息发生变化，此时媒体的会员价格也将重新根据设置的价格区间进行匹配并且设置！</p>
+              <p>3、在媒体价格管理中，可选择媒体进行价格锁定，那么这个媒体将永远保持这个价格不变。</p>
+            </div>
+          </div>
+          <div class="read read3">
+            <div class="title">删除媒体说明</div>
+            <div class="content">
+              <p>1、如果手动删除媒体后，该媒体将永久在系统中被删除，即使同步更新媒体后该媒体任然会是删除状态。</p>
+              <p>2、取消媒体删除状态，在媒体管理中选择媒体状态为：已删除-进行媒体搜索，选择要取消删除的媒体进行（变更状态为：待审核--管理员手动添加的媒体）或（取消删除并更新--同步新增的媒体）操作。</p>
+              <p>3、如取消删除媒体状态后媒体仍然不在媒体管理中，原因有2种：A在新增媒体中--需要人工审核。B该媒体已经下架，已变为下架状态。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/echarts.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/echarts-theme-mjhz.js"></script>
+
+<script>
+  initLayout();
+
+  $(window).resize(function () {
+    initLayout();
+  });
+
+  function initLayout() {
+    var width = $(document).width();
+    if (width >= 992) {
+      $(".userinfo").css("height", $(".pricelist").height());
+    }
+  }
+
+  $(".chart_head").hide();
+
+  $(".step").on('click', function () {
+    $(this).addClass('active').siblings().removeClass('active');
+    $(".read").eq($(this).index()).show().siblings().hide();
+  });
+</script>
+
+<script>
+  layui.use(['element', 'layer', 'form', 'laydate'], function () {
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var chart = echarts.init(document.getElementById("chart"), 'mjhz');
+
+    initData();
+
+    $(window).resize(function () {
+      chart.resize();
+    });
+
+    var date2 = laydate.render({
+      elem: '#date2',
+      done: function (val, date, endDate) {
+        initData();
+      }
+    });
+
+    var date1 = laydate.render({
+      elem: '#date1',
+      done: function (val, date, endDate) {
+        initData();
+      }
+    });
+
+    form.on('radio', function (data) {
+      initData();
+    });
+
+    function initData() {
+      var date1 = $("#date1").val();
+      var date2 = $("#date2").val();
+      var type = $("input[type='radio']:checked").val();
+
+      $.ajax({
+        type: "POST",
+        url: "/fxadmin/users/register.html",
+        data: { date1: date1, date2: date2, type: type },
+        dataType: "json",
+        beforeSend: function () {
+          var index = layer.load(1, {
+            shade: [0.1, '#000']
+          });
+        },
+        success: function (res) {
+          if (res.code === 200) {
+            layer.closeAll();
+            initChart(res.data.title, res.data.data, res.data.data1);
+          } else {
+            layer.closeAll();
+            layer.msg(res.msg, { icon: 5 });
+          }
+        }
+      });
+    }
+
+    function initChart(xData, yData1, yData2) {
+      var option = {
+        title: {
+          text: '平台注册数据统计图',
+          textStyle: {
+            fontSize: 20,
+            lineHeight: 30
+          },
+          left: 'center',
+          top: 'bottom'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            crossStyle: {
+              color: '#999'
+            }
+          }
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: { show: true, title: ' ' }
+          }
+        },
+        dataZoom: [{
+          type: 'inside',
+        }],
+        legend: {
+          data: ['注册量', '总注册量']
+        },
+        xAxis: [
+          {
+            type: 'category',
+            splitLine: { show: false },
+            data: xData,
+            axisPointer: {
+              type: 'shadow'
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            splitLine: { show: false },
+            name: '注册量'
+          },
+          {
+            type: 'value',
+            splitLine: { show: false },
+            name: '总注册量'
+          }
+        ],
+        series: [
+          {
+            name: '注册量',
+            type: 'bar',
+            data: yData1,
+            barMaxWidth: 20,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(
+                0, 0, 0, 1,
+                [
+                  { offset: 0, color: '#66b5ff' },
+                  { offset: 1, color: '#ffdc79' }
+                ]
+              )
+            }
+          },
+          {
+            name: '总注册量',
+            type: 'line',
+            yAxisIndex: 1,
+            data: yData2,
+            itemStyle: {
+              color: '#f85b4b'
+            }
+          }
+        ]
+      };
+      chart.setOption(option);
+    }
+  });
+</script>

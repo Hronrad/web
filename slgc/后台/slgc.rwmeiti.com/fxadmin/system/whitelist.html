@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+<link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+<style>
+  .tips {
+    background-color: #f3f5f7;
+    border-color: #42b983;
+    padding: 1rem 1.5rem;
+    border-left-width: .5rem;
+    border-left-style: solid;
+    margin-bottom: 2rem;
+    line-height: 1.5rem;
+  }
+</style>
+<div class="main-body">
+  <div class="layui-row layui-col-space20">
+    <div class="layui-col-md12">
+      <span class="layui-breadcrumb">
+        <a href="/fxadmin/index/home.html" target="iframe">首页</a>
+        <a href="javascript:;" target="iframe">系统管理</a>
+        <a><cite>
+          白名单        </cite></a>
+      </span>
+    </div>
+    <div class="layui-col-md12">
+      <div class="card">
+        <div class="layui-row">
+          <div class="tips">
+                        <p>说明：在操作媒体/自媒体更新时，白名单里的媒体/自媒体会保留当前价格，仅更新价格之外的相关信息。</p>
+            <p>注意：在操作媒体/自媒体更新时，为确保商家利益，如果白名单的媒体当前的价格低于最新的成本价格时，该媒体的价格还是会进行实时更新！</p>
+            <p>注意：在操作媒体/自媒体更新时，如果白名单里的媒体/自媒体已经{下架，那么该媒体也不会更新到本系统！</p>
+                      </div>
+        </div>
+        <div class="layui-row">
+          <div class="layui-col-lg2 layui-col-md3 layui-col-sm4">
+            <input type="text" id="name" placeholder="媒体名称" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-row">
+          <table class="layui-hide" id="table-media-list" lay-filter="test"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+<script type="text/javascript" src="/static/assets/js/global.js"></script>
+<script>
+  layui.use(['element', 'layer', 'table', 'form'], function () {
+    var table = layui.table;
+    var form = layui.form;
+    var layer = layui.layer;
+    var media_name = '';
+    var m_type="1";
+    var cols=[];
+    if(m_type==='1'){
+      cols=[[
+          { field: 'media_name', align: 'center', title: '媒体名称', minWidth: 120 },
+          { field: 'media_type', align: 'center', title: '媒体类型', minWidth: 120 , templet: "#typeTpl"},
+          { field: 'v0_cost', align: 'center', title: 'v0价格', minWidth: 120 },
+          { field: 'v1_cost', align: 'center', title: 'v1价格', minWidth: 120 },
+          { field: 'v2_cost', align: 'center', title: 'v2价格', minWidth: 120 },
+          { field: 'v3_cost', align: 'center', title: 'v3价格', minWidth: 120 },
+          { field: 'created_at', align: 'center', title: '添加时间', minWidth: 120 },
+          { field: 'id', fixed: 'right', align: 'center', title: '操作', width:120, templet: '#toolTpl' }
+        ]];
+    }else{
+      cols=[[
+          { field: 'media_name', align: 'center', title: '媒体名称', minWidth: 120 },
+          { field: 'media_type', align: 'center', title: '媒体类型', minWidth: 120 , templet: "#typeTpl"},
+          { field: 'created_at', align: 'center', title: '添加时间', minWidth: 120 },
+          { field: 'id', fixed: 'right', align: 'center', title: '操作', templet: '#toolTpl' }
+        ]];
+    }
+
+    var dataTable = table.render({
+      elem: '#table-media-list',
+      url: '/fxadmin/system/marklist.html?m_type='+m_type,
+      method: 'POST',
+      cols: cols,
+      page: true,
+      response: {
+        statusCode: 0
+      },
+    });
+
+    $("#name").on("input", debounce(function () {
+      media_name = $(this).val();
+      reloadTable();
+    }));
+
+    table.on('tool(test)', function (obj) {
+      switch (obj.event) {
+        case 'close':
+          setting(obj, 0);
+          break;
+      };
+    });
+
+    function setting(obj) {
+      var msg = m_type==1?'移除白名单？ 移除后在操作媒体/自媒体更新时，价格会随着媒介盒子的价格变化而实时更新':"移除黑名单？移除后在操作媒体/自媒体更新时，该媒体能从媒体盒子更新到本系统";
+      var index = layer.confirm('确定将【' + obj.data.media_name+ '】'+msg, {
+        btn: ['确实', '取消']
+      }, function () {
+        $.post('/fxadmin/system/removemark.html', { id: obj.data.id,mid:obj.data.mid,media_type:obj.data.media_type,m_type:m_type}, function (res) {
+          if (res.code === 200) {
+            layer.msg('【' + obj.data.media_name + '】已移除', { icon: 6 });
+            obj.del();
+          } else {
+            layer.msg(res.msg, { icon: 5 });
+          }
+          layer.close(index);
+        });
+      })
+
+    }
+
+    function reloadTable() {
+      dataTable.reload({
+        where: {
+          media_name: media_name
+        },
+        page: {
+          curr: 1
+        }
+      });
+    }
+
+  });
+</script>
+
+<script type="text/html" id="typeTpl">
+  {{# if (d.media_type === 1) {}}
+  <div class="tag-primary">新闻媒体</div>
+  {{# }else if (d.media_type === 2){ }}
+  <div class="tag-danger">自媒体</div>
+  {{# }else if (d.media_type === 6){ }}
+  <div class="tag-success">短视频</div>
+  {{# }}}
+</script>
+
+<script type="text/html" id="toolTpl">
+  {{# if (1 === 1) {}}
+  <a class="tag-danger btn-success" lay-event="close">移除白名单</a>
+  {{# }else{ }}
+  <a class="tag-danger btn-success" lay-event="close">移除黑名单</a>
+  {{# }}}
+</script>

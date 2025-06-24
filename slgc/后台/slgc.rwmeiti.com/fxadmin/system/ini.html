@@ -1,0 +1,1029 @@
+  <!DOCTYPE html>
+
+  <link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+  <link rel="stylesheet" type="text/css" href="/static/assets/css/mixin.css" />
+  <link rel="stylesheet" type="text/css" href="/static/assets/css/global.css" />
+  <!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script> -->
+  <link rel="stylesheet" href="/static/share/cropperjs/dist/cropper.min.css">
+  <script src="/static/share/cropperjs/dist/cropper.min.js"></script>
+
+  <style>
+  	.layui-table-cell {
+  		height: auto;
+  		max-height: 150px;
+  		white-space: normal;
+  		word-break: break-all;
+  		overflow: auto;
+  	}
+
+  	.user_theme {
+  		width: 120px;
+  		height: 40px;
+  		line-height: 40px;
+  		color: #ffffff;
+  		border-radius: 5px;
+  		text-align: center;
+  	}
+
+  	#myTheme {
+  		font-weight: bold;
+  		margin-left: 10px;
+  	}
+
+  	/* #picCropping{
+		width: 500px;
+		height: 400px;
+	} */
+  	.upload_box {
+  		display: flex;
+  		justify-content: space-between;
+  		align-items: flex-start;
+  		flex-direction: row;
+  		flex-wrap: nowrap;
+  	}
+
+  	.shch {}
+
+  	.btn_box {
+  		display: flex;
+  		justify-content: center;
+  		align-items: center;
+  		flex-direction: row;
+  		flex-wrap: nowrap;
+
+  	}
+
+  	.btn_box {
+  		margin-top: 20px;
+  	}
+
+  	.image_upload {
+  		margin-right: 20px;
+  	}
+
+  	.shch .image_upload .upload-button {
+  		padding: 6px 25px;
+  		background: #1E9FFF;
+  		border-radius: 2px;
+  		color: #ffffff;
+  		cursor: pointer;
+  	}
+
+  	.shch .image_upload input {
+  		display: none;
+  	}
+
+  	/* 裁剪预览 */
+  	.cropPreview {
+  		/* min-width: 300px; */
+  		/* min-height: 150px; */
+  		border: 1px solid #ccc;
+  		margin-left: 20px;
+  	}
+
+  	#canvas {
+  		width: 300px;
+  		height: 60px;
+  	}
+
+  	.cropper-drag-box {
+  		pointer-events: none;
+  		/* 禁用裁剪框的鼠标事件 */
+  	}
+
+  	.cropper-wrap-box {
+  		pointer-events: none;
+  	}
+
+  	@media screen and (max-width: 768px) {
+  		.layui-table-cell {
+  			height: 115px;
+  			white-space: normal;
+  			word-break: break-all;
+  			overflow: hidden;
+  		}
+  	}
+  </style>
+
+  <div class="main-body">
+  	<div class="layui-row layui-col-space20">
+  		<div class="layui-col-md12">
+  			<span class="layui-breadcrumb">
+  				<a href="/fxadmin/index/home.html" target="iframe">首页</a>
+  				<a href="javascript:;">系统管理</a>
+  				<a><cite>系统配置</cite></a>
+  			</span>
+  		</div>
+  		<div class="layui-row">
+  			<div class="card">
+  				<div class="layui-row">
+  					<div class="layui-col-lg2 layui-col-md3 layui-col-sm4">
+  						<input type="text" id="name" placeholder="搜索配置" autocomplete="off" class="layui-input">
+  					</div>
+  				</div>
+  				<div class="layui-row">
+  					<table class="layui-hide" id="table-media-list" lay-filter="setting"></table>
+  				</div>
+  			</div>
+  		</div>
+  	</div>
+  </div>
+
+  <div id="bankModal" style="display: none; padding:20px 20px 0 0;">
+  	<form class="layui-form" lay-filter="bankModal">
+  		<div class="layui-form-item">
+  			<label class="layui-form-label">银行名称</label>
+  			<div class="layui-input-block">
+  				<input type="text" id="bank_name" name="bank_name" lay-verify="required" class="layui-input"
+  					autocomplete="off">
+  				<!-- <input type="text" name="id" style="display: none;"> -->
+  			</div>
+  		</div>
+  		<div class="layui-form-item">
+  			<label class="layui-form-label">公司名称</label>
+  			<div class="layui-input-block">
+  				<input type="text" id="account_name" name="account_name" lay-verify="required" class="layui-input"
+  					autocomplete="off">
+  			</div>
+  		</div>
+  		<div class="layui-form-item">
+  			<label class="layui-form-label">银行账户</label>
+  			<div class="layui-input-block">
+  				<input type="text" id="bank_account" name="bank_account" lay-verify="required" class="layui-input"
+  					autocomplete="off">
+  			</div>
+  		</div>
+  		<div class="layui-form-item">
+  			<label class="layui-form-label">开户地址</label>
+  			<div class="layui-input-block">
+  				<input type="text" id="register_address" name="register_address" lay-verify="required"
+  					class="layui-input" autocomplete="off">
+  				<button type="reset" id="reset" style="display: none" class="layui-btn btn-success">重置</button>
+  			</div>
+  		</div>
+  	</form>
+  </div>
+
+  <div id="loginModal" style="display: none; padding:20px 20px 0 0;">
+  	<form class="layui-form" action="" lay-filter="managerModal">
+  		<div class="layui-form-item">
+  			<label class="layui-form-label">登录模板</label>
+  			<div class="layui-input-block roles">
+  				<input type="radio" name="tempalte" data-id="1" title="模板1" lay-skin="primary">
+  				<input type="radio" name="tempalte" data-id="2" title="模板2" lay-skin="primary">
+  				<input type="radio" name="tempalte" data-id="3" title="模板3" lay-skin="primary">
+  				<input type="radio" name="tempalte" data-id="4" title="模板4" lay-skin="primary">
+  				<input type="radio" name="tempalte" data-id="5" title="模板5" lay-skin="primary">
+  				<input type="radio" name="tempalte" data-id="6" title="模板6" lay-skin="primary">
+  			</div>
+  		</div>
+  		<button style="display: none;" id="login_submit" class="layui-btn" lay-submit lay-filter="submit">提交</button>
+  		<button style="display: none;" id="login_reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+  	</form>
+  </div>
+
+
+  <div id="themeModal" style="display: none; padding:20px 20px 0 0;">
+  	<div class="layui-form-item">
+  		<label class="layui-form-label">用户主题色</label>
+  		<div class="layui-input-block">
+  			<span id="themePicker"></span><span id="myTheme"></span>
+  		</div>
+  	</div>
+  </div>
+
+  <div id="picModal" style="display: none; padding:20px 20px 0 0;">
+  	<div class="layui-form-item">
+  		<label class="layui-form-label">图片预览</label>
+  		<div class="layui-input-block">
+  			<!-- <input type="text" name="remark" id="remark" class="layui-input"> -->
+  			<div class="layui-upload-drag" id="linklogo" data-url="" style="display: none;">
+  				<img class="img" src="" style='max-width:90%;width: 200px' />
+  				<!-- <div id="upload">
+                <i class="layui-icon"></i>
+                <p>点击上传图片</p>
+              </div> -->
+  			</div>
+  			<div class="layui-upload-drag" id="linklogo2" data-url="" style="display: none;">
+  				<img class="img" src="" style='max-width:90%;width: 200px' />
+  			</div>
+  			<div class="layui-upload-drag" id="linklogo3" data-url="" style="display: none;">
+  				<img class="img" src="" style='max-width:90%;width: 200px' />
+  			</div>
+  			<div class="layui-upload-drag" id="linklogo4" data-url="" style="display: none;">
+  				<img class="img" src="" style='max-width:90%;width: 200px' />
+  			</div>
+  			<div class="layui-upload-drag" id="linklogo5" data-url="" style="display: none;">
+  				<img class="img" src="" style='max-width:90%;width: 200px' />
+  			</div>
+  		</div>
+  	</div>
+  </div>
+  <div id="picCropping" style="display: none; padding:20px 20px 0 0;">
+  	<div class="layui-form-item" style="padding:0px 20px ;">
+  		<div class="upload_box" style="">
+  			<div class="shch">
+  				<div class="image_preview" style="display: none;">
+  					<img id="image" style='max-width:400px;'>
+  				</div>
+  				<div class="btn_box">
+  					<div class="image_upload">
+  						<label class="input-file-button  layui-btn layui-bg-blue" for="uploadImage"> 选择图片 </label>
+  						<input type="file" id="uploadImage" />
+  					</div>
+  					<!-- 	 <label id=" cropButton" class="layui-btn layui-bg-blue" style="display: none;">确认裁剪</label> -->
+
+  				</div>
+
+  			</div>
+  			<div class="cropPreview">
+  				<canvas id="canvas" style="display: none;"></canvas>
+  				<img id="preview" style="display: none; width: 176px; height: 108px;">
+  			</div>
+  		</div>
+  	</div>
+  </div>
+  <div class="companyProfile" id="companyProfile" style="display: none; padding:20px 20px 0 0;">
+
+  	<div class="layui-form-item">
+  		<div class="layui-input-block">
+  			<textarea id="companyContent"> </textarea>
+  		</div>
+  	</div>
+  </div>
+
+  <script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+  <script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+  <script type="text/javascript" src="/static/assets/js/global.js"></script>
+  <script type="text/javascript" src="/static/assets/js/tinymce/tinymce.min.js"></script>
+  <!-- <script type="text/javascript" src="/static/share/tinymce/js/tinymce/tinymce.min.js"></script> -->
+  <script>
+  	// 定义预览图片函数
+  	function previewImage(url) {
+  		layui.layer.open({
+  			type: 1,
+  			title: false,
+  			closeBtn: 1,
+  			area: ['auto', 'auto'],
+  			skin: 'layui-layer-nobg', // 没有背景色
+  			shadeClose: true,
+  			content: '<div style="text-align:center;"><img src="' + url +
+  				'" style="max-width:100%;max-height:80vh;"></div>'
+  		});
+  	}
+
+
+  	layui.use(['element', 'layer', 'colorpicker', 'table', 'form', 'upload'], function() {
+  		var table = layui.table;
+  		var form = layui.form;
+  		var layer = layui.layer;
+  		var colorpicker = layui.colorpicker;
+  		var upload = layui.upload;
+  		var name = '';
+
+  		table.on('tool(setting)', function(obj) {
+  			switch (obj.event) {
+  				case 'edit':
+  					edit(obj);
+  					break;
+  				case 'theme':
+  					theme(obj);
+  					break;
+  				case 'pic':
+  					pic(obj);
+  					break;
+  				case 'bank':
+  					bank(obj);
+  					break;
+  				case 'add':
+  					bank();
+  					break;
+  				case 'del':
+  					del(obj);
+  					break;
+  				case 'login':
+  					login(obj);
+  					break;
+  				case 'introductionEditor':
+  					introductionEditor(obj);
+  					break;
+				case 'preview':
+					layer.open({
+						type: 1,
+						area: ['75%', '75%'],
+						title: obj.data.name +'预览',
+						shade: 0.6,
+						shadeClose: true,
+						maxmin: true,
+						anim: 0,
+						content: '<div style="padding:20px; max-height: 90%; overflow-y: auto;">'+obj.data.option_value+'</div>',
+					});
+					break
+  			};
+  		});
+
+  		$("#name").on("input", debounce(function() {
+  			name = $(this).val();
+  			reloadTable();
+  		}));
+
+  		var dataTable = table.render({
+  			elem: '#table-media-list',
+  			url: '/fxadmin/system/ini.html',
+  			method: 'POST',
+  			cols: [
+  				[{
+  						field: 'name',
+  						align: 'center',
+  						title: '配置名',
+  						minWidth: 150
+  					},
+  					{
+  						field: '',
+  						align: 'center',
+  						title: '配置值',
+  						minWidth: 150,
+  						templet: '#valTpl'
+  					},
+  					{
+  						field: 'adesc',
+  						align: 'center',
+  						title: '说明',
+  						minWidth: 150
+  					},
+  					{
+  						field: 'id',
+  						align: 'center',
+  						title: '操作',
+  						width: $(document).width() < 768 ? 80 : 180,
+  						templet: '#tool'
+  					}
+  				]
+  			],
+  			page: true,
+  			response: {
+  				statusCode: 0
+  			},
+  			parseData: function(res) {
+  				if (res.code != 222) {
+  					var data = res.data;
+  					var arr = [];
+  					for (var i = 0; i < data.length; i++) {
+  						if (data[i].option_name === 'bank') {
+  							var value = data[i].option_value;
+  							var arr = value.split('@');
+  							var json = {};
+  							for (var j = 0; j < arr.length; j++) {
+  								var key = arr[j].split(":")[0];
+  								var val = arr[j].split(':')[1];
+  								json[key] = val;
+  							}
+  							data[i].option_value = json;
+  						}
+  					}
+  				}
+  				return {
+  					"code": res.code,
+  					"msg": res.msg,
+  					"count": res.count,
+  					"data": data
+  				}
+  			}
+  		});
+
+  		function edit(obj) {
+  			layer.prompt({
+  				formType: 2,
+  				value: obj.data.option_value,
+  				maxlength: 5000,
+  				title: '<span style="color:red;">【' + obj.data.name + '】</span>',
+  				yes: function(index, layero) {
+  					var value = layero.find(".layui-layer-input").val();
+  					layer.confirm('确定更改配置项吗？部分配置更改后需重新登录系统。', {
+  						btn: ['确定', '取消']
+  					}, function(index2) {
+  						$.post('/fxadmin/system/editoption.html', {
+  							id: obj.data.id,
+  							option_value: value,
+  							option_name: obj.data.option_name
+  						}, function(res) {
+  							if (res.code === 200) {
+  								layer.msg(res.msg, {
+  									icon: 6
+  								});
+  								obj.update({
+  									option_value: value
+  								});
+  								layer.close(index2);
+  								layer.close(index);
+  							} else {
+  								layer.msg(res.msg, {
+  									icon: 5
+  								});
+  							}
+  						});
+  					});
+  				}
+  			});
+  		}
+
+  		function bank(obj) {
+  			if (obj) {
+  				form.val("bankModal", obj.data.option_value);
+  			} else {
+  				$("#reset").trigger('click');
+  			}
+  			layer.open({
+  				type: 1,
+  				title: obj ? obj.data.name : '添加银行转账信息',
+  				content: $('#bankModal'),
+  				btn: ['确定', '取消'],
+  				yes: function(index) {
+  					// $("#submit").trigger('click');
+  					var bank_name = $("#bank_name").val();
+  					var account_name = $("#account_name").val();
+  					var bank_account = $("#bank_account").val();
+  					var register_address = $("#register_address").val();
+
+  					var value = 'bank_name:' + bank_name +
+  						'@account_name:' + account_name +
+  						'@bank_account:' + bank_account +
+  						'@register_address:' + register_address;
+
+  					if (obj) {
+  						$.post('/fxadmin/system/editoption.html', {
+  							option_value: value,
+  							id: obj.data.id,
+  							option_name: obj.data.option_name
+  						}, function(res) {
+  							if (res.code === 200) {
+  								layer.msg(res.msg, {
+  									icon: 6
+  								});
+  								layer.close(index);
+  								obj.update({
+  									option_value: {
+  										bank_name: bank_name,
+  										account_name: account_name,
+  										bank_account: bank_account,
+  										register_address: register_address
+  									}
+  								});
+  							} else {
+  								layer.msg(res.msg, {
+  									icon: 5
+  								});
+  							}
+  						});
+  					} else {
+  						// 添加银行信息
+  						$.post('/fxadmin/system/editoption.html', {
+  							option_value: value,
+  							option_name: 'bank '
+  						}, function(res) {
+  							if (res.code === 200) {
+  								layer.msg(res.msg, {
+  									icon: 6
+  								});
+  								layer.close(index);
+  								reloadTable();
+  							} else {
+  								layer.msg(res.msg, {
+  									icon: 5
+  								});
+  							}
+  						});
+  					}
+  				}
+  			});
+  		}
+
+  		function del(obj) {
+  			layer.confirm('确定删除【' + obj.data.name + '】吗？', {
+  				btn: ['确定', '取消']
+  			}, function(index) {
+  				$.post('/fxadmin/system/delbank.html', {
+  					id: obj.data.id,
+  					option_name: obj.data.option_name
+  				}, function(res) {
+  					if (res.code === 200) {
+  						layer.close(index);
+  						obj.update({
+  							option_value: ''
+  						});
+  					} else {
+  						layer.msg(res.msg, {
+  							icon: 5
+  						});
+  					}
+  				});
+  			});
+
+  		}
+
+  		function theme(obj) {
+  			var val = obj.data.option_value;
+  			$("#myTheme").html(val);
+  			colorpicker.render({
+  				elem: '#themePicker',
+  				color: val,
+  				predefine: true,
+  				colors: ['#26303c', '#ff4500', '#5FB878', '#009688', '#2F4056'],
+  				change: function(color) {
+  					$("#myTheme").html(color);
+  					val = color;
+  				}
+  			});
+  			layer.open({
+  				type: 1,
+  				title: '用户主题色设置',
+  				content: $('#themeModal'),
+  				btn: ['确定', '取消'],
+  				yes: function(index) {
+  					$.post('/fxadmin/system/editoption.html', {
+  						id: obj.data.id,
+  						option_value: val,
+  						option_name: obj.data.option_name
+  					}, function(res) {
+  						if (res.code === 200) {
+  							layer.msg(res.msg, {
+  								icon: 6
+  							});
+  							layer.close(index);
+  							obj.update({
+  								option_value: val
+  							});
+  						} else {
+  							layer.msg(res.msg, {
+  								icon: 5
+  							});
+  						}
+  					});
+  				}
+  			});
+  		}
+
+  		function login(obj) {
+  			var option_value = obj.data.option_value;
+  			$('input:radio').eq(option_value).attr("checked", 'true');
+  			var index = layer.open({
+  				type: 1,
+  				title: '登录模板编辑',
+  				content: $('#loginModal'),
+  				btn: '提交',
+  				yes: function() {
+  					var val = $("input[type=radio]:checked").data("id");
+  					$.post('/fxadmin/system/editoption.html', {
+  						id: obj.data.id,
+  						option_value: val,
+  						option_name: obj.data.option_name
+  					}, function(res) {
+  						if (res.code === 200) {
+  							layer.msg(res.msg, {
+  								icon: 6
+  							});
+  							layer.close(index);
+  							obj.update({
+  								option_value: val
+  							});
+  						} else {
+  							layer.msg(res.msg, {
+  								icon: 5
+  							});
+  						}
+  					});
+  				}
+  			});
+  		}
+
+  		var editorInstance;
+  		// 公司简介编辑弹窗
+  		function introductionEditor(obj) {
+  			var option_value = obj.data.option_value;
+            console.log(option_value);
+  			if (!editorInstance) {
+  				initTinyEditor(option_value);
+  			}
+  			var index = layer.open({
+  				type: 1,
+  				title: '公司简介编辑',
+  				content: $('#companyProfile'),
+  				area: ['1200px', '500px'],
+  				btn: ['确定'],
+  				maxmin: false,
+  				resize: false,
+				zIndex: 1000,
+  				yes: function() {
+  					var val = tinymce.get('companyContent').getContent();
+  					$.post('/fxadmin/system/editoption.html', {
+  						id: obj.data.id,
+  						option_value: val,
+  						option_name: obj.data.option_name
+  					}, function(res) {
+  						if (res.code === 200) {
+  							layer.msg(res.msg, {
+  								icon: 6
+  							});
+  							layer.close(index);
+  							obj.update({
+  								option_value: val
+  							});
+  						} else {
+  							layer.msg(res.msg, {
+  								icon: 5
+  							});
+  						}
+  					});
+
+  				},
+
+  				end: function() {
+  					location.reload();
+  				}
+
+  			});
+  		}
+  		$("#previewImage").on("click", function() {
+  			var src = $(this).attr("src");
+  			$("<img />").attr("src", src).load(function() {
+  				realWidth = this.width;
+  				realHeight = this.height;
+  				layer.open({
+  					type: 1,
+  					area: [realWidth, realHeight],
+  					closeBtn: 0,
+  					shadeClose: true,
+  					content: '<img src="' + src + '">'
+  				});
+  			});
+  		});
+
+  		function setContent(option_value) {
+  			var tinyID = 'companyContent';
+  			// tinyMCE.editors[tinyID].setContent(option_value); 
+  			// tinyMCE.editors[tinyID].insertContent(option_value);
+  		}
+
+  		function initTinyEditor(option_value) {
+  			var data = option_value;
+  			console.log("initTinyEditor");
+  			editorInstance = tinymce.init({
+  				selector: "#companyContent",
+  				width: '1000',
+  				height: '350',
+  				max_width: '1100',
+  				max_height: '350',
+  				branding: false, //隐藏右下角技术支持
+  				language: 'zh_CN',
+  				menubar: false,
+  				// draggable_modalr: false,
+  				auto_focus: true, //（自动获得焦点）
+  				// autosave_ask_before_unload: false,
+  				plugins: 'indent2em autoformat code link image powerpaste preview autosave wordcount ',
+  				toolbar: 'code undo redo restoredraft link image bold forecolor alignleft aligncenter alignright indent2em fontselect fontsizeselect removeformat autoformat preview fullscreen',
+  				font_formats: '宋体=宋体;黑体=黑体;仿宋=仿宋;楷体=楷体;隶书=隶书;幼圆=幼圆;Arial=arial,helvetica,sans-serif;Comic Sans MS=comic sans ms,sans-serif;Courier New=courier new,courier;Tahoma=tahoma,arial,helvetica,sans-serif;Times New Roman=times new roman,times;Verdana=verdana,geneva;Webdings=webdings;Wingdings=wingdings,zapf dingbats',
+  				images_upload_url: '/index/upload/picupload.html',
+  				placeholder: '请输入公司简介',
+  				// valid_elements: '*[*]',  // 允许所有标签和属性
+  				// valid_children: '+body[style]',  // 允许所有在 body 内的标签，包括样式属性 				
+  				setup: function(editor) {
+  					editor.on('init', function(e) {
+  						// console.log('初始化完成',editor);
+  						tinymce.activeEditor.setContent(option_value);
+  						editorInstance = '';
+  					});
+  				}
+  			});
+  		}
+
+  		function pic(obj) {
+  			// console.log("obj",obj);
+  			var type = obj.data.son_option;
+  			if (type != 'logo') {
+  				if (obj.data.option_value) {
+  					$(".img").attr('src', obj.data.option_value);
+  					$("#upload").hide();
+  					$(".img").show();
+  				} else {
+  					$("#upload").show();
+  					$(".img").hide();
+  				}
+  				layer.open({
+  					type: 1,
+  					title: obj.data.name,
+  					content: $('#picModal'),
+  					btn: ['确定', '取消'],
+  					success: function(index) {
+  						if (type == 'wechat') {
+  							$("#linklogo").css("display", "block");
+  							$("#linklogo2").css("display", "none");
+  							$("#linklogo3").css("display", "none");
+  							uploadFile('#linklogo');
+  						}
+  						if (type == 'wechat_img') {
+  							$("#linklogo2").css("display", "block");
+  							$("#linklogo").css("display", "none");
+  							$("#linklogo3").css("display", "none");
+  							uploadFile('#linklogo2');
+  						}
+  						if (type == 'alipay_img') {
+  							$("#linklogo").css("display", "none");
+  							$("#linklogo2").css("display", "none");
+  							$("#linklogo3").css("display", "block");
+  							uploadFile('#linklogo3');
+  						}
+  						if (type == 'ico') {
+  							$("#linklogo").css("display", "none");
+  							$("#linklogo2").css("display", "none");
+  							$("#linklogo3").css("display", "none");
+  							$("#linklogo4").css("display", "block");
+  							uploadFile('#linklogo4');
+  						}
+  						if (type == 'ogimage') {
+  							$("#linklogo").css("display", "none");
+  							$("#linklogo2").css("display", "none");
+  							$("#linklogo3").css("display", "none");
+  							$("#linklogo4").css("display", "none");
+  							$("#linklogo5").css("display", "block");
+  							uploadFile('#linklogo5');
+  						}
+
+  					},
+  					yes: function(index) {
+  						// var val = $("#linklogo").data("url");
+  						var val = $(".img").attr("src");
+  						$.post('/fxadmin/system/editoption.html', {
+  							id: obj.data.id,
+  							option_value: val,
+  							option_name: obj.data.option_name
+  						}, function(res) {
+  							if (res.code === 200) {
+  								$("#linklogo").css("display", "none");
+  								$("#linklogo2").css("display", "none");
+  								$("#linklogo3").css("display", "none");
+  								$("#linklogo4").css("display", "none");
+  								$("#linklogo5").css("display", "none");
+  								layer.msg(res.msg, {
+  									icon: 6
+  								});
+  								layer.close(index);
+  								obj.update({
+  									option_value: val
+  								});
+  							} else {
+  								layer.msg(res.msg, {
+  									icon: 5
+  								});
+  							}
+  						});
+  					}
+  				});
+
+  				function uploadFile(elem) {
+  					//微信二维码 wechat_img   微信联系二维码 wechat  支付宝二维码 alipay_img
+  					// console.log("请求了uploadFile",type)
+  					var upload = layui.upload;
+  					var uploadWechatImg = upload.render({
+  						elem, //绑定元素
+  						url: "/fxadmin/upload/picupload.html?type=" + type, //上传接口
+  						choose: function(obj) {
+  							// console.log("文件选择完毕",obj);
+  						},
+  						done: function(res) {
+  							if (res.code === 200) {
+  								$(".img").attr('src', res.data.url);
+  							} else {
+  								layer.msg(res.msg, {
+  									icon: 2,
+  									time: 1000
+  								});
+  							}
+  						},
+  						error: function() {
+  							//请求异常回调
+  							// console.log("请求异常回调")
+  						}
+  					});
+  				};
+
+
+
+  			} else {
+  				// console.log("logo");
+  				layer.open({
+  					type: 1,
+  					title: obj.data.name,
+  					content: $('#picCropping'),
+  					// area: ['700px', '500px'],
+  					btn: ['上传图片', '取消'],
+  					success: function(index) {
+  						// console.log('成功打开弹出层'); 
+  						let cropper;
+  						const canvasElement = document.getElementById('canvas');
+  						var ctx = canvasElement.getContext('2d')
+  						// 获取图片
+  						document.getElementById('uploadImage').addEventListener('change', function(
+  							event) {
+  							const file = event.target.files[0];
+  							ctx.clearRect(0, 0, canvas.width, canvas.height);
+  							$(".image_preview").css("display", "block"); //显示图片裁剪框 
+  							$("#cropButton").css("display", "block"); //显示图片裁剪按钮  
+  							if (file) {
+  								const reader = new FileReader();
+  								reader.onload = function(e) {
+  									const imgElement = document.getElementById('image');
+  									imgElement.src = e.target.result;
+  									// 销毁旧的 Cropper 实例 (如果存在)
+  									if (cropper) {
+  										cropper.destroy();
+  									}
+  									// 初始化 Cropper
+  									cropper = new Cropper(imgElement, {
+  										aspectRatio: 176 /
+  										108, // 固定宽高比, // 剪裁框的宽高比例 
+  										// autoCropArea: 0.8, // 自动剪裁区域的大小，相对于原始图片
+  										viewMode: 0, // 显示模式：0-剪裁框不可移动，1-剪裁框可移动，2-剪裁框自由移动
+  										movable: true, // 是否允许剪裁框移动
+  										zoomable: true, // 是否允许缩放图片
+  										// rotatable: true, // 是否允许旋转图片
+  										guides: true, // 是否显示剪裁框虚线
+  										background: true, // 是否显示背景网格
+  										cropBoxMovable: true, // 是否允许剪裁框拖动
+  										cropBoxResizable: false, // 是否允许剪裁框缩放
+  										// minCropBoxWidth: 100, // 剪裁框的最小宽度
+  										// minCropBoxHeight: 100, // 剪裁框的最小高度 
+  										scalable: true, // 禁止缩放
+  										ready: function() {
+  											var cropBoxData = cropper
+  												.getCropBoxData();
+  											cropBoxData.width = 176;
+  											cropBoxData.height = 108;
+  											cropBoxData.left = (cropper
+  												.getContainerData()
+  												.width - 176) / 2;
+  											cropBoxData.top = (cropper
+  												.getContainerData()
+  												.height - 108) / 2;
+  											cropper.setCropBoxData(
+  												cropBoxData);
+  										},
+  										crop: function(event) {
+  											var canvas = cropper
+  												.getCroppedCanvas({
+  													width: 176,
+  													height: 176,
+  													fillColor: 'rgba(0,0,0,0)' // 透明背景
+  												});
+  											preview.src = canvas.toDataURL();
+  											preview.style.display = 'block';
+  										},
+  									});
+  								};
+  								reader.readAsDataURL(file);
+  							}
+  						});
+  					},
+  					yes: function(index) {
+  						var base64Image = $("#preview").attr("src");
+  						// console.log("base64Image", base64Image);							
+  						if (base64Image) {
+  							var blob = dataURLtoBlob(base64Image);
+  							var formData = new FormData();
+  							formData.append('file', blob, 'cropped_image.png');
+  							fetch("/fxadmin/upload/picupload.html?type=" + type, {
+  									method: 'POST',
+  									body: formData,
+
+  								})
+  								.then(response => response.json())
+  								.then(data => {
+  									// console.log('Success:', data);
+  									if (data.code == 200) {
+  										$.post('/fxadmin/system/editoption.html', {
+  											id: obj.data.id,
+  											option_value: data.data.url,
+  											option_name: obj.data.option_name
+  										}, function(res) {
+  											if (res.code === 200) {
+  												const canvasElement = document
+  													.getElementById('canvas');
+  												var ctx = canvasElement.getContext('2d');
+  												ctx.clearRect(0, 0, canvas.width, canvas
+  													.height);
+  												$(".image_preview").css("display",
+  													"none"); //显示图片裁剪框
+  												$("#preview").css("display",
+  												"none"); //显示图片裁剪框
+
+  												layer.msg(res.msg, {
+  													icon: 6
+  												});
+  												layer.close(index);
+  												obj.update({
+  													option_value: data.data.url
+  												});
+  											} else {
+  												layer.msg(res.msg, {
+  													icon: 5
+  												});
+  											}
+  										});
+  									}
+  								})
+  								.catch(error => {
+  									console.error('Error:', error);
+  								});
+  						}
+  					}
+  				});
+
+  				//base64 转file文件流
+  				function base64toFile(dataurl, filename = 'file') {
+  					let arr = dataurl.split(',');
+  					let mime = arr[0].match(/:(.*?);/)[1];
+  					let suffix = mime.split('/')[1];
+  					let bstr = atob(arr[1]);
+  					let n = bstr.length;
+  					let u8arr = new Uint8Array(n);
+  					while (n--) {
+  						u8arr[n] = bstr.charCodeAt(n);
+  					}
+  					return new File([u8arr], `${filename}.${suffix}`, {
+  						type: mime
+  					});
+  				};
+  				// base64 转二进制 
+  				function dataURLtoBlob(dataurl) {
+  					var arr = dataurl.split(','),
+  						mime = arr[0].match(/:(.*?);/)[1],
+  						bstr = atob(arr[1]),
+  						n = bstr.length,
+  						u8arr = new Uint8Array(n);
+  					while (n--) {
+  						u8arr[n] = bstr.charCodeAt(n);
+  					}
+  					return new Blob([u8arr], {
+  						type: mime
+  					});
+  				};
+  			}
+  		}
+
+  		function reloadTable() {
+  			dataTable.reload({
+  				where: {
+  					option_name: name
+  				},
+  				page: {
+  					curr: 1
+  				}
+  			});
+  		}
+
+  	});
+  </script>
+
+  <script type="text/html" id="valTpl">
+  {{# if(d.type === 0){ }}
+  	{{d.option_value}}
+  {{# }else if(d.type === 2){ }}
+  		<img src="{{d.option_value}}" id='previewImage' onclick="previewImage('{{d.option_value}}')">
+  {{# }else if(d.type === 3){ }}
+  			<div class="user_theme" style="background:{{d.option_value}};">{{d.option_value}}</div>
+  {{# }else if(d.type === 4){ }}
+  				{{# if( typeof d.option_value.bank_name!=='undefined'){ }}
+  					<p>银行名称：{{d.option_value.bank_name}}</p>
+  					<p>公司名称：{{d.option_value.account_name}}</p>
+  					<p>银行账户：{{d.option_value.bank_account}}</p>
+  					<p>开户地址：{{d.option_value.register_address}}</p>
+			   {{# } }}
+  {{# }else if(d.type === 5){ }}
+			<p>模板{{d.option_value}}</p>
+  {{# }else if(d.type === 6){ }}
+  		{{# if(d.option_value){ }}
+ 			 <a class="tag-default btn-primary" lay-event="preview">预览</a>
+        {{# } }}
+  {{# }else{ }}
+  		{{d.option_value}}
+  {{# } }}
+  </script>
+
+  <script type="text/html" id="tool">
+  {{# if(d.type === 0){ }}
+  	<a class="tag-danger btn-primary" lay-event="edit">配置</a>
+  	{{# }else if(d.type === 2){ }}
+  		<a class="tag-success btn-success" lay-event="pic">上传</a>
+  		<a class="tag-success btn-danger" lay-event="del">清空</a>
+  		{{# }else if(d.type === 3){ }}
+  			<a class="tag-success btn-primary" lay-event="theme">配置</a>
+  			{{# }else if(d.type === 4){ }}
+  				<a class="tag-success btn-primary" lay-event="bank">配置</a>
+  				<a class="tag-success btn-success" lay-event="add">新增</a>
+  				<a class="tag-success btn-danger" lay-event="del">清空</a>
+  				{{# }else if(d.type === 5){ }}
+  					<a class="tag-success btn-primary" lay-event="login">配置</a>
+  					{{# }else if(d.type === 6){ }}
+  						<a class="tag-success btn-primary" lay-event="introductionEditor">编辑</a>
+  						{{# } }}
+  </script>
