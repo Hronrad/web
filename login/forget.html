@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>忘记密码-声浪工场</title>
+    <link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+    <style>
+        .loginHeader{height: 100px; line-height: 100px;}
+        
+        /*.loginHeader img{width: 157px;height: 54px;}*/
+       
+        .loginHeader a{text-align: right;display: block;color: #999999;font-size: 18px;}
+        
+
+         .loginBg{background: url(/static/assets/log_reg_img/bj2-1.png) center center no-repeat;height: 700px;width: 100%;}
+          .item input{padding-left: 90px; height: 48px;margin-top:10px;border-radius: 5px;border: solid 1px #dcdcdc;}
+
+        .loginFooter p{text-align: center;color: #999999;font-size: 18px;    height: 137px;line-height: 137px;}
+         .loginFooter_fixed{
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+            background: #Fff;
+        }
+        .loginFooter_fixed p{ 
+            height: auto !important;
+            line-height: 40px !important;
+        }   
+        .loginBox{width: 416px;/*height: 528px;*/ height: auto;background-color: #ffffff;box-shadow: 0px 8px 26px 1px rgba(64, 64, 64, 0.3);position:absolute;right: 0%;top: 50%;transform: translateY(-50%);}
+        .titleUnit{width:100%;height:30px;font-size: 24px;color: #999999;margin-top:50px;    margin-bottom: 30px;}
+        .titleUnit .unite{height:30px;width: 100%;}
+        .titleUnit .unite h3.titles{text-align:center;}
+        .titleUnit .unite.current h3.titles{color: #bc2c32;}      
+        .item{position: relative;}
+       
+        .item span{position: absolute;width: 70px;left: 0;top: 0;height: 48px;line-height: 48px;box-sizing: border-box;text-align: justify;text-align-last: justify;color: #333333;font-size: 14px;    margin-left: 10px;}    
+        .item span::after{content: '';width: 1px;height: 20px;background-color:#dcdcdc;position: absolute;top: 14px;right: -10px;}
+        #username,#userTel{padding:0px 42px;}
+        #captcha , #tel_captcha,#emailcode{width: -moz-calc(100% - 114px);width: -webkit-calc(100% - 114px);width: calc(100% - 114px);float: left;} 
+        #captcha_img,.telBtn,.send_msg{width: 104px;height: 48px;background-color: #f3f3f3; border-radius: 5px;float: right; margin-top:10px;}
+        .telBtn,.send_msg{background-color:#bc2c32;border: 1px solid#bc2c32;color: #ffffff; font-size: 14px;}
+        .submit , .submit_tels{width: 100%;height: 56px;background-color:#bc2c32;border-radius: 5px;font-size: 18px;margin-top:30px;}
+        .tip_title{margin-top:15px;padding-bottom: 30px;}
+        .tip_title .item{overflow: hidden;}
+        .tip_title p { font-size: 14px;color: #909399;text-align: center;}
+        .tip_title p a{color: #bc2c32;}
+        .joint_btn{text-align: center;margin-top:30px;}
+        .joint_btn a{display: inline-block;}
+        .joint_btn a img{margin:0px 10px;}
+        @media screen and (max-width: 751px) {
+            .loginBox{width: 100%;right: 0px;}
+            #username, .tip_title, #userTel {padding: 0px 20px;}
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="layui-container loginHeader">
+        <div class="layui-row">
+            <div class="layui-col-xs9 layui-col-sm6 layui-col-md6">
+
+                
+                  <a href='/' style="text-align:left;"><img src="https://img2.danews.cc/upload/logo/slgc.rwmeiti.com/20250513/40b1710246f4a4cddbe95c8c95e146fd.png" class="logo"></a>
+
+
+                            </div>
+
+            <div class="layui-col-xs3 layui-col-sm6 layui-col-md6">
+                <a href="/">返回首页</a>
+            </div>
+
+        </div>
+    </div>
+    <div class="loginBg">
+        <div class="layui-container" style="position: relative;height:100%;">
+            <div class="loginBox">
+                <div class="item">
+                    <div class="titleUnit" id="titleUnit">
+                        <div class="unite current" name="username"><h3 class="titles">注册会员1</h3></div>
+                    </div>
+                </div>
+        
+                <div class="formBox">
+                    <form class="layui-form" id="userTel">
+                        <div class="item" >
+                            <input type="text" name="tels" id="tels_tit" placeholder="手机号" lay-verify="required|phone" autocomplete="off" class="layui-input">
+                            <span>手机号</span>
+                        </div>
+                        <!-- <div class="item" style="overflow: hidden;">
+                            <input type="text" name="captcha" id="captcha" placeholder="验证码" lay-verify="required|captcha" autocomplete="off" class="layui-input">
+                            <span style="margin-top:10px;">验证码</span>
+                            <img src="/captcha.html" alt="captcha" height="45" id="captcha_img"  onclick="this.src='/captcha.html?seed='+Math.random()" />                   
+                        </div> -->
+                        <div class="item" style="overflow: hidden;">
+                            <input type="text" name="mobilecode" id="tel_captcha" placeholder="手机验证码" lay-verify="required" autocomplete="off" class="layui-input">
+                            <span style="margin-top:10px;">手机验证码</span>
+                            <button class="telBtn" type="button" id="get_code" data-id="phone_msg">获取验证码</button>
+                        </div>
+
+                        <div class="item">
+                            <input type="password" id="password" name="password" placeholder="登录密码" lay-verify1="required|password" autocomplete="off"
+                                   class="layui-input">
+                            <span>新密码</span>
+                        </div>
+                        <div class="item">
+                            <input type="password" name="repassword" placeholder="确认密码" lay-verify1="required|repassword" autocomplete="off" class="layui-input">
+                            <span>确认密码</span>
+                        </div>
+
+                        <button class="layui-btn layui-fluid submit_tels" lay-submit lay-filter="submit_tels">提交</button>
+
+                    </form>
+                </div>
+        
+                <div class="tip_title">
+                    <div class="item">
+                        <p class="go_login">已有账户？&nbsp;&nbsp;&nbsp;<a href="/web/login/index ">返回登陆</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <div class="loginFooter">
+        <p>版本号：00000000，备案号鄂ICP备19025581号-22</p>
+    </div>
+    <script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+     <script>
+	var isMobile = false;
+	initLayout();
+	$(window).resize(function() {
+		initLayout();
+	});
+
+	function initLayout() {
+		var width = $(document).width();
+		console.log("width", width);
+		if (width <= 720) {
+			isMobile = true; 
+			$(".loginFooter").addClass("loginFooter_fixed");
+// 			$(".routerx").css("width", " auto");  
+		} else if (width <= 1500 && width > 720) { 
+			 //$(".frr").css("width", "300px");
+			 $(".loginFooter").removeClass("loginFooter_fixed");
+		} else {
+			// 		$(".time").css("display", " block");
+			// 		$(".time2").css("display", "none");
+			// 		$("#sbtn ").removeClass("layui-btn-sm");
+		}
+	}
+ 
+</script>
+    <script>
+        layui.use(['element', 'form', 'layer'], function () {
+            var form = layui.form;
+            var layer = layui.layer;
+    
+            $("#tels_tit").on("input",function(){
+                var val = $(this).val();
+                if(val.length > 0 && $("#get_code").hasClass("layui-btn-disabled")){
+                    $("#get_code").removeClass("layui-btn-disabled");
+                } else if(val.length === 0 && !$("#get_code").hasClass("layui-btn-disabled")) {
+                    $("#get_code").addClass("layui-btn-disabled");
+                }
+            });
+    
+            // $(".item").mouseover(function () {
+            //     layer.tips($(this).data('tip'), $(this), { tips: [2, '#3595CC'] });
+            // }).mouseout(function () {
+            //     layer.closeAll('tips');
+            // });
+    
+            form.verify({
+                repassword: function(value, item){
+                    if(value !== $("#password").val()){
+                        return '两次密码不一致';
+                    }
+                }
+            });
+    
+            $('#get_code').on('click',function(){
+                var name = $('#tels_tit').val();
+                //console.log(name);
+                if(name !== ''){
+                    $.post("/web/login/getphonecode.html", {name:name}, function (res) {
+                        if(res.code === 200){
+                            if(res.data.type === 'mobile'){
+                                layer.msg('验证码已发送至您【' + res.data.mobile + '】的手机上，请注意查收', {icon:6});
+                            }else{
+                                layer.msg('验证码已发送至您【' + res.data.email + '】的邮箱上，请注意查收', {icon:6});
+                            }
+    
+                        } else {
+                            layer.msg(res.msg, {icon:5})
+                        }
+                    });
+                }
+            });
+    
+            form.on('submit(submit_tels)', function (data) {
+                $.post("/web/login/forget.html", data.field, function (res) {
+                    if(res.code === 200){
+                        layer.msg(res.msg,{icon:6});
+                        window.location.href= '/';
+                    }else{
+                        layer.msg(res.msg,{icon:5});
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>
+
