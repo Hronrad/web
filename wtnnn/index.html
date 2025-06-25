@@ -5,10 +5,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>管理员后台-声浪工场</title>
-    <link rel="stylesheet" href="/static/assets/css/mixin.css">
-  <link rel="stylesheet" href="/static/assets/js/layui/css/layui.css">
-  <link rel="stylesheet" href="/static/assets/css/admin.css">
-  <link rel="stylesheet" href="/static/assets/css/iconfont.css">
+    <link rel="stylesheet" href="../static/assets/css/mixin.css">
+  <link rel="stylesheet" href="../static/assets/js/layui/css/layui.css">
+  <link rel="stylesheet" href="../static/assets/css/admin.css">
+  <link rel="stylesheet" href="../static/assets/css/iconfont.css">
     <style>
     .layout-side{background: url(/static/assets/img/nav-bg.png) center center no-repeat;}
     .layout-side .layui-nav{height: unset !important;bottom: 0 !important;}
@@ -45,23 +45,23 @@
         </a>
       </li>
             <li class="layui-nav-item btn-home">
-        <a href='/fxadmin/media/index.html' target="iframe">
+        <a href='../fxadmin/media/index.html' target="iframe">
           <span class="layui-hide-xs">媒体价格</span>
         </a>
       </li>
             <li class="layui-nav-item btn-home">
-        <a href='/fxadmin/wemedia/index.html' target="iframe">
+        <a href='../fxadmin/wemedia/index.html' target="iframe">
           <span class="layui-hide-xs">自媒体价格</span>
         </a>
       </li>
             <li class="layui-nav-item btn-home">
-        <a href='/fxadmin/shortvideomedia/index.html' target="iframe">
+        <a href='../fxadmin/shortvideomedia/index.html' target="iframe">
           <span class="layui-hide-xs">短视频价格</span>
         </a>
       </li>
       
       <li class="layui-nav-item btn-home">
-        <a href='/fxadmin/system/change_tpl.html' target="iframe">
+        <a href='../fxadmin/system/change_tpl.html' target="iframe">
           <span class="layui-hide-xs">切换模板</span>
         </a>
       </li>
@@ -80,10 +80,10 @@
       <li class="layui-nav-item">
         <a href="javascript:;">fxadmin</a>
         <dl class="layui-nav-child">
-          <dd><a href="/fxadmin/index/edituser.html" target="iframe">基本资料</a></dd>
+          <dd><a href="../fxadmin/index/edituser.html" target="iframe">基本资料</a></dd>
 	      <dd><a href="http://request.danews.cc/index/task/create?domain=slgc.rwmeiti.com" target="_blank">优化建议</a></dd>
           <!--  <dd><a href="#">安全设置</a></dd> -->
-          <dd><a href="/fxadmin/login/logout.html">退出系统</a></dd>
+          <dd><a href="../fxadmin/login/logout.html">退出系统</a></dd>
         </dl>
       </li>
     </ul>
@@ -91,82 +91,82 @@
 
   <div class="layout-side">
     <div class="layui-side-scroll">
-      <a href="/fxadmin/index/home.html" target="iframe"><div class="logo">后台管理中心</div></a>
+      <a href="../fxadmin/index/home.html" target="iframe"><div class="logo">后台管理中心</div></a>
       <ul class="layui-nav layui-nav-tree nav-tree-main" lay-shrink="all">
         <li class="layui-nav-item">
-          <a href="/fxadmin/index/home.html" target="iframe"><span class="iconfont iconicon-nav-home1"></span><span class="menu">首页</span></a>
+          <a href="../fxadmin/index/home.html" target="iframe"><span class="iconfont iconicon-nav-home1"></span><span class="menu">首页</span></a>
         </li>
                 <li class="layui-nav-item">
           <a href="javascript:;"><span class="iconfont iconicon-nav-member"></span><span class="menu">会员管理</span></a>
           <dl class="layui-nav-child">
-                        <dd><a href="/wtnnn/user_list.html" target="iframe" onclick="show()">会员列表</a></dd>
-                        <dd><a href="/fxadmin/users/register.html" target="iframe" onclick="show()">注册统计</a></dd>
-                        <dd><a href="/fxadmin/users/recharge.html" target="iframe" onclick="show()">充值记录</a></dd>
-                        <dd><a href="/fxadmin/users/money.html" target="iframe" onclick="show()">资金记录</a></dd>
-                        <dd><a href="/wtnnn/user_feedback.html" target="iframe" onclick="show()">反馈列表</a></dd>
-                        <dd><a href="/fxadmin/invoice/index.html" target="iframe" onclick="show()">发票列表</a></dd>
+                        <dd><a href="user_list.html" target="iframe" onclick="show()">会员列表</a></dd>
+                        <dd><a href="../fxadmin/users/register.html" target="iframe" onclick="show()">注册统计</a></dd>
+                        <dd><a href="../fxadmin/users/recharge.html" target="iframe" onclick="show()">充值记录</a></dd>
+                        <dd><a href="../fxadmin/users/money.html" target="iframe" onclick="show()">资金记录</a></dd>
+                        <dd><a href="user_feedback.html" target="iframe" onclick="show()">反馈列表</a></dd>
+                        <dd><a href="../fxadmin/invoice/index.html" target="iframe" onclick="show()">发票列表</a></dd>
                                   </dl>
         </li>
                 <li class="layui-nav-item">
           <a href="javascript:;"><span class="iconfont iconicon-nav-media"></span><span class="menu">媒体管理</span></a>
           <dl class="layui-nav-child">
-                        <dd><a href="/fxadmin/media/medialist.html" target="iframe" onclick="show()">媒体列表</a></dd>
-                        <dd><a href="/fxadmin/media/price.html" target="iframe" onclick="show()">价格更新</a></dd>
-                        <dd><a href="/fxadmin/media/order.html" target="iframe" onclick="show()">媒体订单</a></dd>
-                        <dd><a href="/fxadmin/media/index.html" target="iframe" onclick="show()">价格查看</a></dd>
+                        <dd><a href="../fxadmin/media/medialist.html" target="iframe" onclick="show()">媒体列表</a></dd>
+                        <dd><a href="../fxadmin/media/price.html" target="iframe" onclick="show()">价格更新</a></dd>
+                        <dd><a href="../fxadmin/media/order.html" target="iframe" onclick="show()">媒体订单</a></dd>
+                        <dd><a href="../fxadmin/media/index.html" target="iframe" onclick="show()">价格查看</a></dd>
                                   </dl>
         </li>
                 <li class="layui-nav-item">
           <a href="javascript:;"><span class="iconfont iconicon-nav-we_media"></span><span class="menu">自媒体管理</span></a>
           <dl class="layui-nav-child">
-                        <dd><a href="/fxadmin/wemedia/medialist.html" target="iframe" onclick="show()">自媒体列表</a></dd>
-                        <dd><a href="/fxadmin/wemedia/price.html" target="iframe" onclick="show()">价格更新</a></dd>
-                        <dd><a href="/fxadmin/wemedia/order.html" target="iframe" onclick="show()">自媒体订单</a></dd>
-                        <dd><a href="/fxadmin/wemedia/index.html" target="iframe" onclick="show()">价格查看</a></dd>
+                        <dd><a href="../fxadmin/wemedia/medialist.html" target="iframe" onclick="show()">自媒体列表</a></dd>
+                        <dd><a href="../fxadmin/wemedia/price.html" target="iframe" onclick="show()">价格更新</a></dd>
+                        <dd><a href="../fxadmin/wemedia/order.html" target="iframe" onclick="show()">自媒体订单</a></dd>
+                        <dd><a href="../fxadmin/wemedia/index.html" target="iframe" onclick="show()">价格查看</a></dd>
                                   </dl>
         </li>
                 <li class="layui-nav-item">
           <a href="javascript:;"><span class="iconfont iconicon-nav-customer"></span><span class="menu">短视频管理</span></a>
           <dl class="layui-nav-child">
-                        <dd><a href="/fxadmin/shortvideomedia/video_list.html" target="iframe" onclick="show()">短视频列表</a></dd>
-                        <dd><a href="/fxadmin/shortvideomedia/price.html" target="iframe" onclick="show()">价格更新</a></dd>
-                        <dd><a href="/fxadmin/shortvideomedia/order.html" target="iframe" onclick="show()">订单列表</a></dd>
-                        <dd><a href="/fxadmin/shortvideomedia/index.html" target="iframe" onclick="show()">价格查看</a></dd>
+                        <dd><a href="../fxadmin/shortvideomedia/video_list.html" target="iframe" onclick="show()">短视频列表</a></dd>
+                        <dd><a href="../fxadmin/shortvideomedia/price.html" target="iframe" onclick="show()">价格更新</a></dd>
+                        <dd><a href="../fxadmin/shortvideomedia/order.html" target="iframe" onclick="show()">订单列表</a></dd>
+                        <dd><a href="../fxadmin/shortvideomedia/index.html" target="iframe" onclick="show()">价格查看</a></dd>
                                   </dl>
         </li>
                 <li class="layui-nav-item">
           <a href="javascript:;"><span class="iconfont iconicon-nav-system"></span><span class="menu">系统管理</span></a>
           <dl class="layui-nav-child">
-                        <dd><a href="/fxadmin/system/whitelist.html" target="iframe" onclick="show()">白名单</a></dd>
-                        <dd><a href="/fxadmin/system/mark.html" target="iframe" onclick="show()">黑名单</a></dd>
-                        <dd><a href="/fxadmin/system/notice.html" target="iframe" onclick="show()">发稿注意事项</a></dd>
-                        <dd><a href="/fxadmin/system/sensitiveword.html" target="iframe" onclick="show()">稿件敏感词</a></dd>
-                        <dd><a href="/fxadmin/system/service.html" target="iframe" onclick="show()">客服设置</a></dd>
-                        <dd><a href="/fxadmin/system/setting.html" target="iframe" onclick="show()">发稿平台设置</a></dd>
-                        <dd><a href="/fxadmin/system/ini.html" target="iframe" onclick="show()">系统配置</a></dd>
-                        <dd><a href="/fxadmin/system/template.html" target="iframe" onclick="show()">模板设置</a></dd>
-                        <dd><a href="/fxadmin/system/home.html" target="iframe" onclick="show()">用户端设置</a></dd>
+                        <dd><a href="../fxadmin/system/whitelist.html" target="iframe" onclick="show()">白名单</a></dd>
+                        <dd><a href="../fxadmin/system/mark.html" target="iframe" onclick="show()">黑名单</a></dd>
+                        <dd><a href="../fxadmin/system/notice.html" target="iframe" onclick="show()">发稿注意事项</a></dd>
+                        <dd><a href="../fxadmin/system/sensitiveword.html" target="iframe" onclick="show()">稿件敏感词</a></dd>
+                        <dd><a href="../fxadmin/system/service.html" target="iframe" onclick="show()">客服设置</a></dd>
+                        <dd><a href="../fxadmin/system/setting.html" target="iframe" onclick="show()">发稿平台设置</a></dd>
+                        <dd><a href="../fxadmin/system/ini.html" target="iframe" onclick="show()">系统配置</a></dd>
+                        <dd><a href="../fxadmin/system/template.html" target="iframe" onclick="show()">模板设置</a></dd>
+                        <dd><a href="../fxadmin/system/home.html" target="iframe" onclick="show()">用户端设置</a></dd>
                                   </dl>
         </li>
                 <li class="layui-nav-item">
           <a href="javascript:;"><span class="iconfont iconicon-nav-jurisdiction"></span><span class="menu">权限管理</span></a>
           <dl class="layui-nav-child">
-                        <dd><a href="/fxadmin/role/index.html" target="iframe" onclick="show()">角色管理</a></dd>
-                        <dd><a href="/fxadmin/manager/index.html" target="iframe" onclick="show()">管理员列表</a></dd>
-                        <dd><a href="/fxadmin/manager/log.html" target="iframe" onclick="show()">管理员日志</a></dd>
+                        <dd><a href="../fxadmin/role/index.html" target="iframe" onclick="show()">角色管理</a></dd>
+                        <dd><a href="../fxadmin/manager/index.html" target="iframe" onclick="show()">管理员列表</a></dd>
+                        <dd><a href="../fxadmin/manager/log.html" target="iframe" onclick="show()">管理员日志</a></dd>
                                   </dl>
         </li>
                 <li class="layui-nav-item">
           <a href="javascript:;"><span class="iconfont icongonggao"></span><span class="menu">公告管理</span></a>
           <dl class="layui-nav-child">
-                        <dd><a href="/fxadmin/notice/index.html" target="iframe" onclick="show()">公告</a></dd>
-                        <dd><a href="/fxadmin/notice/sixin.html" target="iframe" onclick="show()">站内信</a></dd>
+                        <dd><a href="../fxadmin/notice/index.html" target="iframe" onclick="show()">公告</a></dd>
+                        <dd><a href="../fxadmin/notice/sixin.html" target="iframe" onclick="show()">站内信</a></dd>
                                   </dl>
         </li>
                 <li class="layui-nav-item">
           <a href="javascript:;"><span class="iconfont iconicon-nav-customer"></span><span class="menu">客户管理</span></a>
           <dl class="layui-nav-child">
-                        <dd><a href="/fxadmin/customer/all.html" target="iframe" onclick="show()">所有客户</a></dd>
+                        <dd><a href="../fxadmin/customer/all.html" target="iframe" onclick="show()">所有客户</a></dd>
                                   </dl>
         </li>
         
@@ -195,7 +195,7 @@
   <div class="layui-body">
     <div class="cover"></div>
     <!-- <iframe id="iframe" name="iframe" frameborder="0" src="/fxadmin/index/home.html"></iframe> -->
-    <iframe id="iframe" name="iframe" frameborder="0" src="/fxadmin/index/home.html"></iframe>
+    <iframe id="iframe" name="iframe" frameborder="0" src="../fxadmin/index/home.html"></iframe>
   </div>
 </div>
 
@@ -205,8 +205,8 @@
   <div class="btn-order">立即处理</div>
 </div>
 
-<script src="/static/assets/js/jquery-1.12.4.min.js"></script>
-<script src="/static/assets/js/layui/layui.js"></script>
+<script src="../static/assets/js/jquery-1.12.4.min.js"></script>
+<script src="../static/assets/js/layui/layui.js"></script>
 <script>
   var isMobile = false;
   initLayout();

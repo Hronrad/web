@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>注册-声浪工场</title>
-       <link rel="stylesheet" type="text/css" href="/static/assets/js/layui/css/layui.css" />
+       <link rel="stylesheet" type="text/css" href="../static/assets/js/layui/css/layui.css" />
     <style>
         .loginHeader{height: 100px; line-height: 100px;}
 
-        .loginHeader a img{width: 157px;float:left,margin-top:20px;}
+        .loginHeader a img{width: 157px;float:left;margin-top:20px;}
 
         .loginHeader a{text-align: right;display: block;color: #999999;font-size: 18px;}
 
@@ -62,12 +62,12 @@
             <div class="layui-col-xs9 layui-col-sm6 layui-col-md6">
                 <!-- <img src="/static/assets/log_reg_img/logo3.png" alt=""> -->
                  
-                  <a href='/' style="text-align:left;"><img src="https://img2.danews.cc/upload/logo/slgc.rwmeiti.com/20250513/40b1710246f4a4cddbe95c8c95e146fd.png" class="logo"></a>
+                  <a href='../index.html' style="text-align:left;"><img src="https://img2.danews.cc/upload/logo/slgc.rwmeiti.com/20250513/40b1710246f4a4cddbe95c8c95e146fd.png" class="logo"></a>
 
                             </div>
 
             <div class="layui-col-xs3 layui-col-sm6 layui-col-md6">
-                <a href="/">返回首页</a>
+                <a href="../index.html">返回首页</a>
             </div>
 
         </div>
@@ -96,7 +96,7 @@
                         <div class="item" style="overflow: hidden;">
                             <input type="text" name="captcha" id="captcha" placeholder="验证码" lay-verify="required|captcha" autocomplete="off" class="layui-input">
                             <span style="margin-top:10px;">验证码</span>
-                            <img src="/captcha.html" alt="captcha" height="45" id="captcha_img"  onclick="this.src='/captcha.html?seed='+Math.random()" />                   
+                            <img src="../captcha.html" alt="captcha" height="45" id="captcha_img"  onclick="this.src='/captcha.html?seed='+Math.random()" />                   
                         </div>
                                                 <div class="item">
                             <input type="password" id="password" name="password" placeholder="登录密码" lay-verify1="required|password" autocomplete="off"
@@ -118,7 +118,7 @@
         
                 <div class="tip_title">
                     <div class="item">
-                        <p class="go_login">已有账户？&nbsp;<a href="/web/login/index ">去登陆</a></p>
+                        <p class="go_login">已有账户？&nbsp;<a href="index.html">去登陆</a></p>
                     </div>
                 </div>
             </div>
@@ -129,8 +129,8 @@
         <p><a href="https://beian.miit.gov.cn/">鄂ICP备19025581号-22</a> ©2025 All Right Reserved. 版权所有：洛阳汇智文化传媒有限公司</p>
 
     </div>
-    <script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
-    <script type="text/javascript" src="/static/assets/js/layui/layui.js"></script>
+    <script type="text/javascript" src="../static/assets/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../static/assets/js/layui/layui.js"></script>
     <script>
 	var isMobile = false;
 	initLayout();
@@ -223,7 +223,7 @@
                 }
             });
             form.on('submit(submit_tels)', function (data) {
-                var invitecode =$('#invitecode').val(),url="/web/login/register.html";
+                var invitecode =$('#invitecode').val(),url="register.html";
                 if(invitecode)url+="?invitecode=";
                 $.post(url,data.field,function(res){
                     if(res.code == 200){
